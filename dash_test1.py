@@ -1,5 +1,6 @@
 from dash import Dash, dcc, html, Input, Output
 import plotly.express as px
+import plotly.graph_objs as go
 import numpy as np
 from time import strftime, strptime, mktime
 
@@ -63,11 +64,12 @@ def update_figure(start_date, end_date):
         return df.quantile(0.05)
     def percentile95(df):
         return df.quantile(0.95)
+    def hourly_mean(df):
+        return df.mean()
 
     df_downsampled = df_minor.copy()
     df_downsampled = df_downsampled.set_index("timestamp_local")
-    df_downsampled = df_downsampled.resample(resample_frequency).agg([percentile5, pd.DataFrame.mean, percentile95]) # .mean()
-    df_downsampled = df_downsampled.reset_index()
+    df_downsampled = df_downsampled.resample(resample_frequency).agg([percentile5, hourly_mean, percentile95]).reset_index() # .mean()
 
     print(df_downsampled.head(5))
 
@@ -75,13 +77,73 @@ def update_figure(start_date, end_date):
         (df_downsampled["timestamp_local"].dt.date >= pd.Timestamp(start_date).date()) & (df_downsampled["timestamp_local"].dt.date <= pd.Timestamp(end_date).date())
     ]
 
-    print("size of filtered dataframe = ", df_filtered.size)
-    print("number of rows:", len(df_filtered.index))
+    # print("size of filtered dataframe = ", df_filtered.size)
+    # print("number of rows:", len(df_filtered.index))
+    # print("column names: ", list(df_filtered.columns.values))
+    # df_filtered["5th Percentile"] = df_filtered[('pm25', 'percentile5')]
+    # df_filtered["mean"] = df_filtered[('pm25', 'mean')]
+    # df_filtered = df_filtered.reset_index()
+    # print("column names: ", list(df_filtered.columns.values))
+    # df_filtered["5th Percentile"] = df_filtered.iloc[2]
+    # df_filtered["mean"] = df_filtered.iloc[3]
+    # df_filtered["95th Percentile"] = df_filtered.iloc[4]
+    # df_filtered["5th Percentile"] = df_filtered.loc[('pm25', 'percentile5')]
+    # print(df_filtered.head(2))
+    # print(df_filtered[('pm25', 'percentile5')])
 
-    fig = px.line(df_filtered, x="timestamp_local", y=('pm25', 'percentile5'),
-                    #  size="pop", color="continent", hover_name="country",
-                    #  log_x=True, size_max=55
-                    )
+    # df_combined = df_filtered["timestamp_local"]
+    print("heieriheoaroehaoiheoaihreihr")
+    print(df_filtered["pm25"]["percentile5"])
+    print(df_filtered["pm25"]["hourly_mean"])
+    print("Success!")
+
+    # fig = px.line(df_filtered, x="timestamp_local", y=[df_filtered["pm25"]["percentile5"],
+    #                                                    df_filtered["pm25"]["hourly_mean"],
+    #                                                    df_filtered["pm25"]["percentile95"]],
+    #                 #  size="pop", color="continent", hover_name="country",
+    #                 #  log_x=True, size_max=55
+    #                 )
+
+    fig = go.Figure([
+        go.Scatter(
+            name='Average',
+            x=df_filtered["timestamp_local"],
+            y=df_filtered["pm25"]["hourly_mean"],
+            mode='lines',
+            line=dict(color='rgb(31, 119, 180)'),
+        ),
+        go.Scatter(
+            name='95th Percentile',
+            x=df_filtered["timestamp_local"],
+            y=df_filtered["pm25"]["percentile95"],
+            mode='lines',
+            marker=dict(color="#444"),
+            line=dict(width=0),
+            showlegend=False
+        ),
+        go.Scatter(
+            name='5th PErcentile',
+            x=df_filtered["timestamp_local"],
+            y=df_filtered["pm25"]["percentile5"],
+            marker=dict(color="#444"),
+            line=dict(width=0),
+            mode='lines',
+            fillcolor='rgba(68, 68, 68, 0.3)',
+            fill='tonexty',
+            showlegend=False
+        )
+    ])
+    fig.update_layout(
+        yaxis_title='PM2.5',
+        title='PM2.5',
+        hovermode="x"
+    )
+
+    # series_names = ["5th Percentile", "Average", "95th Percentile"]
+
+    # for idx, name in enumerate(series_names):
+    #     fig.data[idx].name = name
+    #     fig.data[idx].hovertemplate = name
 
     # fig.update_layout(transition_duration=500)
 
