@@ -38,64 +38,33 @@ app.layout = html.Div([
 ])
 
 
+resample_frequency = "1H"
+# resample_frequency = np.timedelta64(seconds_range // target_len, "m")
+# resample_frequency = str(seconds_range // target_len) + "min"
+
+def percentile5(df):
+    return df.quantile(0.05)
+def percentile95(df):
+    return df.quantile(0.95)
+def hourly_mean(df):
+    return df.mean()
+
+df_downsampled = df_minor.copy()
+df_downsampled = df_downsampled.set_index("timestamp_local")
+df_downsampled = df_downsampled.resample(resample_frequency).agg([percentile5, hourly_mean, percentile95]).reset_index() # .mean()
+
+print(df_downsampled.head(5))
+
 @app.callback(
     Output('graph-with-slider', 'figure'),
     Input('my-date-picker-range', 'start_date'),
     Input('my-date-picker-range', 'end_date')
 )
 def update_figure(start_date, end_date):
-    print(start_date)
-    print(end_date)
-    # print(strptime(start_date, "%Y%m%d"))
-    # print(pd.Timestamp(strptime(start_date, "%Y%m%d")))
-    target_len = 100
-    seconds_range = int((pd.Timestamp(end_date) - pd.Timestamp(start_date)) / np.timedelta64(1, 'm') // 2)
-    print("seconds_range: ", seconds_range)
-    print(str(seconds_range // target_len) + "T")
-    # print(pd.to_datetime("5T"))
-
-    # print("size of unfiltered dataframe = ", df_minor.size)
-
-    resample_frequency = "1H"
-    # resample_frequency = np.timedelta64(seconds_range // target_len, "m")
-    # resample_frequency = str(seconds_range // target_len) + "min"
-
-    def percentile5(df):
-        return df.quantile(0.05)
-    def percentile95(df):
-        return df.quantile(0.95)
-    def hourly_mean(df):
-        return df.mean()
-
-    df_downsampled = df_minor.copy()
-    df_downsampled = df_downsampled.set_index("timestamp_local")
-    df_downsampled = df_downsampled.resample(resample_frequency).agg([percentile5, hourly_mean, percentile95]).reset_index() # .mean()
-
-    print(df_downsampled.head(5))
 
     df_filtered = df_downsampled[
         (df_downsampled["timestamp_local"].dt.date >= pd.Timestamp(start_date).date()) & (df_downsampled["timestamp_local"].dt.date <= pd.Timestamp(end_date).date())
     ]
-
-    # print("size of filtered dataframe = ", df_filtered.size)
-    # print("number of rows:", len(df_filtered.index))
-    # print("column names: ", list(df_filtered.columns.values))
-    # df_filtered["5th Percentile"] = df_filtered[('pm25', 'percentile5')]
-    # df_filtered["mean"] = df_filtered[('pm25', 'mean')]
-    # df_filtered = df_filtered.reset_index()
-    # print("column names: ", list(df_filtered.columns.values))
-    # df_filtered["5th Percentile"] = df_filtered.iloc[2]
-    # df_filtered["mean"] = df_filtered.iloc[3]
-    # df_filtered["95th Percentile"] = df_filtered.iloc[4]
-    # df_filtered["5th Percentile"] = df_filtered.loc[('pm25', 'percentile5')]
-    # print(df_filtered.head(2))
-    # print(df_filtered[('pm25', 'percentile5')])
-
-    # df_combined = df_filtered["timestamp_local"]
-    print("heieriheoaroehaoiheoaihreihr")
-    print(df_filtered["pm25"]["percentile5"])
-    print(df_filtered["pm25"]["hourly_mean"])
-    print("Success!")
 
     # fig = px.line(df_filtered, x="timestamp_local", y=[df_filtered["pm25"]["percentile5"],
     #                                                    df_filtered["pm25"]["hourly_mean"],
@@ -103,6 +72,13 @@ def update_figure(start_date, end_date):
     #                 #  size="pop", color="continent", hover_name="country",
     #                 #  log_x=True, size_max=55
     #                 )
+    # series_names = ["5th Percentile", "Average", "95th Percentile"]
+
+    # for idx, name in enumerate(series_names):
+    #     fig.data[idx].name = name
+    #     fig.data[idx].hovertemplate = name
+
+    # fig.update_layout(transition_duration=500)
 
     fig = go.Figure([
         go.Scatter(
@@ -138,14 +114,6 @@ def update_figure(start_date, end_date):
         title='PM2.5',
         hovermode="x"
     )
-
-    # series_names = ["5th Percentile", "Average", "95th Percentile"]
-
-    # for idx, name in enumerate(series_names):
-    #     fig.data[idx].name = name
-    #     fig.data[idx].hovertemplate = name
-
-    # fig.update_layout(transition_duration=500)
 
     return fig
 
