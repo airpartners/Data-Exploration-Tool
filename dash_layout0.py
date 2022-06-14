@@ -1,14 +1,15 @@
 from dash import Dash, html, dcc
+from dash.dependencies import Input, Output
 from matplotlib.pyplot import text
 from datetime import date
+
+from filter_graph import FilterGraph
 
 app = Dash(__name__)
 
 app.layout = html.Div([
     dcc.Dropdown(['New York City', 'Montréal', 'San Francisco'], 'Montréal')
 ])
-
-font_size = 2
 
 text_style = {
     "transform": "translateY(0%)", # vertical alignment
@@ -43,7 +44,8 @@ app.layout = html.Div([
         html.Div([
             dcc.DatePickerSingle(
                 date = date(2019, 12, 1),
-                display_format='MM/DD/Y'
+                display_format='MM/DD/Y',
+                id = 'start-date',
             ),
         ], style = date_picker_style),
         html.Div(html.P(" and "), style = text_style),
@@ -51,12 +53,25 @@ app.layout = html.Div([
         html.Div([
             dcc.DatePickerSingle(
                 date = date(2020, 1, 1),
-                display_format='MM/DD/Y'
+                display_format='MM/DD/Y',
+                id = 'end-date',
             ),
         ], style = date_picker_style),
         html.Div(html.P(" ?"), style = text_style),
     ]),
+    dcc.Graph(id='graph-with-slider'),
 ])
+
+filter_graph = FilterGraph()
+
+@app.callback(
+    Output('graph-with-slider', 'figure'),
+    Input('start-date', 'date'),
+    Input('end-date', 'date')
+)
+def update_figure(start_date, end_date):
+    return filter_graph.update_figure(start_date, end_date)
+
 
 if __name__ == '__main__':
     app.run_server(debug=True)
