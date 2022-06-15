@@ -7,39 +7,69 @@ from time import strftime, strptime, mktime
 import pandas as pd
 
 class FilterGraph():
+    major_csv_paths = [
+        "C:/dev/Air Partners/Data Analysis/data/east_boston/sn45-final-w-ML-PM.csv",
+        "C:/dev/Air Partners/Data Analysis/data/east_boston/sn46-final-w-ML-PM.csv",
+        "C:/dev/Air Partners/Data Analysis/data/east_boston/sn49-final-w-ML-PM.csv",
+        "C:/dev/Air Partners/Data Analysis/data/east_boston/sn62-final-w-ML-PM.csv",
+        "C:/dev/Air Partners/Data Analysis/data/east_boston/sn67-final-w-ML-PM.csv",
+        "C:/dev/Air Partners/Data Analysis/data/east_boston/sn72-final-w-ML-PM.csv",
+    ]
+
+    minor_csv_paths = [
+        "C:/dev/Air Partners/Data Analysis/data/temp/sn45-final-w-ML-PM.csv",
+        "C:/dev/Air Partners/Data Analysis/data/temp/sn46-final-w-ML-PM.csv",
+        "C:/dev/Air Partners/Data Analysis/data/temp/sn49-final-w-ML-PM.csv",
+        "C:/dev/Air Partners/Data Analysis/data/temp/sn62-final-w-ML-PM.csv",
+        "C:/dev/Air Partners/Data Analysis/data/temp/sn67-final-w-ML-PM.csv",
+        "C:/dev/Air Partners/Data Analysis/data/temp/sn72-final-w-ML-PM.csv",
+    ]
+
     wind_dict = {'N': [0, 22.5],
-                    'NE': [22.5, 67.5],
-                    'E': [67.5, 112.5],
-                    'SE': [112.5, 157.5],
-                    'S': [157.5, 202.5],
-                    'SW': [202.5, 247.5],
-                    'W': [247.5, 292.5],
-                    'NW': [292.5, 337.5]}
+                 'NE': [22.5, 67.5],
+                 'E': [67.5, 112.5],
+                 'SE': [112.5, 157.5],
+                 'S': [157.5, 202.5],
+                 'SW': [202.5, 247.5],
+                 'W': [247.5, 292.5],
+                 'NW': [292.5, 337.5]}
 
     def __init__(self):
-        minor_csv_path = "C:/dev/Air Partners/Data Analysis/data/temp/sn45-final-w-ML-PM.csv"
+        self.sensor_data = []
+        for file_id, minor_file in enumerate(FilterGraph.minor_csv_paths):
+            # append the next sensor's worth of data to the list
+            self.sensor_data.append(self.prepare_data(FilterGraph.major_csv_paths[file_id], minor_file))
+            pass
+
+    def prepare_data(self, major_file, minor_file):
         minor_file_found = True
         try:
-            self.df_downsampled = pd.read_csv(minor_csv_path, skiprows = [0, 1])
-            # print(self.df_downsampled.head(5))
+            df_downsampled = pd.read_csv(minor_file, skiprows = [0, 1])
         except(FileNotFoundError):
             minor_file_found = False
 
         if minor_file_found:
             cols = pd.MultiIndex.from_tuples([("row_id", ''), ("timestamp_local", ''), ("pm25", "percentile5"), ("pm25", "hourly_mean"), ("pm25", "percentile95"),
-                                              ("wind_dir", "percentile5"), ("wind_dir", "hourly_mean"), ("wind_dir", "percentile95"), ])
-            # self.df_downsampled.set_index(cols)
-            self.df_downsampled.columns = cols
-            print(self.df_downsampled.head(5))
-            self.df_downsampled["timestamp_local"] = pd.to_datetime(self.df_downsampled["timestamp_local"], format = "%Y-%m-%d %H:%M:%S")
-            return
+                                            ("wind_direction_cardinal", '')])
+            df_downsampled.columns = cols
+            df_downsampled["timestamp_local"] = pd.to_datetime(df_downsampled["timestamp_local"], format = "%Y-%m-%d %H:%M:%S")
+            return df_downsampled
 
-        major_csv_path = "C:/dev/Air Partners/Data Analysis/data/east_boston/sn45-final-w-ML-PM.csv"
-        self.df_major = pd.read_csv(major_csv_path)
-        self.df_minor = self.df_major.copy()[["timestamp_local", "pm25", "wind_dir"]]
-        self.df_minor["timestamp_local"] = pd.to_datetime(self.df_major["timestamp_local"], format = "%Y-%m-%dT%H:%M:%SZ")
-        self.df_minor["date"] = self.df_minor["timestamp_local"].dt.date
+        df_major = pd.read_csv(major_file)
+        df_minor = df_major.copy()[["timestamp_local", "pm25", "wind_dir"]]
+        df_minor["timestamp_local"] = pd.to_datetime(df_major["timestamp_local"], format = "%Y-%m-%dT%H:%M:%SZ")
+        df_minor["date"] = df_minor["timestamp_local"].dt.date
 
+        def discrete_wind_direction(degrees, wind_dict = FilterGraph.wind_dict):
+            for direction, bounds in wind_dict.items():
+                if degrees >= bounds[0] and degrees < bounds[1]:
+                    return direction
+                # else: # the direction is between 337.5 and 360 degrees
+            return "N"
+
+        df_minor["wind_direction_cardinal"] = df_minor["wind_dir"].apply(discrete_wind_direction)
+
+        # continuous aggregation functions (e.g. for PM2.5)
         def percentile5(df):
             return df.quantile(0.05)
         def percentile95(df):
@@ -47,40 +77,50 @@ class FilterGraph():
         def hourly_mean(df):
             return df.mean()
 
+        # discrete aggregation for wind direction
+        def hourly_mode(df):
+            return df.mode()
+
         resample_frequency = "1H"
-        self.df_downsampled = self.df_minor.copy()
-        self.df_downsampled = self.df_downsampled.set_index("timestamp_local")
-        self.df_downsampled = self.df_downsampled.resample(resample_frequency).agg([percentile5, hourly_mean, percentile95]).reset_index() # .mean()
+        df_downsampled = df_minor.copy()
+        df_downsampled = df_downsampled.set_index("timestamp_local")
+        df_downsampled = df_downsampled.resample(resample_frequency).agg(
+            {"pm25": [percentile5, "mean", percentile95],
+            "wind_direction_cardinal": hourly_mode}
+        ).reset_index()
 
-        self.df_downsampled.to_csv(minor_csv_path)
+        df_downsampled.to_csv(minor_file)
 
-    def update_figure(self, start_date, end_date, wind_direction):
+        return df_downsampled
+
+    def update_figure(self, which_sensor, start_date, end_date, wind_direction):
         print("HELLOOOOO WORLD")
         print("WIND DIRECTION:", wind_direction)
 
-        self.df_filtered = self.df_downsampled[
-            (self.df_downsampled["timestamp_local"].dt.date >= pd.Timestamp(start_date).date()) &
-            (self.df_downsampled["timestamp_local"].dt.date <= pd.Timestamp(end_date).date()  )
+        df_downsampled = self.sensor_data[which_sensor]
+
+        df_filtered = df_downsampled[
+            (df_downsampled["timestamp_local"].dt.date >= pd.Timestamp(start_date).date()) &
+            (df_downsampled["timestamp_local"].dt.date <= pd.Timestamp(end_date).date()  )
         ]
 
         if wind_direction is not None:
-            self.df_filtered = self.df_filtered[
-                (self.df_filtered["wind_dir"] >= FilterGraph.wind_dict[wind_direction][0]) &
-                (self.df_filtered["wind_dir"] <  FilterGraph.wind_dict[wind_direction][1])
+            df_filtered = df_filtered[
+                df_filtered["wind_direction_cardinal"] == wind_direction
             ]
 
         fig = go.Figure([
             go.Scatter(
                 name='Average',
-                x=self.df_filtered["timestamp_local"],
-                y=self.df_filtered["pm25"]["hourly_mean"],
+                x=df_filtered["timestamp_local"],
+                y=df_filtered["pm25"]["hourly_mean"],
                 mode='lines',
                 line=dict(color='rgb(31, 119, 180)'),
             ),
             go.Scatter(
                 name='95th Percentile',
-                x=self.df_filtered["timestamp_local"],
-                y=self.df_filtered["pm25"]["percentile95"],
+                x=df_filtered["timestamp_local"],
+                y=df_filtered["pm25"]["percentile95"],
                 mode='lines',
                 marker=dict(color="#444"),
                 line=dict(width=0),
@@ -88,8 +128,8 @@ class FilterGraph():
             ),
             go.Scatter(
                 name='5th PErcentile',
-                x=self.df_filtered["timestamp_local"],
-                y=self.df_filtered["pm25"]["percentile5"],
+                x=df_filtered["timestamp_local"],
+                y=df_filtered["pm25"]["percentile5"],
                 marker=dict(color="#444"),
                 line=dict(width=0),
                 mode='lines',

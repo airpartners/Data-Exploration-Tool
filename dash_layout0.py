@@ -43,7 +43,14 @@ app.layout = html.Div([
     html.Div([
         html.Div(html.P("At "), style = text_style),
         html.Div([
-            dcc.Dropdown(['Jeffries Point', 'Logan Runway 1', 'Logan Runway 2'], 'Jeffries Point'),
+            dcc.Dropdown(options = [
+                {'label': 'Sensor 1', 'value': '0'},
+                {'label': 'Sensor 2', 'value': '1'},
+                {'label': 'Sensor 3', 'value': '2'},
+                {'label': 'Sensor 4', 'value': '3'},
+                {'label': 'Sensor 5', 'value': '4'},
+                {'label': 'Sensor 6', 'value': '5'},
+                ], value = '0', id = "which-sensor"),
         ], style = dropdown_style),
         html.Div(html.P(", what were the pollution levels between"), style = text_style),
 
@@ -74,7 +81,7 @@ app.layout = html.Div([
             {'label': 'Southwest', 'value': 'SW'},
             {'label': 'West',      'value': 'W'},
             {'label': 'Northwest', 'value': 'NW'},
-        ], value = 'Northeast', id = "wind-direction"),
+        ], value = 'NE', id = "wind-direction"),
         ], style = dropdown_style),
         html.Div(html.P("?"), style = text_style),
     ]),
@@ -85,12 +92,15 @@ filter_graph = FilterGraph()
 
 @app.callback(
     Output('graph-with-slider', 'figure'),
+    Input('which-sensor', 'value'),
     Input('start-date', 'date'),
     Input('end-date', 'date'),
     Input('wind-direction', 'value'),
 )
-def update_figure(start_date, end_date, wind_direction):
-    return filter_graph.update_figure(start_date, end_date, wind_direction)
+def update_figure(which_sensor, start_date, end_date, wind_direction):
+    if which_sensor is None:
+        which_sensor = 0
+    return filter_graph.update_figure(int(which_sensor), start_date, end_date, wind_direction)
 
 
 if __name__ == '__main__':
