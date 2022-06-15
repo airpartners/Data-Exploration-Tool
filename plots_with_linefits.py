@@ -158,10 +158,10 @@ def update_figure(start_date, end_date):
     # print(res.summary())
 
     fig.update_layout(transition_duration=500)    
-    string1 = "This is the title and it should be bold"
+    string1 = "Behavior of variables versus temperature"
     myTitle = '<b>'+string1+'</b>'
 
-    string2 = 'This is the caption'
+    string2 = ' '
     myCaption = string2
 
     fig.update_layout(title=go.layout.Title(
