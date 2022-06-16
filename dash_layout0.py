@@ -37,59 +37,87 @@ date_picker_style = {
 app = Dash(__name__) # initialize the app
 
 # then, flesh out the app's contents using dash.html components (https://dash.plotly.com/dash-html-components)
-app.layout = html.Div([
-    html.Div([
-        html.Div(html.P("At "), style = text_style),
-        html.Div([
-            dcc.Dropdown(options = [
-                {'label': 'Sensor 1', 'value': '0'},
-                {'label': 'Sensor 2', 'value': '1'},
-                {'label': 'Sensor 3', 'value': '2'},
-                {'label': 'Sensor 4', 'value': '3'},
-                {'label': 'Sensor 5', 'value': '4'},
-                {'label': 'Sensor 6', 'value': '5'},
-                ], value = '0', id = "which-sensor"),
-        ], style = dropdown_style),
-        html.Div(html.P(", what were the pollution levels between"), style = text_style),
+app.layout = html.Div(
+    [
+        html.Div(
+            [
+                html.Div(html.P("At "), style = text_style),
 
-        html.Div([
-            dcc.DatePickerSingle(
-                date = date(2019, 12, 1),
-                display_format='MM/DD/Y',
-                id = 'start-date',
-            ),
-        ], style = date_picker_style),
-        html.Div(html.P(" and "), style = text_style),
+                html.Div([
+                    dcc.Dropdown(options = [
+                        {'label': 'Sensor 1', 'value': '0'},
+                        {'label': 'Sensor 2', 'value': '1'},
+                        {'label': 'Sensor 3', 'value': '2'},
+                        {'label': 'Sensor 4', 'value': '3'},
+                        {'label': 'Sensor 5', 'value': '4'},
+                        {'label': 'Sensor 6', 'value': '5'},
+                        ],
+                        value = '0', # default value
+                        id = "which-sensor" # javascript id, used in @app.callback to reference this element, below
+                    ),
+                ],
+                style = dropdown_style),
 
-        html.Div([
-            dcc.DatePickerSingle(
-                date = date(2020, 1, 1),
-                display_format='MM/DD/Y',
-                id = 'end-date',
-            ),
-        ], style = date_picker_style),
-        html.Div(html.P("when the wind was blowing"), style = text_style),
-        html.Div([
-            dcc.Dropdown(options = [
-            {'label': 'North',     'value': 'N'},
-            {'label': 'Northeast', 'value': 'NE'},
-            {'label': 'East',      'value': 'E'},
-            {'label': 'Southeast', 'value': 'SE'},
-            {'label': 'South',     'value': 'S'},
-            {'label': 'Southwest', 'value': 'SW'},
-            {'label': 'West',      'value': 'W'},
-            {'label': 'Northwest', 'value': 'NW'},
-        ], value = 'NE', id = "wind-direction"),
-        ], style = dropdown_style),
-        html.Div(html.P("?"), style = text_style),
-    ]),
-    dcc.Graph(id='graph-with-slider'),
-])
+                html.Div(html.P(", what were the pollution levels between"), style = text_style),
+
+                html.Div(
+                    [
+                        dcc.DatePickerSingle(
+                            display_format='MM/DD/Y',
+                            date = date(2019, 12, 1), # default value
+                            id = 'start-date',
+                        ),
+                    ],
+                    style = date_picker_style
+                ),
+                html.Div(
+                    html.P(" and "),
+                    style = text_style
+                ),
+                html.Div(
+                    [
+                        dcc.DatePickerSingle(
+                            date = date(2020, 1, 1), # default value
+                            display_format='MM/DD/Y',
+                            id = 'end-date',
+                        ),
+                    ],
+                    style = date_picker_style
+                ),
+                html.Div(
+                    html.P("when the wind was blowing"),
+                    style = text_style
+                ),
+                html.Div(
+                    [
+                        dcc.Dropdown(
+                            options = [
+                                {'label': 'North',     'value': 'N'},
+                                {'label': 'Northeast', 'value': 'NE'},
+                                {'label': 'East',      'value': 'E'},
+                                {'label': 'Southeast', 'value': 'SE'},
+                                {'label': 'South',     'value': 'S'},
+                                {'label': 'Southwest', 'value': 'SW'},
+                                {'label': 'West',      'value': 'W'},
+                                {'label': 'Northwest', 'value': 'NW'},
+                            ], value = 'NE', id = "wind-direction"),
+                    ],
+                    style = dropdown_style
+                ),
+                html.Div(
+                    html.P("?"),
+                    style = text_style
+                ),
+            ]
+        ),
+        dcc.Graph(id='graph-to-update'),
+    ]
+)
 
 filter_graph = FilterGraph()
 
 @app.callback(
-    Output('graph-with-slider', 'figure'),
+    Output('graph-to-update', 'figure'),
     Input('which-sensor', 'value'),
     Input('start-date', 'date'),
     Input('end-date', 'date'),
