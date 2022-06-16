@@ -9,15 +9,6 @@ import pandas as pd
 
 class FilterGraph():
 
-    wind_dict = {'N': [0, 22.5],
-                 'NE': [22.5, 67.5],
-                 'E': [67.5, 112.5],
-                 'SE': [112.5, 157.5],
-                 'S': [157.5, 202.5],
-                 'SW': [202.5, 247.5],
-                 'W': [247.5, 292.5],
-                 'NW': [292.5, 337.5]}
-
     def __init__(self):
         self.list_of_sensor_dataframes = []
         for file_id, processed_file in enumerate(processed_csv_paths):
@@ -45,7 +36,17 @@ class FilterGraph():
         df_processed["timestamp_local"] = pd.to_datetime(df_raw["timestamp_local"], format = "%Y-%m-%dT%H:%M:%SZ")
         df_processed["date"] = df_processed["timestamp_local"].dt.date
 
-        def discrete_wind_direction(degrees, wind_dict = FilterGraph.wind_dict):
+        def discrete_wind_direction(degrees):
+            wind_dict = {
+                'N': [0, 22.5],
+                'NE': [22.5, 67.5],
+                'E': [67.5, 112.5],
+                'SE': [112.5, 157.5],
+                'S': [157.5, 202.5],
+                'SW': [202.5, 247.5],
+                'W': [247.5, 292.5],
+                'NW': [292.5, 337.5],
+            }
             for direction, bounds in wind_dict.items():
                 if degrees >= bounds[0] and degrees < bounds[1]:
                     return direction
@@ -54,15 +55,14 @@ class FilterGraph():
 
         df_processed["wind_direction_cardinal"] = df_processed["wind_dir"].apply(discrete_wind_direction)
 
-        # continuous aggregation functions (e.g. for PM2.5)
+        # define functions which will be used in the resample().agg() call below
         def percentile5(df):
             return df.quantile(0.05)
         def percentile95(df):
             return df.quantile(0.95)
-        # def hourly_mean(df):
-        #     return df.mean()
+        def hourly_mean(df):
+            return df.mean()
 
-        # discrete aggregation for wind direction
         def hourly_mode(df):
             return df.mode()
 
@@ -81,19 +81,23 @@ class FilterGraph():
 
     def update_figure(self, which_sensor, start_date, end_date, wind_direction):
 
+        # select which sensor data to draw from
         df_processed = self.list_of_sensor_dataframes[which_sensor]
 
+        # filter by timestamp
         df_filtered = df_processed[
             (df_processed["timestamp_local"].dt.date >= pd.Timestamp(start_date).date()) &
             (df_processed["timestamp_local"].dt.date <= pd.Timestamp(end_date).date()  )
         ]
 
+        # filter by wind direction
         if wind_direction is not None:
             df_filtered = df_filtered[
                 df_filtered["wind_direction_cardinal"] == wind_direction
             ]
         # else: if wind_direction is None: pass
 
+        # create the figure. It consists of a Figure frame and three lines created with go.Scatter()
         fig = go.Figure([
             go.Scatter(
                 name = 'Average',
@@ -125,10 +129,10 @@ class FilterGraph():
         ])
 
         fig.update_layout(
-            yaxis_title='PM2.5',
+            yaxis_title = 'PM2.5',
             # title='PM2.5',
-            hovermode="x",
-            margin={'t': 0}, # removes the awkward whitespace where the title used to be
+            hovermode = "x", # where the magic happens
+            margin = {'t': 0}, # removes the awkward whitespace where the title used to be
         )
 
         return fig
