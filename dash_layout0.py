@@ -1,7 +1,6 @@
 from dash import Dash, html, dcc
 from dash.dependencies import Input, Output
-from matplotlib.pyplot import text
-from datetime import date
+import datetime
 
 from filter_graph import FilterGraph # import from supporting file (contained in this repo)
 
@@ -15,6 +14,7 @@ text_style = {
     "font-family": "Arial",
     "line-height": "0%", # helps reduce the line spacing
 }
+
 dropdown_style = {
     "display": "inline-block",
     "width": "200px",
@@ -64,7 +64,8 @@ app.layout = html.Div(
                             # note: in order to set the default value, you have to set value = {the VALUE you want}.
                             # Do NOT try to set value = {the LABEL you want}, e.g. value = 'Sensor 1'
                             value = '0', # default value
-                            id = "which-sensor" # javascript id, used in @app.callback to reference this element, below
+                            id = "which-sensor", # javascript id, used in @app.callback to reference this element, below
+                            clearable = False # prevent users from deselecting all sensors
                         ),
                     ],
                     style = dropdown_style
@@ -78,7 +79,7 @@ app.layout = html.Div(
                     [
                         dcc.DatePickerSingle(
                             display_format='MM/DD/Y',
-                            date = date(2019, 12, 1), # default value
+                            date = datetime.date(2019, 12, 1), # default value
                             id = 'start-date',
                         ),
                     ],
@@ -91,7 +92,7 @@ app.layout = html.Div(
                 html.Div(
                     [
                         dcc.DatePickerSingle(
-                            date = date(2020, 1, 1), # default value
+                            date = datetime.date(2020, 1, 1), # default value
                             display_format='MM/DD/Y',
                             id = 'end-date',
                         ),
@@ -152,8 +153,6 @@ filter_graph = FilterGraph()
     Input('wind-direction', 'value'),
 )
 def update_figure(which_sensor, start_date, end_date, wind_direction):
-    if which_sensor is None:
-        which_sensor = 0
     return filter_graph.update_figure(int(which_sensor), start_date, end_date, wind_direction)
 
 # Run the server (by default, it runs on the local machine at the IP address 127.0.0.1:8050.
