@@ -3,7 +3,7 @@ from dash.dependencies import Input, Output
 from matplotlib.pyplot import text
 from datetime import date
 
-from filter_graph import FilterGraph # import from supporting file
+from filter_graph import FilterGraph # import from supporting file (contained in this repo)
 
 # define HTML styles for text and dropdown menus. Use this to change font size, alignment, etc.
 text_style = {
@@ -27,10 +27,10 @@ dropdown_style = {
 
 date_picker_style = {
     "display": "inline-block",
-    # "width": "200px",
+    # "width": "200px", # not used or doesn't work
     "height": "40px",
     "margin-left": "10px",
-    # "font-family": "Arial",
+    # "font-family": "Arial", # not used or doesn't work
     "line-height": "0%", # helps reduce the line spacing
 }
 
@@ -61,6 +61,8 @@ app.layout = html.Div(
                                 {'label': 'Sensor 5', 'value': '4'},
                                 {'label': 'Sensor 6', 'value': '5'},
                             ],
+                            # note: in order to set the default value, you have to set value = {the VALUE you want}.
+                            # Do NOT try to set value = {the LABEL you want}, e.g. value = 'Sensor 1'
                             value = '0', # default value
                             id = "which-sensor" # javascript id, used in @app.callback to reference this element, below
                         ),
@@ -124,13 +126,24 @@ app.layout = html.Div(
                 ),
             ]
         ),
-        # placeholder for a graph to be created
-        dcc.Graph(id='graph-to-update'), # this graph will be updated in the @app.callback: update_figure function below
+        # Placeholder for a graph to be created.
+        # This graph will be updated in the @app.callback: update_figure function below
+        dcc.Graph(id='graph-to-update'),
     ]
 )
 
+# Create an instance of the FilterGraph class from filter_graph.py (contained in this repo)
+# FilterGraph loads all of the data and contains the main plotting function for slicing the data according to the filters
+# and displaying it in the dcc.Graph 'graph-to-update' initialized above.
 filter_graph = FilterGraph()
 
+# the @app.callback decorator calls update_figure() whenever one of the Input elements changes.
+# The first argument of the Input is the id of the dcc element being listened to (for example, the id 'which-sensor'
+# is associated with the dcc.Dropdown element for choosing the sensor to display).
+# The second argument is the parameter of the dcc element to look at. For Dropdowns, the parameter you want is 'value';
+# for DatePickers, you want to get the 'date'.
+# The Output sets the dcc.Graph element's 'figure' parameter to the output of the update_figure() function.
+# update_figure() returns a plotly.graph_objs.Figure object.
 @app.callback(
     Output('graph-to-update', 'figure'),
     Input('which-sensor', 'value'),
@@ -143,6 +156,7 @@ def update_figure(which_sensor, start_date, end_date, wind_direction):
         which_sensor = 0
     return filter_graph.update_figure(int(which_sensor), start_date, end_date, wind_direction)
 
-
+# Run the server (by default, it runs on the local machine at the IP address 127.0.0.1:8050.
+# You can view the server running by typing that IP address into your browser or going to http://127.0.0.1:8050/.
 if __name__ == '__main__':
     app.run_server(debug=True)
