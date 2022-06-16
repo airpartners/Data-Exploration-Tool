@@ -12,7 +12,7 @@ To get more detailed information on Plotly and Dash, read through the [tutorial]
 
 ## Using this Repo
 
-To try out the scripts in this repository, you will need to `pip install plotly`. Clone this repo and open up the file `dash_layout1.py`, then run it. By default, the dash interface will be running on your computer's local IP address [`127.0.0.1:8050`](http://127.0.0.1:8050/). Type this IP into your browser to view the interface.
+To try out the scripts in this repository, you will need to `pip install plotly`. Clone this repo and open up the file `dash_layout0.py`, then run it. By default, the dash interface will be running on your computer's local IP address [`127.0.0.1:8050`](http://127.0.0.1:8050/). Type this IP into your browser to view the interface.
 
 Plotly comes with a 'hot-reload' feature, meaning whenever you save the file you are working in, it will automatically update the dash interface in your browser.
 
