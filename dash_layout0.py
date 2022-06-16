@@ -143,6 +143,7 @@ filter_graph = FilterGraph()
 # is associated with the dcc.Dropdown element for choosing the sensor to display).
 # The second argument is the parameter of the dcc element to look at. For Dropdowns, the parameter you want is 'value';
 # for DatePickers, you want to get the 'date'.
+# The results of the four Inputs become the four arguments to update_figure(). These are then passed to filter_graph.update_figure().
 # The Output sets the dcc.Graph element's 'figure' parameter to the output of the update_figure() function.
 # update_figure() returns a plotly.graph_objs.Figure object.
 @app.callback(
@@ -153,6 +154,7 @@ filter_graph = FilterGraph()
     Input('wind-direction', 'value'),
 )
 def update_figure(which_sensor, start_date, end_date, wind_direction):
+    # call the corresponding function on the FilterGraph object containing all the data and the graphing funcionality
     return filter_graph.update_figure(int(which_sensor), start_date, end_date, wind_direction)
 
 # Run the server (by default, it runs on the local machine at the IP address 127.0.0.1:8050.
