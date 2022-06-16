@@ -36,29 +36,41 @@ date_picker_style = {
 
 app = Dash(__name__) # initialize the app
 
-# then, flesh out the app's contents using dash.html components (https://dash.plotly.com/dash-html-components)
+# Then, flesh out the app's contents using dash.html components (https://dash.plotly.com/dash-html-components)
+# the app.layout is formatted like an html document. It consists of nested Divs containing P blocks for text,
+# and Dash Core Component (dcc) elements for dropdown menus, date pickers, etc. Each element can accept several
+# parameters that tell it how to behave; probably the most important is the `style=` parameter, which describes
+# standard html formatting expressed as a dictionary of name:value pairs (names and values are both strings).
+# The style dictionaries that are used for formatting various elements are defined above.
 app.layout = html.Div(
     [
         html.Div(
             [
-                html.Div(html.P("At "), style = text_style),
-
-                html.Div([
-                    dcc.Dropdown(options = [
-                        {'label': 'Sensor 1', 'value': '0'},
-                        {'label': 'Sensor 2', 'value': '1'},
-                        {'label': 'Sensor 3', 'value': '2'},
-                        {'label': 'Sensor 4', 'value': '3'},
-                        {'label': 'Sensor 5', 'value': '4'},
-                        {'label': 'Sensor 6', 'value': '5'},
-                        ],
-                        value = '0', # default value
-                        id = "which-sensor" # javascript id, used in @app.callback to reference this element, below
-                    ),
-                ],
-                style = dropdown_style),
-
-                html.Div(html.P(", what were the pollution levels between"), style = text_style),
+                html.Div(
+                    html.P("At "),
+                    style = text_style
+                ),
+                html.Div(
+                    [
+                        dcc.Dropdown(
+                            options = [
+                                {'label': 'Sensor 1', 'value': '0'},
+                                {'label': 'Sensor 2', 'value': '1'},
+                                {'label': 'Sensor 3', 'value': '2'},
+                                {'label': 'Sensor 4', 'value': '3'},
+                                {'label': 'Sensor 5', 'value': '4'},
+                                {'label': 'Sensor 6', 'value': '5'},
+                            ],
+                            value = '0', # default value
+                            id = "which-sensor" # javascript id, used in @app.callback to reference this element, below
+                        ),
+                    ],
+                    style = dropdown_style
+                ),
+                html.Div(
+                    html.P(", what were the pollution levels between"),
+                    style = text_style
+                ),
 
                 html.Div(
                     [
@@ -100,7 +112,9 @@ app.layout = html.Div(
                                 {'label': 'Southwest', 'value': 'SW'},
                                 {'label': 'West',      'value': 'W'},
                                 {'label': 'Northwest', 'value': 'NW'},
-                            ], value = 'NE', id = "wind-direction"),
+                            ],
+                            value = 'NE', id = "wind-direction"
+                        ),
                     ],
                     style = dropdown_style
                 ),
@@ -110,7 +124,8 @@ app.layout = html.Div(
                 ),
             ]
         ),
-        dcc.Graph(id='graph-to-update'),
+        # placeholder for a graph to be created
+        dcc.Graph(id='graph-to-update'), # this graph will be updated in the @app.callback: update_figure function below
     ]
 )
 
