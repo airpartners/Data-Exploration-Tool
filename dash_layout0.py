@@ -3,22 +3,17 @@ from dash.dependencies import Input, Output
 from matplotlib.pyplot import text
 from datetime import date
 
-from filter_graph import FilterGraph
+from filter_graph import FilterGraph # import from supporting file
 
-app = Dash(__name__)
-
-app.layout = html.Div([
-    dcc.Dropdown(['New York City', 'Montréal', 'San Francisco'], 'Montréal')
-])
-
+# define HTML styles for text and dropdown menus. Use this to change font size, alignment, etc.
 text_style = {
+    "display": "inline-block", # if you take this out, all successive elements will be displayed on separate lines
     "transform": "translateY(0%)", # vertical alignment
     "position": "relative",
-    "display": "inline-block",
-    "margin-left": "10px",
+    "margin-left": "10px", # adds a horizontal space between dropdowns menus and next chunk of text
     "font-size" : "30px",
     "font-family": "Arial",
-    "line-height": "0%",
+    "line-height": "0%", # helps reduce the line spacing
 }
 dropdown_style = {
     "display": "inline-block",
@@ -27,7 +22,7 @@ dropdown_style = {
     "margin-left": "10px",
     "font-size": "20px",
     "font-family": "Arial",
-    "line-height": "0%",
+    "line-height": "0%", # helps reduce the line spacing
 }
 
 date_picker_style = {
@@ -36,9 +31,12 @@ date_picker_style = {
     "height": "40px",
     "margin-left": "10px",
     # "font-family": "Arial",
-    "line-height": "0%",
+    "line-height": "0%", # helps reduce the line spacing
 }
 
+app = Dash(__name__) # initialize the app
+
+# then, flesh out the app's contents using dash.html components (https://dash.plotly.com/dash-html-components)
 app.layout = html.Div([
     html.Div([
         html.Div(html.P("At "), style = text_style),
