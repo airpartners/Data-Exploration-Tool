@@ -12,7 +12,7 @@ class FilterGraph():
             self.list_of_sensor_dataframes.append(self.prepare_data(raw_file_path, processed_file_path))
             pass
 
-    def discrete_wind_direction(degrees):
+    def discrete_wind_direction(self, degrees):
         """Takes in a wind direction in degrees and bins it into cardinal directions"""
         wind_dict = {
             'N': [0, 22.5],
@@ -38,22 +38,22 @@ class FilterGraph():
         to regenerate them according to the new processing scheme.
         """
         try:
-            df_processed = pd.read_csv(processed_file_path, skiprows = [0, 1]) # skip the column names
+            df_processed = pd.read_parquet(processed_file_path) # skip the column names
         except(FileNotFoundError):
             print('pre-processed file not found at "{processed_file_path}"')
             return None
-
+        return df_processed
         # The agg() function used during processing creates a nested column structure, which is expected by update_figure().
         # When the file is saved to a CSV, the nested structure goes away, so we have to recreate it using a MultiIndex.
         # The fist element in each tuple is the top-level column, then the next element is the sub-column.
         # If the second element is blank, there are no sub-columns.
         # The resulting column names have a similar structure to this:
-        # -----------------------------------------------------------------------------------------------------------
-        #           row_id    |  timestamp_local |                  pm25                    | wind_direction_cardinal
-        #                     |                  | percentile5 | hourly_mean | percentile95 |
-        # --------------------+------------------+-------------+-------------+--------------+------------------------
-        # 0      1 2019-09-07 | 16:00:00         |    0.433924 |    0.456453 |     0.479401 |                       W
-        # ...
+        # ----------------------------------------------------------------------------------------------------------- #
+        #           row_id    |  timestamp_local |                  pm25                    | wind_direction_cardinal #
+        #                     |                  | percentile5 | hourly_mean | percentile95 |                         #
+        # --------------------+------------------+-------------+-------------+--------------+------------------------ #
+        # 0      1 2019-09-07 | 16:00:00         |    0.433924 |    0.456453 |     0.479401 |                       W #
+        # ...                                                                                                         #
         cols = pd.MultiIndex.from_tuples(
             [
                 ("row_id", ''),
@@ -88,15 +88,21 @@ class FilterGraph():
         df_processed["timestamp_local"] = pd.to_datetime(df_raw["timestamp_local"], format = "%Y-%m-%dT%H:%M:%SZ")
         df_processed["date"] = df_processed["timestamp_local"].dt.date # create date column
         # create a new column with cardinal wind directions
-        df_processed["wind_direction_cardinal"] = df_processed["wind_dir"].apply(self.discrete_wind_direction)
+        wind_labels = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW', 'N']
+        wind_breaks = [0, 22.5, 67.5, 112.5, 157.5, 202.5, 247.5, 292.5, 337.5, 360]
+
+
+        df_processed["wind_direction_cardinal"] = pd.cut(df_processed["wind_dir"], wind_breaks, right = False, labels = wind_labels, ordered = False)
+        # df_processed["wind_direction_cardinal"] = df_processed["wind_dir"].apply(self.discrete_wind_direction)
 
         # define functions which will be used in the resample().agg() call below
         def percentile5(df):
             return df.quantile(0.05)
         def percentile95(df):
             return df.quantile(0.95)
-        def mode(df):
-            return df.mode()
+        def my_mode(df):
+            mode = df.mode()
+            return mode[0] if not mode.empty else None
 
         # The following line resamples the dataframe based on the timestamps in the "timestamp_local" column.
         # resmaple() works on the index of the dataframe, so we use set_index before and reset_index afterward.
@@ -113,12 +119,12 @@ class FilterGraph():
         df_processed = df_processed.set_index("timestamp_local").resample(resample_frequency).agg(
             {
                 "pm25": [percentile5, "mean", percentile95],
-                "wind_direction_cardinal": mode
+                "wind_direction_cardinal": my_mode
             }
         ).reset_index()
 
         # store the processed and downsampled dataframe to a csv, to be read next time
-        df_processed.to_csv(processed_file)
+        df_processed.to_parquet(processed_file)
         return df_processed
 
     def update_figure(self, which_sensor, start_date, end_date, wind_direction):
