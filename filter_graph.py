@@ -141,7 +141,7 @@ class FilterGraph():
         # filter by wind direction
         if wind_direction is not None:
             df_filtered = df_filtered[
-                df_filtered["wind_direction_cardinal"] == wind_direction
+                df_filtered["wind_direction_cardinal", "my_mode"] == wind_direction
             ]
         # else: if wind_direction is None: pass
 
@@ -150,7 +150,7 @@ class FilterGraph():
             go.Scatter(
                 name = 'Average',
                 x = df_filtered["timestamp_local"],
-                y = df_filtered["pm25"]["hourly_mean"],
+                y = df_filtered["pm25"]["mean"],
                 mode = 'lines',
                 line = dict(color = 'rgb(31, 119, 180)'),
             ),
