@@ -43,32 +43,6 @@ class FilterGraph():
             print('pre-processed file not found at "{processed_file_path}"')
             return None
         return df_processed
-        # The agg() function used during processing creates a nested column structure, which is expected by update_figure().
-        # When the file is saved to a CSV, the nested structure goes away, so we have to recreate it using a MultiIndex.
-        # The fist element in each tuple is the top-level column, then the next element is the sub-column.
-        # If the second element is blank, there are no sub-columns.
-        # The resulting column names have a similar structure to this:
-        # ----------------------------------------------------------------------------------------------------------- #
-        #           row_id    |  timestamp_local |                  pm25                    | wind_direction_cardinal #
-        #                     |                  | percentile5 | hourly_mean | percentile95 |                         #
-        # --------------------+------------------+-------------+-------------+--------------+------------------------ #
-        # 0      1 2019-09-07 | 16:00:00         |    0.433924 |    0.456453 |     0.479401 |                       W #
-        # ...                                                                                                         #
-        cols = pd.MultiIndex.from_tuples(
-            [
-                ("row_id", ''),
-                ("timestamp_local", ''),
-                ("pm25", "percentile5"),
-                ("pm25", "hourly_mean"),
-                ("pm25", "percentile95"),
-                ("wind_direction_cardinal", '')
-            ]
-        )
-        # Then, rename the columns to the MultiIndex
-        df_processed.columns = cols
-        # CSV files also do a bad job of storing datetimes in a format the Pandas recognizes as a datetime. Convert it.
-        df_processed["timestamp_local"] = pd.to_datetime(df_processed["timestamp_local"], format = "%Y-%m-%d %H:%M:%S")
-        return df_processed
 
     def prepare_data(self, raw_file, processed_file):
         """Takes in paths to two csv files. First, it checks whether the processed file exists in the specified
