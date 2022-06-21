@@ -16,6 +16,6 @@ processed_csv_paths = [
     "C:/dev/Air Partners/Data Analysis/data/parquet/sn72-final-w-ML-PM.parquet",
 ]
 
-flight_csv_paths = ["C:/dev/Air Partners/Data Analysis/data/flights/Flight_Data_Set_2020-21.xlsx - DEC 2020.csv"]
+flight_csv_dir = "C:/dev/Air Partners/Data Analysis/data/flights/raw/"
 
-processed_flight_paths = ["C:/dev/Air Partners/Data Analysis/data/temp_flights/Flight_Data_Set_2020-21.xlsx - DEC 2020.parquet"]
+processed_flight_dir = "C:/dev/Air Partners/Data Analysis/data/temp_flights/processed/"
