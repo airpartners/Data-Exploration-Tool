@@ -17,3 +17,5 @@ processed_csv_paths = [
 ]
 
 flight_csv_paths = ["C:/dev/Air Partners/Data Analysis/data/flights/Flight_Data_Set_2020-21.xlsx - DEC 2020.csv"]
+
+processed_flight_paths = ["C:/dev/Air Partners/Data Analysis/data/temp_flights/Flight_Data_Set_2020-21.xlsx - DEC 2020.parquet"]
