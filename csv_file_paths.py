@@ -18,4 +18,4 @@ processed_csv_paths = [
 
 flight_csv_dir = "C:/dev/Air Partners/Data Analysis/data/flights/raw/"
 
-processed_flight_dir = "C:/dev/Air Partners/Data Analysis/data/temp_flights/processed/"
+processed_flight_dir = "C:/dev/Air Partners/Data Analysis/data/flights/processed/"
