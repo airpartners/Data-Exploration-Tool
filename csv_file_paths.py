@@ -19,3 +19,5 @@ processed_csv_paths = [
 flight_csv_dir = "C:/dev/Air Partners/Data Analysis/data/flights/raw/"
 
 processed_flight_dir = "C:/dev/Air Partners/Data Analysis/data/flights/processed/"
+
+final_flights = "C:/dev/Air Partners/Data Analysis/data/flights/final/combined_flights.parquet"
