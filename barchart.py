@@ -1,8 +1,8 @@
+from statistics import mean
 from dash import Dash, dcc, html, Input, Output
 import plotly.express as px
 import pandas as pd
-import numpy as np
-
+import plotly.graph_objects as go
 
 app = Dash(__name__)
 
@@ -43,8 +43,6 @@ app.layout = html.Div([
 )
 
 
-
-
 def update_figure(start_date, end_date, data_stats):
    
     df_filtered = df_downsampled[
@@ -58,23 +56,63 @@ def update_figure(start_date, end_date, data_stats):
     data_mean = df_filtered.mean(axis=0)
     #median value
     data_median = df_filtered.median(axis=0)
-    #mode value
-    data_mode= df_filtered.mode(axis=0)
+    # #mode value
+    # data_mode = df_filtered.mode(axis=0)
+    
+    # fig = px.bar(
+    #     x=['temp_box','temp_manifold','rh_manifold','solar','wind_dir','wind_speed','co','no','no2','o3','pm1','pm25','pm10','co2','bin0','bin1','bin2','bin3','bin4','bin5','no_ae', 'tmpc', 'wd', 'ws', 'correctedNO', 'removeCO', 'co.ML', 'no.ML', 'o2.ML', 'o3.ML', 'flag', 'pm1.ML', 'pm25.ML', 'pm10.ML'],
+    #     y=data_mean if data_stats == 'mean' else data_median, # if data_stats == 'median' else data_mode,
+    #     color=['temp_box','temp_manifold','rh_manifold','solar','wind_dir','wind_speed','co','no','no2','o3','pm1','pm25','pm10','co2','bin0','bin1','bin2','bin3','bin4','bin5','no_ae', 'tmpc', 'wd', 'ws', 'correctedNO', 'removeCO', 'co.ML', 'no.ML', 'o2.ML', 'o3.ML', 'flag', 'pm1.ML', 'pm25.ML', 'pm10.ML'],
+    #     height=550,
+    #     barmode="group",
+    #     text_auto=True
+    # ) 
 
-    mmm = [data_mean, data_median]
-    print(df_filtered.iloc[: , -39:].any())
-    temp = df_filtered.copy()
-    temp = temp.head(39)
+    fig=go.Figure()
 
-    fig = px.bar(
-        x=['temp_box','temp_manifold','rh_manifold','solar','wind_dir','wind_speed','co','no','no2','o3','pm1','pm25','pm10','co2','bin0','bin1','bin2','bin3','bin4','bin5','no_ae', 'tmpc', 'wd', 'ws', 'correctedNO', 'removeCO', 'co.ML', 'no.ML', 'o2.ML', 'o3.ML', 'flag', 'pm1.ML', 'pm25.ML', 'pm10.ML'],
-        y=data_mean if data_stats == 'mean' else data_median,
-        color=['temp_box','temp_manifold','rh_manifold','solar','wind_dir','wind_speed','co','no','no2','o3','pm1','pm25','pm10','co2','bin0','bin1','bin2','bin3','bin4','bin5','no_ae', 'tmpc', 'wd', 'ws', 'correctedNO', 'removeCO', 'co.ML', 'no.ML', 'o2.ML', 'o3.ML', 'flag', 'pm1.ML', 'pm25.ML', 'pm10.ML'],
-        height=600,
-        barmode="group",
-        text_auto=True
-    ) 
-    fig.update_traces(width=0.8)
+    mean_sn45 = [100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, ]
+    median_sn45 = [110, 110, 110, 110, 110, 110, 110, 110, 110, 110, 110, 110, 110, 110, 110, 110, 110, 110, 110, 110, 110, 110, 110, 110, 110, 110, 110, 110, 110, 110, 110, 110, 110, 110]
+    
+    fig.add_bar(x=['temp_box','temp_manifold','rh_manifold','solar','wind_dir','wind_speed','co','no','no2','o3','pm1','pm25','pm10','co2','bin0','bin1','bin2','bin3','bin4','bin5','no_ae', 'tmpc', 'wd', 'ws', 'correctedNO', 'removeCO', 'co.ML', 'no.ML', 'o2.ML', 'o3.ML', 'flag', 'pm1.ML', 'pm25.ML', 'pm10.ML'],
+    y=mean_sn45 if data_stats == 'mean' else median_sn45,
+    text=mean_sn45 if data_stats == 'mean' else median_sn45,
+    name='entire dataset mean' if data_stats == 'mean' else 'entire dataset median')
+    
+
+    fig.add_bar(x=['temp_box','temp_manifold','rh_manifold','solar','wind_dir','wind_speed','co','no','no2','o3','pm1','pm25','pm10','co2','bin0','bin1','bin2','bin3','bin4','bin5','no_ae', 'tmpc', 'wd', 'ws', 'correctedNO', 'removeCO', 'co.ML', 'no.ML', 'o2.ML', 'o3.ML', 'flag', 'pm1.ML', 'pm25.ML', 'pm10.ML'],
+    y=data_mean if data_stats == 'mean' else data_median,
+    text=data_mean if data_stats == 'mean' else data_median,
+    name='selected data mean' if data_stats == 'mean' else 'selected data median') # if data_stats == 'median' else data_mode 
+
+
+    # for string in ['temp_box','temp_manifold','rh_manifold','solar','wind_dir','wind_speed','co','no','no2','o3','pm1','pm25','pm10','co2','bin0','bin1','bin2','bin3','bin4','bin5','no_ae', 'tmpc', 'wd', 'ws', 'correctedNO', 'removeCO', 'co.ML', 'no.ML', 'o2.ML', 'o3.ML', 'flag', 'pm1.ML', 'pm25.ML', 'pm10.ML']:
+    #     fig.add_shape(type="line",
+    #         x0=string[0],
+    #         y0=mean_sn45 if data_stats == 'mean' else median_sn45,
+    #         x1=string[+1],
+    #         y1=mean_sn45[0]+1 if data_stats == 'mean' else median_sn45[0]+1,
+    #         line=dict(color='#0000FF', width = 4, dash='dashdot'))
+
+    # i=0
+    # while i <= len(mean_sn45):
+    #     fig.add_bar(x=['temp_box','temp_manifold','rh_manifold','solar','wind_dir','wind_speed','co','no','no2','o3','pm1','pm25','pm10','co2','bin0','bin1','bin2','bin3','bin4','bin5','no_ae', 'tmpc', 'wd', 'ws', 'correctedNO', 'removeCO', 'co.ML', 'no.ML', 'o2.ML', 'o3.ML', 'flag', 'pm1.ML', 'pm25.ML', 'pm10.ML'],
+    #         y=data_mean if data_stats == 'mean' else data_median,
+    #         text=data_mean if data_stats == 'mean' else data_median,
+    #         name='selected data mean' if data_stats == 'mean' else 'selected data median',
+    #         secondary_y=True if mean_sn45[i] >= data_mean[i] else False
+    #         ) # if data_stats == 'median' else data_mode 
+
+    #     i=i+1
+
+        
+        
+    fig.update_layout(barmode="overlay")
+    fig.update_traces(width=0.55)
+    fig.update_layout(title_text="Change the title",
+                title_font_size=30)
+
+
+    print(type(enumerate(mean_sn45)))
     return fig
 
 
