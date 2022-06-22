@@ -4,7 +4,20 @@ import os
 from csv_file_paths import flight_csv_dir, processed_flight_dir, final_flights
 
 class FlightLoader():
+    """Class for loading and processing the flight data from Logan Airport. To run, initialize the FlightLoader object with a
+`csv_dir`, `parquet_dir`, and `final_parquet_file`, then run flight_loader.process_files() and then flight_loader.combine_files().
+When it's done creating the files on your computer, you can use the function add_flight_data contained in the file add_flight_data.py
+to add flight data into an existing dataframe.
+    """
     def __init__(self, csv_dir, parquet_dir, final_parquet_file) -> None:
+        """`csv_dir` should be the path to a directory on your computer with a list of CSV files to be parsed.
+The Logan Airport data comes in a bunch of files separated by month, which can be downloaded sheet-wise from this google spreadsheet (April 2020 - May 2021):
+https://docs.google.com/spreadsheets/d/1WVQCzpq_QVtPJT4BSEq30PJzRrDLvqC5/edit?usp=sharing&ouid=117838158522092401592&rtpof=true&sd=true,
+as well as this single CSV file for (June 2019 - April 2020): https://drive.google.com/file/d/1Dpxr71i97ktTbSn2OxsrzduH2EAr5HeF/view.
+`parquet_dir` is the directory to dump the processed files when `process_files()` is called. One parquet file will be created for each CSV file in `csv_dir`.
+When `combine_files()` is called, it takes all the processed files in `parquet_dir` and concatenates them into one large parquet file for easy access.
+`final_parquet_file` is the file location, ending in `.parquet`, where the final concatenated data file will be stored.
+"""
         self.csv_dir = csv_dir
         self.parquet_dir = parquet_dir
         self.final_parquet_file = final_parquet_file
@@ -44,17 +57,26 @@ class FlightLoader():
 
         resample_frequency = "1H"
         df["Date_Time"] = pd.to_datetime(df["Date"], format = "%Y-%m-%d %H:%M:%S")
+        df["RW_group"] = df["RW"].apply(self.get_RW_group)
 
-        df["count"] = 1
-        df_processed = df[["Date_Time", "Opr", "count"]].set_index("Date_Time").resample(resample_frequency).agg(self.sum_grouped_by_opr).reset_index()
-
-        print("=========  df_processed  ===========")
-        print(df_processed.head())
+        df_processed = df[["Date_Time", "Opr", "RW_group"]].set_index("Date_Time").resample(resample_frequency).agg(self.count_grouped_by, cols = ["Opr", "RW_group"]).reset_index()
 
         df_processed.to_parquet(parquet_path)
+        print("Finished processing", csv_path)
 
-    def sum_grouped_by_opr(df):
-        return df.groupby("Opr").agg("sum")
+    def count_grouped_by(self, df, cols = "Opr"):
+        df["count"] = 1
+        return df.groupby(cols).agg("sum")
+
+    def get_RW_group(self, RW):
+        if RW in ["22R", "22L", "22D"]:
+            return "South-West"
+        if RW in ["4L", "4R"]:
+            return "North-East"
+        if RW in ["27", "9", "15R", "33L"]:
+            return "North-West"
+        # else:
+        return "Other"
 
     def add_parquet(self, parquet_path):
         if self.df_combined is None:
