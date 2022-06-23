@@ -70,10 +70,10 @@ class BarChart():
 
 
         #create subplots
-        fig = make_subplots(rows=1, cols=3, subplot_titles=('Meterology Data','Gas Pollutents','Particle Pollutents'))
+        fig = make_subplots(rows=1, cols=3, subplot_titles=('Meteorology Data','Gas Pollutants','Particle Pollutants'))
         
 
-        #first subplot of meterology data
+        #first subplot of meteorology data
         fig.add_trace(
             go.Bar(
                 x=['temp_box','temp_manifold','rh_manifold','pressure','noise','solar','wind_dir','wind_speed'],
@@ -82,7 +82,7 @@ class BarChart():
                 text=quotients_mean[0:8] if data_stats == 'Mean' else quotients_median[0:8],
                 opacity=1,
                 marker_color=px.colors.qualitative.T10[2],
-                name='meterology data',
+                name='meteorology data',
                 showlegend=False,   
                 error_y =
                     dict(
@@ -95,7 +95,7 @@ class BarChart():
         )
 
 
-        #second subplot of pollutent gas concentration data
+        #second subplot of pollutant gas concentration data
         fig.add_trace(
             go.Bar(
                 x=['co','no','no2','o3'],
@@ -104,7 +104,7 @@ class BarChart():
                 text=quotients_mean[8:12] if data_stats == 'Mean' else quotients_median[8:12],
                 opacity=1,
                 marker_color=px.colors.qualitative.T10[0],       
-                name='pollutent gas data',                 
+                name='pollutant gas data',                 
                 showlegend=False,   
                 error_y =
                     dict(
@@ -116,7 +116,7 @@ class BarChart():
         row=1, col=2
         )
 
-        #third subplot of pollutent particle concentration data
+        #third subplot of pollutant particle concentration data
         fig.add_trace(
             go.Bar(
                 x=['pm1','pm25','pm10','particle size 0','particle size 1','particle size 2','particle size3','particle size4','particle size 5'],
@@ -125,7 +125,7 @@ class BarChart():
                 text=quotients_mean[12:21] if data_stats == 'Mean' else quotients_median[12:21],
                 opacity=1,
                 marker_color=px.colors.qualitative.T10[1],      
-                name='pollutent particle data',
+                name='pollutant particle data',
                 showlegend=False,
                 error_y =
                     dict(
