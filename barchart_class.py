@@ -138,7 +138,7 @@ class BarChart():
         )
 
         #add title
-        fig.update_layout(title_text="Bar Chart of Standarized Data", title_font_size=30)
+        fig.update_layout(title_text="Bar Chart of Standardized Data", title_font_size=30)
         #mark the line y=1 i.e. when filtered mean/median equals entire dataset mean/median
         fig.add_hline(y=1, line_width=3, line_dash="dot", line_color="navy", annotation=None)
 
