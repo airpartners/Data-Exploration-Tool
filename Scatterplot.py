@@ -170,7 +170,7 @@ def update_figure(start_date, end_date, xaxis_column_name, yaxis_column_name,
         # log_x=True, size_max=15
     )
 
-    fig.update_layout(margin={'l': 40, 'b': 40, 't': 10, 'r': 0}, hovermode='closest')
+    # fig.update_layout(margin={'l': 40, 'b': 40, 't': 10, 'r': 0}, hovermode='closest')
 
     fig.update_xaxes(title=xaxis_column_name,
                      type='linear' if xaxis_type == 'Linear' else 'log')
@@ -190,7 +190,7 @@ def update_figure(start_date, end_date, xaxis_column_name, yaxis_column_name,
     fig.update_layout(transition_duration=500)
 
     # set title and caption
-    string1 = "This is the title and it should be bold"
+    string1 = "Scatter plot"
     myTitle = '<b>'+string1+'</b>'
 
     string2 = 'This is the caption'
@@ -205,22 +205,22 @@ def update_figure(start_date, end_date, xaxis_column_name, yaxis_column_name,
         ))
     )
 
-    fig.update_layout(annotations=[
-       go.layout.Annotation(
-            showarrow=False,
-            text=myCaption,
-            xanchor='right',
-            x=10,
-            xshift=275,
-            yanchor='top',
-            y=-5,
-            font=dict(
-                family='Aria',
-                size=16,
-                color="#000000"
-            )
-        )
-    ])
+    # fig.update_layout(annotations=[
+    #    go.layout.Annotation(
+    #         showarrow=False,
+    #         text=myCaption,
+    #         xanchor='right',
+    #         x=10,
+    #         xshift=275,
+    #         yanchor='top',
+    #         y=-5,
+    #         font=dict(
+    #             family='Aria',
+    #             size=16,
+    #             color="#000000"
+    #         )
+    #     )
+    # ])
 
     # # get linefit results and print them
     # results = px.get_trendline_results(fig)
