@@ -88,7 +88,7 @@ class BarChart():
                     dict(
                         type='data', # value of error bar given in data coordinates
                         array=error_by_mean[0:8] if data_stats == 'Mean' else error_by_median[0:8],
-                        visible = True if percentage_error=='Show Percentage Error' else False
+                        visible = True if percentage_error==True else False
                     )
             ),
         row=1, col=1
@@ -110,7 +110,7 @@ class BarChart():
                     dict(
                         type='data', # value of error bar given in data coordinates
                         array=error_by_mean[8:12] if data_stats == 'Mean' else error_by_median[8:12],
-                        visible = True if percentage_error=='Show Percentage Error' else False
+                        visible = True if percentage_error==True else False
                     )
             ),
         row=1, col=2
@@ -131,7 +131,7 @@ class BarChart():
                     dict(
                         type='data', # value of error bar given in data coordinates
                         array=error_by_mean[12:21] if data_stats == 'Mean' else error_by_median[12:21],
-                        visible = True if percentage_error=='Show Percentage Error' else False
+                        visible = True if percentage_error==True else False
                     )
             ),
         row=1, col=3
