@@ -121,18 +121,25 @@ class GraphFrame():
                         ),
                         html.Div(
                             html.P("?"),
-                            style = self.text_style
                         ),
                     ]
                 ),
                 # Placeholder for a graph to be created.
                 # This graph will be updated in the @app.callback: update_figure function below
                 dcc.Graph(id = self.get_id('graph-to-update')),
-            ]
+            ],
+            style = {'display': 'none'},
+            id = self.get_id('full-graph')
         )
 
     def get_id(self, id_str):
         return id_str + "-" + str(self.id_num)
+
+    def make_visible(self):
+        self.graph_frame.style['display'] = 'block'
+
+    def make_in_visible(self):
+        self.graph_frame.style['display'] = 'none'
 
     def add_graph_callback(self, app):
         self.filter_graph = FilterGraph()
@@ -149,42 +156,34 @@ class GraphFrame():
             return self.filter_graph.update_figure(int(which_sensor), start_date, end_date, wind_direction)
 
 class Page():
-    def __init__(self, app, chart_types = [0, 0]) -> None:
+    def __init__(self, app, nCharts) -> None:
         self.app = app
-        self.chart_types = chart_types
+        self.chart_types = [0] * nCharts
 
+        self.graph_objs = []
         self.graphs = []
         for id_num, chart_type in enumerate(self.chart_types):
             graph = GraphFrame(id_num, chart_type)
             graph.add_graph_callback(self.app)
             self.graphs.append(graph.graph_frame)
+            self.graph_objs.append(graph)
 
-        self.next_id_num = id_num + 1 # prepare for the next graph to be added
+        self.next_id_num = 1 # prepare for the next graph to be added
 
         self.button = html.Button('+', id = 'submit-val', n_clicks = 0)
-        self.add_button_callback()
+        # self.add_button_callback()
 
         self.layout = html.Div(self.graphs + [self.button], id = 'main')
 
-    def add_button_callback(self):
         @self.app.callback(
-            Output('main', 'children'),
+            Output(self.graph_objs[self.next_id_num].get_id('full-graph'), 'style'),
             Input('submit-val', 'n_clicks'),
         )
         def add_graph(n_clicks):
-            if n_clicks == 0:
-                return self.graphs + [self.button]
-
-            print("YOU HAVE CLICKED THE BUTTON!!! CONGRATULATIONS!")
-            print("next_id_num:", self.next_id_num)
-            self.chart_types.append(0)
-
-            graph = GraphFrame(self.next_id_num, 0)
             self.next_id_num += 1
-            graph.add_graph_callback(self.app)
-            self.graphs.append(graph.graph_frame)
-
-            return self.graphs + [self.button]
+            if n_clicks == 0:
+                return {'display': 'none'}
+            return {'display': 'block'}
 
     def get_layout(self):
         return self.layout
@@ -192,7 +191,7 @@ class Page():
 if __name__ == '__main__':
     app = Dash(__name__) # initialize the app
 
-    p = Page(app, chart_types = [0, 0])
+    p = Page(app, nCharts = 10)
     app.layout = html.Div(p.get_layout())
 
     app.run_server(debug=True)
