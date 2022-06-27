@@ -27,42 +27,57 @@ class Page():
         print("Creating Dropdown with id", self.get_id('new-chart', chart_num))
         dropdown = \
         dcc.Dropdown(
+            children = "hh",
             options = [
                 {'label': "Bar Chart", 'value': 0},
                 {'label': "Timeseries", 'value': 1},
                 {'label': "Correlation Plot", 'value': 2},
-                {'label': "Polar Plot", 'value': 3},
+                # {'label': "Polar Plot", 'value': 3},
             ],
             # note: in order to set the default value, you have to set value = {the VALUE you want}.
             # Do NOT try to set value = {the LABEL you want}, e.g. value = 'Sensor 1'
-            value = 0, # default value
-            id = self.get_id('new-chart', chart_num), # javascript id, used in @app.callback to reference this element, below
-            style = {'disply': 'none'}
+            value = None, # default value
+            id = self.get_id('new-chart-dropdown', chart_num), # javascript id, used in @app.callback to reference this element, below
+            style = {'display': 'none'}
         ),
         self.add_dropdown_callback(chart_num)
         return dropdown
 
     def add_dropdown_callback(self, chart_num):
-        self.app.clientside_callback(
-            """
-            function(value, nChartTypes) {
-                console.log("HOwdy dandy, World! ... This is a Button!");
-                console.log("value: " + value);
-                    output = Array(nChartTypes).fill({'display': 'none'});
-                if (value > 0) {
-                    return output;
-                } else {
-                    output[value] = {'display': 'block'};
-                    return output;
-                }
-            }
-            """,
+        @self.app.callback(
             *[Output(self.get_id('frame', id_num), 'style') for id_num in self.chart_ids[chart_num]],
-            # Output(self.get_id('button', chart_num))
-            Input(self.get_id('button', chart_num), 'n_clicks'),
-            Input(self.get_id('button', chart_num), 'children'),
-            self.n_chart_types
+            # Output(self.get_id('button', chart_num)) # maybe we don't need to hide the old buttons
+            Input(self.get_id('new-chart-dropdown', chart_num), 'value'),
         )
+        def make_graphs_visible(chart_type):
+            print(f"Dropdown with id is being called back!")
+            output = [{'display': 'none'}] * self.n_chart_types # create it as a list so it can be modified
+            if chart_type is None:
+                return tuple(output) # then convert to a tuple before returning
+            # else:
+            output[chart_type] = {'display': 'block'}
+            return tuple(output)
+
+        # self.app.clientside_callback(
+        #     """
+        #     function(value, nChartTypes) {
+        #         console.log("HOwdy dandy, World! ... This is a Button!");
+        #         console.log("value: " + value);
+        #             output = Array(nChartTypes).fill({'display': 'none'});
+        #         if (value > 0) {
+        #             return output;
+        #         } else {
+        #             output[value] = {'display': 'block'};
+        #             return output;
+        #         }
+        #     }
+        #     """,
+        #     *[Output(self.get_id('frame', id_num), 'style') for id_num in self.chart_ids[chart_num]],
+        #     # Output(self.get_id('button', chart_num))
+        #     Input(self.get_id('button', chart_num), 'n_clicks'),
+        #     Input(self.get_id('button', chart_num), 'children'),
+        #     self.n_chart_types
+        # )
 
     def create_button(self, chart_num, chart_type):
         id_num = self.chart_ids[chart_num][chart_type]
@@ -133,7 +148,7 @@ class Page():
             for chart_type in range(self.n_chart_types):
                 graph_frame = GraphFrame(self.app, self.chart_ids[chart_num][chart_type], chart_type)
                 self.layout.children.append(graph_frame.frame)
-                self.next_id_num += 1
+                # self.next_id_num += 1
                 # buttons.append(self.create_button(chart_num, chart_type))
                 # new_button_ids
 
