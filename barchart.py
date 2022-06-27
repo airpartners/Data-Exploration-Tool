@@ -34,10 +34,10 @@ app.layout = html.Div([
             id='data-stats'
         ),
         #choose to show or hide error bars
-        dcc.Checklist(
-            ['Percentage Error'],
-            id='percentage-error'
-        )
+        dcc.RadioItems(
+            options=[{'label': i, 'value': i} for i in ['Show Percentage Error', 'Hide Percentage Error']],
+            id='percentage-error',
+        ),
     ], style={'width': '48%', 'float': 'right', 'display': 'inline-block'})
 ])
 
