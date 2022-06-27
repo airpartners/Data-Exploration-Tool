@@ -23,6 +23,47 @@ class Page():
         self.layout = html.Div(children = [], id = 'main')
         self.create_layout()
 
+    def create_dropdown(self, chart_num):
+        print("Creating Dropdown with id", self.get_id('new-chart', chart_num))
+        dropdown = \
+        dcc.Dropdown(
+            options = [
+                {'label': "Bar Chart", 'value': 0},
+                {'label': "Timeseries", 'value': 1},
+                {'label': "Correlation Plot", 'value': 2},
+                {'label': "Polar Plot", 'value': 3},
+            ],
+            # note: in order to set the default value, you have to set value = {the VALUE you want}.
+            # Do NOT try to set value = {the LABEL you want}, e.g. value = 'Sensor 1'
+            value = 0, # default value
+            id = self.get_id('new-chart', chart_num), # javascript id, used in @app.callback to reference this element, below
+            style = {'disply': 'none'}
+        ),
+        self.add_dropdown_callback(chart_num)
+        return dropdown
+
+    def add_dropdown_callback(self, chart_num):
+        self.app.clientside_callback(
+            """
+            function(value, nChartTypes) {
+                console.log("HOwdy dandy, World! ... This is a Button!");
+                console.log("value: " + value);
+                    output = Array(nChartTypes).fill({'display': 'none'});
+                if (value > 0) {
+                    return output;
+                } else {
+                    output[value] = {'display': 'block'};
+                    return output;
+                }
+            }
+            """,
+            *[Output(self.get_id('frame', id_num), 'style') for id_num in self.chart_ids[chart_num]],
+            # Output(self.get_id('button', chart_num))
+            Input(self.get_id('button', chart_num), 'n_clicks'),
+            Input(self.get_id('button', chart_num), 'children'),
+            self.n_chart_types
+        )
+
     def create_button(self, chart_num, chart_type):
         id_num = self.chart_ids[chart_num][chart_type]
         print("Creating Button with button id", self.get_id('button', id_num))
@@ -96,7 +137,8 @@ class Page():
                 # buttons.append(self.create_button(chart_num, chart_type))
                 # new_button_ids
 
-            self.layout.children.append(self.create_button_set(chart_num))
+            # self.layout.children.append(self.create_button_set(chart_num))
+            self.layout.children.append(self.create_dropdown(chart_num))
 
     def get_id(self, id_str, id_num):
         return id_str + "-" + str(id_num)
