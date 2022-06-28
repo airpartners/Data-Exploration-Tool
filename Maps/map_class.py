@@ -1,8 +1,8 @@
 import pandas as pd
 import plotly.graph_objects as go  
 import plotly.express as px
-from load import Load
-results=Load()
+from calculate_quotients import CalculateQuotients
+results=CalculateQuotients()
 '''
 QUOTIENT INDEX LIST
 temp_manifold: 0

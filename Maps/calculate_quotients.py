@@ -2,7 +2,7 @@
 import pandas as pd
 import numpy as np
 
-class Load():
+class CalculateQuotients():
     def __init__(self):
         self.stats = pd.read_csv('C:/Users/zxiong/Desktop/Olin/Air Partners/Code/stats.csv')
         self.df_stats = pd.DataFrame(self.stats)
