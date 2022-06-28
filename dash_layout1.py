@@ -1,7 +1,8 @@
 from cv2 import add
 from dash import Dash, html, dcc
 from dash.dependencies import Input, Output
-from graph_frame import GraphFrame
+# from graph_frame import GraphFrame
+from time_series import TimeSeries
 
 class Page():
 
@@ -73,7 +74,7 @@ class Page():
             # self.layout.children.append(self.create_button_set(chart_num))
 
             for chart_type in range(self.n_chart_types):
-                graph_frame = GraphFrame(self.app, self.chart_ids[chart_num][chart_type], chart_type, initial_display_status = 'none')
+                graph_frame = TimeSeries(self.app, self.chart_ids[chart_num][chart_type], chart_type, initial_display_status = 'none')
                 self.layout.children.append(graph_frame.frame)
 
         self.layout.children.append(self.create_dropdown(chart_num + 1, add_callback = False))

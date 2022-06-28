@@ -38,15 +38,16 @@ class DataImporter():
         try:
             df_processed = pd.read_parquet(processed_file_path) # skip the column names
         except(FileNotFoundError):
-            print('pre-processed file not found at "{processed_file_path}"')
+            print(f'In DataImporter, looking for a processed file at "{processed_file_path}"')
+            print(f'Processed file does not exist; performing processing and saving as "{processed_file_path}".')
             return None
         return df_processed
 
     def prepare_data(self, raw_file, processed_file):
-        """Takes in paths to two csv files. First, it checks whether the processed file exists in the specified
+        """Takes in paths to two files. First, it checks whether the processed parquet file exists in the specified
         location. If the processed file exists, it reads the processed file and returns it.
-        If the processed file does not exist, then this function generates the processed dataframe from the raw data file.
-        It stores the processed csv file in the processed_file location.
+        If the processed file does not exist, then this function generates the processed dataframe from the raw data csv file.
+        It stores the processed parquet file in the processed_file location.
         """
         # Read the processed file and return it if it exists
         df_processed = self.check_pre_processed_file(processed_file)
@@ -55,8 +56,9 @@ class DataImporter():
 
         # The processed file has not yet been created. Read the raw data file and process it
         df_raw = pd.read_csv(raw_file)
-        df_processed = df_raw[["timestamp_local", "pm25", "wind_dir"]] # select useful columns
+        # df_processed = df_raw[["timestamp_local", "pm25", "wind_dir"]] # select useful columns
         # convert timestamps to datetime objects, interpretable by Pandas
+        df_processed = df_raw
         df_processed["timestamp_local"] = pd.to_datetime(df_raw["timestamp_local"], format = "%Y-%m-%dT%H:%M:%SZ")
         df_processed["date"] = df_processed["timestamp_local"].dt.date # create date column
         # create a new column with cardinal wind directions
@@ -86,13 +88,81 @@ class DataImporter():
         # functions, such as for taking specific percentiles. Lambda functions will also work.
 
         # Sadly, the resampling and aggregation process takes a long time (several seconds to a minute) to run. It is much faster
-        # using built-in functions like "mean" (presumably because these are vectorized), as opposed to user-defined functions.s
+        # using built-in functions like "mean" (presumably because these are vectorized), as opposed to user-defined functions.
+
+        columns_to_keep = [
+            # 'date_local',
+            # 'timestamp',
+            'timestamp_local',
+            # 'temp_box',
+            'temp_manifold',
+            'rh_manifold',
+            'pressure',
+            'noise',
+            # 'solar',
+            'wind_dir',
+            'wind_speed',
+            'co',
+            'no',
+            'no2',
+            'o3',
+            'pm1',
+            'pm25',
+            'pm10',
+            # 'co2',
+            'bin0',
+            'bin1',
+            'bin2',
+            'bin3',
+            'bin4',
+            'bin5',
+            # 'no_ae',
+            # 'co_ae',
+            # 'no2_ae',
+            # 'date',
+            # 'originaldate',
+            # 'timestamp.x',
+            # 'originaldate.x',
+            # 'timestamp.y',
+            # 'originaldate.y',
+            # 'original_met_time',
+            'tmpc',
+            'wd',
+            'ws',
+            # 'day',
+            # 'correctedNO',
+            # 'timediff',
+            # 'removeCO',
+            # 'igor_date',
+            # 'igor_date_local',
+            # 'timestamp.ML',
+            'co.ML',
+            'no.ML',
+            'no2.ML',
+            'o3.ML',
+            # 'flag',
+            'pm1.ML',
+            'pm25.ML',
+            'pm10.ML',
+            # 'date.ML',
+            # 'originaldate.ML',
+            'wind_direction_cardinal'
+        ]
+
+        agg_funcs = {col_name: [percentile5, "mean", percentile95] for col_name in columns_to_keep}
+        # agg_funcs = {col_name: ["mean", "median"] for col_name in columns_to_keep}
+        agg_funcs["wind_direction_cardinal"] = my_mode
+        agg_funcs.pop("timestamp_local") # remove this because it will become he index
+
+        df_processed = df_processed[columns_to_keep]
+
         resample_frequency = "1H"
         df_processed = df_processed.set_index("timestamp_local").resample(resample_frequency).agg(
-            {
-                "pm25": [percentile5, "mean", percentile95],
-                "wind_direction_cardinal": my_mode
-            }
+            agg_funcs
+            # {
+            #     "pm25": [percentile5, "mean", percentile95],
+            #     "wind_direction_cardinal": my_mode
+            # }
         ).reset_index()
 
         # store the processed and downsampled dataframe to a csv, to be read next time
