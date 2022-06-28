@@ -36,8 +36,9 @@ class GraphFrame():
         "line-height": "0%", # helps reduce the line spacing
     }
 
-    def __init__(self, app, id_num, chart_type = 0, initial_display_status = 'block') -> None:
+    def __init__(self, app, data_importer, id_num, chart_type = 0, initial_display_status = 'block') -> None:
         self.app = app
+        self.data_importer = data_importer
         self.id_num = id_num
         self.frame = self.get_layout(initial_display_status)
         self.add_graph_callback()
@@ -57,7 +58,7 @@ class GraphFrame():
         )
 
     def add_graph_callback(self):
-        self.filter_graph = FilterGraph()
+        self.filter_graph = FilterGraph(self.data_importer)
 
         @self.app.callback(
             Output(self.get_id('graph-to-update'), 'figure'),
