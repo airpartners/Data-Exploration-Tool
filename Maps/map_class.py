@@ -1,5 +1,5 @@
 import pandas as pd
-import plotly.graph_objects as go  
+import plotly.graph_objects as go
 import plotly.express as px
 from load import Load
 results=Load()
@@ -34,7 +34,7 @@ class Map():
 
 
     def update_figure(self,start_date,end_date,variable_name):
-        
+
         quotient_sn45=results.calculate(start_date,end_date,'C:/Users/zxiong/Desktop/Olin/Air Partners/Code/sn45-final-w-ML-PM.csv')
         quotient_sn46=results.calculate(start_date,end_date,'C:/Users/zxiong/Desktop/Olin/Air Partners/Code/sn46-final-w-ML-PM.csv')
         quotient_sn49=results.calculate(start_date,end_date,'C:/Users/zxiong/Desktop/Olin/Air Partners/Code/sn49-final-w-ML-PM.csv')
@@ -42,7 +42,7 @@ class Map():
         quotient_sn67=results.calculate(start_date,end_date,'C:/Users/zxiong/Desktop/Olin/Air Partners/Code/sn67-final-w-ML-PM.csv')
         quotient_sn72=results.calculate(start_date,end_date,'C:/Users/zxiong/Desktop/Olin/Air Partners/Code/sn72-final-w-ML-PM.csv')
 
-        
+
         co = [quotient_sn45[0][12],quotient_sn46[0][12],quotient_sn49[0][12],quotient_sn62[0][12],quotient_sn67[0][12],quotient_sn72[0][12]]
         no = [quotient_sn45[0][13],quotient_sn46[0][13],quotient_sn49[0][13],quotient_sn62[0][13],quotient_sn67[0][13],quotient_sn72[0][13]]
         no2 = [quotient_sn45[0][14],quotient_sn46[0][14],quotient_sn49[0][14],quotient_sn62[0][14],quotient_sn67[0][14],quotient_sn72[0][14]]
@@ -71,13 +71,13 @@ class Map():
         longitude = [-71.00224008848411, -71.03119524615705, -70.99516411546733,  -71.02899217300163, -70.97258190197628, -71.00479111744103]
         sensor_name = ['SN45', 'SN46', 'SN49', 'SN62', 'SN67', 'SN72']
         fig = px.scatter_mapbox(
-            lat=latitude, 
-            lon=longitude, 
-            hover_name=sensor_name, 
+            lat=latitude,
+            lon=longitude,
+            hover_name=sensor_name,
             color=variable,
             color_continuous_scale=[(0, "green"), (0.5, "yellow"), (1, "red")],
             size = [1, 1, 1, 1, 1, 1],
-            zoom=11, 
+            zoom=11,
             height=500)
         fig.update_layout(mapbox_style="open-street-map")
         fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})

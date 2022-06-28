@@ -1,16 +1,20 @@
 from dash import Dash, dcc, html, Input, Output
 import pandas as pd
+from data_importer import DataImporter
 
 #call BarChart class defined in barchart_class.py which should be in the same repo
 from barchart_class import BarChart
 barchart_class = BarChart()
 
 #locate time slot
-df_major = pd.read_csv('C:/Users/zxiong/Desktop/Olin/Air Partners/Code/sn45-final-w-ML-PM.csv')
-df = df_major.copy()
-df["timestamp_local"] = pd.to_datetime(df_major["timestamp_local"], format = "%Y-%m-%dT%H:%M:%SZ")
-df["date"] = df["timestamp_local"].dt.date
+# df_major = pd.read_csv('C:/Users/zxiong/Desktop/Olin/Air Partners/Code/sn45-final-w-ML-PM.csv')
+# df = df_major.copy()
+# df["timestamp_local"] = pd.to_datetime(df_major["timestamp_local"], format = "%Y-%m-%dT%H:%M:%SZ")
+# df["date"] = df["timestamp_local"].dt.date
 
+data_importer = DataImporter()
+df = data_importer.get_data_by_sensor(0)
+df["date"] = df["timestamp_local"].dt.date
 
 app = Dash(__name__)
 
@@ -26,19 +30,22 @@ app.layout = html.Div([
         # end_date = df_minor['date'].max().strftime("%Y-%m-%d"),
         id='my-date-picker-range'
     ),
-    html.Div([
-        #choose to plot either mean or median datasets at one time
-        dcc.Dropdown(
-            ['Mean', 'Median'],
-            'Mean',
-            id='data-stats'
-        ),
-        #choose to show or hide error bars
-        dcc.RadioItems(
-            options=[{'label': i, 'value': i} for i in ['Show Percentage Error', 'Hide Percentage Error']],
-            id='percentage-error',
-        ),
-    ], style={'width': '48%', 'float': 'right', 'display': 'inline-block'})
+    html.Div(
+        [
+            #choose to plot either mean or median datasets at one time
+            dcc.Dropdown(
+                ['Mean', 'Median'],
+                'Mean',
+                id='data-stats'
+            ),
+            #choose to show or hide error bars
+            dcc.RadioItems(
+                options=[{'label': i, 'value': i} for i in ['Show Percentage Error', 'Hide Percentage Error']],
+                id='percentage-error',
+            ),
+        ],
+        style={'width': '48%', 'float': 'right', 'display': 'inline-block'}
+    )
 ])
 
 
@@ -49,8 +56,6 @@ app.layout = html.Div([
     Input('data-stats', 'value'),
     Input('percentage-error','value')
 )
-
-
 def update_figure(start_date, end_date, data_stats, percentage_error):
     return barchart_class.update_figure(start_date, end_date, data_stats, percentage_error)
 

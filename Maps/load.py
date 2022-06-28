@@ -30,7 +30,7 @@ class Load():
             'temp_box','solar','wind_dir','wind_speed','co','no','no2','o3','pm1','pm25','pm10','co2',
             'no_ae', 'co_ae', 'no2_ae', 'tmpc', 'correctedNO', 'removeCO','timediff','flag'
             ])
-        
+
         #mean of the filtered data
         data_mean = self.df_filtered.mean(axis=0)
         #median of the filtered data
@@ -58,7 +58,7 @@ class Load():
             error_by_mean.append(abs((i-means)/means)) if means is not str and means!=0.000000 else error_by_mean.append(0)
             quotients_median.append(median/medians) if medians is not str and medians!=0.000000 else quotients_median.append(0)
             error_by_median.append(abs((i-medians)/medians)) if medians is not str and medians!=0.000000 else error_by_median.append(0)
-            
+
 
         round_quotients_mean = list([round(num,3) for num in quotients_mean])
         round_quotients_median = list([round(num,3) for num in quotients_median])
@@ -67,5 +67,5 @@ class Load():
 
 
 
-    
+
 

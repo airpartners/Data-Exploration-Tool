@@ -3,6 +3,7 @@ from dash import Dash, html, dcc
 from dash.dependencies import Input, Output
 # from graph_frame import GraphFrame
 from time_series import TimeSeries
+from bar_chart_graph import BarChartGraph
 
 class Page():
 
@@ -10,6 +11,13 @@ class Page():
         0: "Bar Chart",
         1: "Timeseries",
         2: "Correlation Plot",
+        # 4: "Polar Plot",
+    }
+
+    chart_classes = {
+        0: BarChartGraph,
+        1: TimeSeries,
+        2: TimeSeries,
         # 4: "Polar Plot",
     }
 
@@ -74,7 +82,8 @@ class Page():
             # self.layout.children.append(self.create_button_set(chart_num))
 
             for chart_type in range(self.n_chart_types):
-                graph_frame = TimeSeries(self.app, self.chart_ids[chart_num][chart_type], chart_type, initial_display_status = 'none')
+                chart_class = self.chart_classes[chart_type]
+                graph_frame = chart_class(self.app, self.chart_ids[chart_num][chart_type], chart_type, initial_display_status = 'none')
                 self.layout.children.append(graph_frame.frame)
 
         self.layout.children.append(self.create_dropdown(chart_num + 1, add_callback = False))
