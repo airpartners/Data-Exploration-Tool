@@ -36,10 +36,10 @@ class GraphFrame():
         "line-height": "0%", # helps reduce the line spacing
     }
 
-    def __init__(self, app, id_num, chart_type = 0) -> None:
+    def __init__(self, app, id_num, chart_type = 0, initial_display_status = 'block') -> None:
         self.app = app
         self.id_num = id_num
-        self.frame = self.get_html(initial_display_status = 'block')
+        self.frame = self.get_html(initial_display_status)
         self.add_graph_callback()
 
     def get_html(self, initial_display_status):
