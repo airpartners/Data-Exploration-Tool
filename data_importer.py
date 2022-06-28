@@ -100,15 +100,15 @@ class DataImporter():
             'pressure',
             'noise',
             # 'solar',
-            'wind_dir',
-            'wind_speed',
-            'co',
-            'no',
-            'no2',
-            'o3',
-            'pm1',
-            'pm25',
-            'pm10',
+            # 'wind_dir',
+            # 'wind_speed',
+            # 'co',
+            # 'no',
+            # 'no2',
+            # 'o3',
+            # 'pm1',
+            # 'pm25',
+            # 'pm10',
             # 'co2',
             'bin0',
             'bin1',
@@ -126,18 +126,18 @@ class DataImporter():
             # 'timestamp.y',
             # 'originaldate.y',
             # 'original_met_time',
-            'tmpc',
+            # 'tmpc',
             'wd',
             'ws',
             # 'day',
-            # 'correctedNO',
+            'correctedNO',
             # 'timediff',
             # 'removeCO',
             # 'igor_date',
             # 'igor_date_local',
             # 'timestamp.ML',
             'co.ML',
-            'no.ML',
+            # 'no.ML',
             'no2.ML',
             'o3.ML',
             # 'flag',
@@ -149,7 +149,7 @@ class DataImporter():
             'wind_direction_cardinal'
         ]
 
-        agg_funcs = {col_name: [percentile5, "mean", percentile95] for col_name in columns_to_keep}
+        agg_funcs = {col_name: "mean" for col_name in columns_to_keep}
         # agg_funcs = {col_name: ["mean", "median"] for col_name in columns_to_keep}
         agg_funcs["wind_direction_cardinal"] = my_mode
         agg_funcs.pop("timestamp_local") # remove this because it will become he index
