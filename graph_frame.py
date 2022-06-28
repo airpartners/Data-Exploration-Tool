@@ -164,15 +164,3 @@ class GraphFrame():
         def update_figure(which_sensor, start_date, end_date, wind_direction):
             print(f"Graph with id {self.id_num} being called back!")
             return self.filter_graph.update_figure(int(which_sensor), start_date, end_date, wind_direction)
-
-        # @self.app.callback(
-        #     Output(self.get_next_id('frame'), 'style'),
-        #     Output(self.get_id('add-new-graph'), 'style'),
-        #     Input(self.get_id('add-new-graph'), 'n_clicks')
-        # )
-        # def update_page(n_clicks):
-        #     print(f"Graph with id {self.id_num} being called back!")
-        #     if n_clicks == 0:
-        #         return {'display': 'none'}, {'display':'block'}
-        #     # else
-        #     return {'display': 'block'}, {'display':'none'}
