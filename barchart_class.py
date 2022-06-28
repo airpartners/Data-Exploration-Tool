@@ -111,8 +111,8 @@ class BarChart(FilterGraph):
         #third subplot of pollutant particle concentration data
         fig.add_trace(
             go.Bar(
-                x=['PM1','PM2.5','PM10','Particle Size of 0.3-0.5 Microns', 'Particle Size of 0.5-0.7 Microns','Particle Size of 0.7-1 Microns',
-                'Particle Size of 1-2.5 Microns','Particle Size of 2.5-10 Microns','Particle Size of 10+ Microns'],
+                x=['PM1','PM2.5','PM10','0.3-0.5 Microns', '0.5-0.7 Microns','0.7-1 Microns',
+                '1-2.5 Microns','2.5-10 Microns','10+ Microns'],
                 y=quotients_mean[11:20] if data_stats == 'Mean' else  quotients_median[11:20],
                 text=round_quotients_mean[11:20] if data_stats == 'Mean' else round_quotients_median[11:20],
                 marker_color=px.colors.qualitative.T10[5],
