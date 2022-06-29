@@ -4,6 +4,7 @@ from dash.dependencies import Input, Output
 # from graph_frame import GraphFrame
 from time_series import TimeSeries
 from bar_chart_graph import BarChartGraph
+from data_importer import DataImporter
 
 class Page():
 
@@ -31,6 +32,9 @@ class Page():
         # access this with self.chart_ids[chart_type][id_num]
         self.next_id_num = 0 # prepare for the next graph to be added
         self.layout = html.Div(children = [], id = 'main')
+
+        self.data_importer = DataImporter()
+
         self.create_layout()
 
     def create_dropdown(self, chart_num, add_callback = True):
@@ -44,7 +48,7 @@ class Page():
                 {'label': "Correlation Plot", 'value': 2},
                 {'label': "Polar Plot", 'value': 3},
             ],
-            # note: in order to set the default value, you have to set value = {the VALUE you want}.
+            # note: in order to set the default value, you have to set value = {the VALUE you want}, e.g. value = 0.
             # Do NOT try to set value = {the LABEL you want}, e.g. value = 'Sensor 1'
             value = None, # default value
             id = self.get_id('new-chart-dropdown', chart_num), # javascript id, used in @app.callback to reference this element, below
@@ -61,6 +65,7 @@ class Page():
             Output(self.get_id('new-chart-dropdown', chart_num + 1), 'style'),
             # Output(self.get_id('button', chart_num)) # maybe we don't need to hide the old buttons
             Input(self.get_id('new-chart-dropdown', chart_num), 'value'),
+            prevent_initial_call = True
         )
         def make_graphs_visible(chart_type):
             print(f"Dropdown with id is being called back!")
@@ -83,7 +88,7 @@ class Page():
 
             for chart_type in range(self.n_chart_types):
                 chart_class = self.chart_classes[chart_type]
-                graph_frame = chart_class(self.app, self.chart_ids[chart_num][chart_type], chart_type, initial_display_status = 'none')
+                graph_frame = chart_class(self.app, self.data_importer, self.chart_ids[chart_num][chart_type], chart_type, initial_display_status = 'none')
                 self.layout.children.append(graph_frame.frame)
 
         self.layout.children.append(self.create_dropdown(chart_num + 1, add_callback = False))

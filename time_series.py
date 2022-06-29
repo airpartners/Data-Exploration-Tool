@@ -1,5 +1,6 @@
 from dash import Dash, html, dcc
 from dash.dependencies import Input, Output
+import plotly.graph_objs as go
 import datetime
 from filter_graph import FilterGraph # import from supporting file (contained in this repo)
 
@@ -100,7 +101,7 @@ class TimeSeries(GraphFrame):
             ]
 
     def add_graph_callback(self):
-        self.filter_graph = FilterGraph()
+        self.graph_obj = self.TimeSeriesGraph(self.data_importer)
 
         @self.app.callback(
             Output(self.get_id('graph-to-update'), 'figure'),
@@ -111,4 +112,54 @@ class TimeSeries(GraphFrame):
         )
         def update_figure(which_sensor, start_date, end_date, wind_direction):
             print(f"Graph with id {self.id_num} being called back!")
-            return self.filter_graph.update_figure(int(which_sensor), start_date, end_date, wind_direction)
+            return self.graph_obj.update_figure(int(which_sensor), start_date, end_date, wind_direction)
+
+    class TimeSeriesGraph(FilterGraph):
+        def update_figure(self, which_sensor, start_date, end_date, wind_direction):
+
+            # select which sensor data to draw from
+            df = self.data_importer.get_data_by_sensor(which_sensor)
+
+            # filter by timestamp and wind direction
+            df = self.filter_by_date(df, start_date, end_date)
+            df = self.filter_by_wind_direction(df, wind_direction)
+
+            # create the figure. It consists of a Figure frame and three lines created with go.Scatter()
+            fig = go.Figure([
+                go.Scatter(
+                    name = 'Average',
+                    x = df["timestamp_local"],
+                    y = df["pm25"]["mean"],
+                    mode = 'lines',
+                    line = dict(color = 'rgb(31, 119, 180)'),
+                ),
+                go.Scatter(
+                    name = '95th Percentile',
+                    x = df["timestamp_local"],
+                    y = df["pm25"]["percentile95"],
+                    mode = 'lines',
+                    marker = dict(color = "#444"),
+                    line = dict(width = 0),
+                    showlegend = False
+                ),
+                go.Scatter(
+                    name = '5th Percentile',
+                    x = df["timestamp_local"],
+                    y = df["pm25"]["percentile5"],
+                    marker = dict(color = "#444"),
+                    line = dict(width = 0),
+                    mode = 'lines',
+                    fillcolor = 'rgba(68, 68, 68, 0.3)',
+                    fill = 'tonexty',
+                    showlegend = False
+                )
+            ])
+
+            fig.update_layout(
+                yaxis_title = 'PM2.5',
+                # title='PM2.5',
+                hovermode = "x", # where the magic happens
+                margin = {'t': 0}, # removes the awkward whitespace where the title used to be
+            )
+
+            return fig
