@@ -1,5 +1,6 @@
 import pandas as pd
-from csv_file_paths import raw_csv_paths, processed_csv_paths # import paths to csv files from another file in this repo.
+import os
+from csv_file_paths import raw_csv_paths, processed_csv_paths, stats_file # import paths to csv files from another file in this repo.
     # you should make a copy of csv_file_paths.py and change the path names to match the file locations on your computer.
 
 class DataImporter():
@@ -68,9 +69,10 @@ class DataImporter():
         for raw_file_path, processed_file_path in zip(raw_csv_paths, processed_csv_paths):
             # append the next sensor's worth of data to the list
             self.list_of_sensor_dataframes.append(self.prepare_data(raw_file_path, processed_file_path))
+        self.df_stats = self.make_stats()
 
     def check_pre_processed_file(self, processed_file_path):
-        """Takes in the expected path to a pre-processed csv file. First, it checks whether the processed file exists in the
+        """Takes in the expected path to a pre-processed parquet file. First, it checks whether the processed file exists in the
         specified location. If the processed file exists, it reads the processed file and returns it.
         If the processed file does not exist, returns None. A new processed file will be generated in prepare_data().
         If you change the processing method, delete the csv_file_paths.processed_csv_paths files, and use this funciton
@@ -155,3 +157,31 @@ class DataImporter():
             return self.list_of_sensor_dataframes[sensor_id][self.numeric_columns_to_keep]
         # else:
         return self.list_of_sensor_dataframes[sensor_id]
+
+    def get_sensor_name_from_file(self, filename):
+        return os.path.basename(filename).split('-')[0]
+
+    def get_all_sensor_names(self):
+        sensor_names = []
+        for filename in raw_csv_paths:
+            sensor_names.append(self.get_sensor_name_from_file(filename))
+        return sensor_names
+
+    def make_stats(self):
+        df_stats = self.check_pre_processed_file(stats_file)
+        if df_stats is not None: # then the processed file already exists, and we don't need to recalculate it
+            return df_stats
+
+        iterables = [self.get_all_sensor_names(), ["mean", "median"]]
+        columns = pd.MultiIndex.from_product(iterables, names = ["sensor", "agg_func"])
+        df_stats = pd.DataFrame(index = self.numeric_columns_to_keep, columns = columns)
+
+        for i, raw_file in enumerate(raw_csv_paths):
+            print(f"Generating stats from {raw_file}")
+            sensor_name = self.get_sensor_name_from_file(raw_file)
+            df_raw = pd.read_csv(raw_file)
+            df_stats[sensor_name, "mean"] = df_raw[self.numeric_columns_to_keep].mean()
+            df_stats[sensor_name, "median"] = df_raw[self.numeric_columns_to_keep].median()
+
+        df_stats.to_parquet(stats_file)
+        return df_stats

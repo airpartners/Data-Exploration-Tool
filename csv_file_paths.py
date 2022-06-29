@@ -3,22 +3,24 @@ user_profile = os.path.basename(os.path.normpath(os.environ['USERPROFILE']))
 
 if user_profile == "ieykamp":
     raw_csv_paths = [
-        "C:/dev/Air Partners/Data Analysis/data/east_boston/sn45-final-w-ML-PM.csv",
-        "C:/dev/Air Partners/Data Analysis/data/east_boston/sn46-final-w-ML-PM.csv",
-        "C:/dev/Air Partners/Data Analysis/data/east_boston/sn49-final-w-ML-PM.csv",
-        "C:/dev/Air Partners/Data Analysis/data/east_boston/sn62-final-w-ML-PM.csv",
-        "C:/dev/Air Partners/Data Analysis/data/east_boston/sn67-final-w-ML-PM.csv",
-        "C:/dev/Air Partners/Data Analysis/data/east_boston/sn72-final-w-ML-PM.csv",
+        "C:/dev/Air Partners/Data Analysis/data/east_boston/raw/sn45-final-w-ML-PM.csv",
+        "C:/dev/Air Partners/Data Analysis/data/east_boston/raw/sn46-final-w-ML-PM.csv",
+        "C:/dev/Air Partners/Data Analysis/data/east_boston/raw/sn49-final-w-ML-PM.csv",
+        "C:/dev/Air Partners/Data Analysis/data/east_boston/raw/sn62-final-w-ML-PM.csv",
+        "C:/dev/Air Partners/Data Analysis/data/east_boston/raw/sn67-final-w-ML-PM.csv",
+        "C:/dev/Air Partners/Data Analysis/data/east_boston/raw/sn72-final-w-ML-PM.csv",
     ]
 
     processed_csv_paths = [
-        "C:/dev/Air Partners/Data Analysis/data/parquet/sn45-final-w-ML-PM.parquet",
-        "C:/dev/Air Partners/Data Analysis/data/parquet/sn46-final-w-ML-PM.parquet",
-        "C:/dev/Air Partners/Data Analysis/data/parquet/sn49-final-w-ML-PM.parquet",
-        "C:/dev/Air Partners/Data Analysis/data/parquet/sn62-final-w-ML-PM.parquet",
-        "C:/dev/Air Partners/Data Analysis/data/parquet/sn67-final-w-ML-PM.parquet",
-        "C:/dev/Air Partners/Data Analysis/data/parquet/sn72-final-w-ML-PM.parquet",
+        "C:/dev/Air Partners/Data Analysis/data/east_boston/processed/sn45-final-w-ML-PM.parquet",
+        "C:/dev/Air Partners/Data Analysis/data/east_boston/processed/sn46-final-w-ML-PM.parquet",
+        "C:/dev/Air Partners/Data Analysis/data/east_boston/processed/sn49-final-w-ML-PM.parquet",
+        "C:/dev/Air Partners/Data Analysis/data/east_boston/processed/sn62-final-w-ML-PM.parquet",
+        "C:/dev/Air Partners/Data Analysis/data/east_boston/processed/sn67-final-w-ML-PM.parquet",
+        "C:/dev/Air Partners/Data Analysis/data/east_boston/processed/sn72-final-w-ML-PM.parquet",
     ]
+
+    stats_file = "C:/dev/Air Partners/Data Analysis/data/east_boston/stats/east_boston_summary_stats.parquet"
 
     flight_csv_dir = "C:/dev/Air Partners/Data Analysis/data/flights/raw/"
 
