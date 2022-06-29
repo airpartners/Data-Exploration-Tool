@@ -28,13 +28,8 @@ class BarChart(FilterGraph):
         sn45_mean = self.stats['sn45_mean']
         sn45_median = self.stats['sn45_median']
         #calculate standard deviation of filtered data
-        standdev = []
-        for i in df.columns[1:]:
-            # print(df[i].head(2))
-            standdev.append(np.nanstd(df[i]) if not isinstance(df[i].iloc[0], str) else 0)
 
-        stdev = df.std()[1:] # ignore the first value (stdev of the timestamp)
-        # norm_mean =
+        standdev = df.std()[1:] # ignore the first value (stdev of the timestamp)
         # maybe also make it into a list
 
         #mean standardization: divide filtered data mean by entire dataset mean
@@ -45,6 +40,7 @@ class BarChart(FilterGraph):
         quotients_median = []
         #median percentage error: divide standard deviation of filtered data median by entire dataset median
         error_by_median = []
+        # this needs to be in the right order
         for mean, means, median, medians, i in zip (data_mean,sn45_mean, data_median, sn45_median, standdev):
             quotients_mean.append(mean/means) if means is not str and means!=0.000000 else quotients_mean.append(0)
             error_by_mean.append(abs((i-means)/means)) if means is not str and means!=0.000000 else error_by_mean.append(0)
