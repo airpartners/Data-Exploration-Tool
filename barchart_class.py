@@ -12,7 +12,7 @@ class BarChart(FilterGraph):
         '''
         Main plotting function
         '''
-        df = self.data_importer.get_data_by_sensor(0)
+        df = self.data_importer.get_data_by_sensor(0, numeric_only = True)
 
         # filter by timestamp and wind direction
         df = self.filter_by_date(df, start_date, end_date)
@@ -27,16 +27,15 @@ class BarChart(FilterGraph):
         #make two separate lists of the means and medians of the entire dataset
         sn45_mean = self.stats['sn45_mean']
         sn45_median = self.stats['sn45_median']
-
-
-        # print('separating line')
-        # print(df.head())
-
         #calculate standard deviation of filtered data
         standdev = []
         for i in df.columns[1:]:
             # print(df[i].head(2))
             standdev.append(np.nanstd(df[i]) if not isinstance(df[i].iloc[0], str) else 0)
+
+        stdev = df.std()[1:] # ignore the first value (stdev of the timestamp)
+        # norm_mean =
+        # maybe also make it into a list
 
         #mean standardization: divide filtered data mean by entire dataset mean
         quotients_mean = []

@@ -128,15 +128,15 @@ class TimeSeries(GraphFrame):
             fig = go.Figure([
                 go.Scatter(
                     name = 'Average',
-                    x = df["timestamp_local"],
-                    y = df["pm25"]["mean"],
+                    x = df.index,
+                    y = df["pm25.ML"],
                     mode = 'lines',
                     line = dict(color = 'rgb(31, 119, 180)'),
                 ),
                 go.Scatter(
                     name = '95th Percentile',
-                    x = df["timestamp_local"],
-                    y = df["pm25"]["percentile95"],
+                    x = df.index,
+                    y = df["pm25.ML"],
                     mode = 'lines',
                     marker = dict(color = "#444"),
                     line = dict(width = 0),
@@ -144,8 +144,8 @@ class TimeSeries(GraphFrame):
                 ),
                 go.Scatter(
                     name = '5th Percentile',
-                    x = df["timestamp_local"],
-                    y = df["pm25"]["percentile5"],
+                    x = df.index,
+                    y = df["pm25.ML"],
                     marker = dict(color = "#444"),
                     line = dict(width = 0),
                     mode = 'lines',
