@@ -7,11 +7,11 @@ class CalculateQuotients():
         self.stats = pd.read_csv('C:/Users/zxiong/Desktop/Olin/Air Partners/Code/stats.csv')
         self.df_stats = pd.DataFrame(self.stats)
         #drop ['solar', 'no_ae', 'co_ae', 'no2_ae', 'co2', 'removeCO','timediff','flag'] because we don't need them
-        self.df_stats = self.df_stats.drop([0,5,6,7,8,9,10,11,12,13,14,15,22,23,24,25,28,29,30,35])
+        self.df_stats = self.df_stats.drop([0,5,6,7,8,9,10,11,12,13,14,15,22,23,24,25,29,30,32,35])
 
     def calculate(self, start_date, end_date, sensor):
 
-        self.df_major = pd.read_csv(sensor)
+        self.df_major = pd.read_parquet(sensor)
         self.df = self.df_major.copy()
         self.df["timestamp_local"] = pd.to_datetime(self.df_major["timestamp_local"], format = "%Y-%m-%dT%H:%M:%SZ")
         self.df["date"] = self.df["timestamp_local"].dt.date
@@ -25,18 +25,13 @@ class CalculateQuotients():
                 (self.df_downsampled["timestamp_local"].dt.date >= pd.Timestamp(start_date).date()) &
                 (self.df_downsampled["timestamp_local"].dt.date <= pd.Timestamp(end_date).date()  )
             ]
-
-        self.df_filtered = self.df_filtered.drop(columns=[
-            'temp_box','solar','wind_dir','wind_speed','co','no','no2','o3','pm1','pm25','pm10','co2',
-            'no_ae', 'co_ae', 'no2_ae', 'tmpc', 'correctedNO', 'removeCO','timediff','flag'
-            ])
-
+        
         #mean of the filtered data
         data_mean = self.df_filtered.mean(axis=0)
         #median of the filtered data
         data_median = self.df_filtered.median(axis=0)
-        mean_index=str(sensor[47:51]+'_mean')
-        median_index=str(sensor[47:51]+'_median')
+        mean_index=str(sensor[54:58]+'_mean')
+        median_index=str(sensor[54:58]+'_median')
         snxx_mean = self.df_stats[mean_index]
         snxx_median = self.df_stats[median_index]
 
@@ -58,7 +53,7 @@ class CalculateQuotients():
             error_by_mean.append(abs((i-means)/means)) if means is not str and means!=0.000000 else error_by_mean.append(0)
             quotients_median.append(median/medians) if medians is not str and medians!=0.000000 else quotients_median.append(0)
             error_by_median.append(abs((i-medians)/medians)) if medians is not str and medians!=0.000000 else error_by_median.append(0)
-
+            
 
         round_quotients_mean = list([round(num,3) for num in quotients_mean])
         round_quotients_median = list([round(num,3) for num in quotients_median])
@@ -67,5 +62,5 @@ class CalculateQuotients():
 
 
 
-
+    
 

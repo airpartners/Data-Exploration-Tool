@@ -38,7 +38,7 @@ app.layout = html.Div([
     # html.H4('Interactive Plotly Express color scale selection'),
     # html.P("Color Scale"),
     dcc.Dropdown(
-        id='dropdown',
+        id='dropdown', 
         options=['CO', 'NO', 'NO2', 'O3', 'PM1', 'PM2.5', 'PM10'],
         value='CO'
     ),
