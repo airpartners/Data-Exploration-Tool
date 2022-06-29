@@ -30,6 +30,8 @@ class CalculateQuotients():
         data_mean = self.df_filtered.mean(axis=0)
         #median of the filtered data
         data_median = self.df_filtered.median(axis=0)
+
+        # update the index inside sensor every time after the directory is changed
         mean_index=str(sensor[54:58]+'_mean')
         median_index=str(sensor[54:58]+'_median')
         snxx_mean = self.df_stats[mean_index]
@@ -38,7 +40,7 @@ class CalculateQuotients():
 
         standdev = []
         for i in self.df_filtered.columns[1:]:
-                standdev.append(np.nanstd(self.df_filtered[i])) if self.df_filtered[i] is not str else standdev.append(None)
+            standdev.append(np.nanstd(self.df_filtered[i])) if self.df_filtered[i] is not str else standdev.append(None)
 
         #mean standardization: divide filtered data mean by entire dataset mean
         quotients_mean = []
