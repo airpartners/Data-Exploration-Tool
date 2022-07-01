@@ -2,8 +2,10 @@ from plotly.subplots import make_subplots
 import pandas as pd
 import plotly.graph_objects as go
 import numpy as np
+import math
 import plotly.express as px
 from filter_graph import FilterGraph
+from sigfig import round
 
 
 class BarChart(FilterGraph):
@@ -34,47 +36,51 @@ class BarChart(FilterGraph):
     }
 
     def as_percent(self, x):
-        if x > 1:
-            plus_or_minus = "+"
-        elif x < 1:
-            plus_or_minus = "-"
-        else:
-            plus_or_minus = ""
+        # handle non-numeric data
+        if not isinstance(x, (int, float)) or math.isinf(x) or math.isnan(x):
+            return np.nan
 
-        return plus_or_minus + str(abs(int((x - 1) * 100))) + "%"
+        return format(round(x - 1, sigfigs = 2), '+,.0%')
 
-    def update_figure(self,start_date, end_date, data_stats, percentage_error):
+    def update_figure(self,start_date, end_date, stat_type, show_percentage_error):
         '''
         Main plotting function
         '''
-        df = self.data_importer.get_data_by_sensor(0, numeric_only = True)
+        which_sensor = 0
+        stat_type = stat_type.lower() # convert to lowercase characters
+        # stat_type = "mean"
+
+        df = self.data_importer.get_data_by_sensor(which_sensor, numeric_only = True)
+
         df_stats = self.data_importer.df_stats
+        sensor_name = self.data_importer.get_all_sensor_names()[which_sensor]
 
-        # filter by timestamp and wind direction
-        df = self.filter_by_date(df, start_date, end_date)
 
-        #mean of the filtered data
-        data_mean = df.mean(axis=0)
-        #median of the filtered data
-        data_median = df.median(axis=0)
+        df = self.filter_by_date(df, start_date, end_date) # filter by timestamp and wind direction
 
-        norm_mean = data_mean / df_stats["sn45", "mean"]
-        norm_median = data_median / df_stats["sn45", "median"]
+        if stat_type == "mean":
+            filtered_stat = df.mean(axis = 0)
+            normalized_stat = filtered_stat / df_stats[sensor_name, "mean"]
+        elif stat_type == "median":
+            filtered_stat = df.median(axis=0)
+            normalized_stat = filtered_stat / df_stats[sensor_name, "median"]
+        else:
+            raise KeyError("Unsupported aggregation function. Try 'mean' or 'median' instead.")
 
-        error_mean = norm_mean - 1
-        error_median = norm_median - 1
-
-        fig = go.Figure()
+        # remove infinite values
+        filtered_stat.replace([np.inf, -np.inf], np.nan, inplace=True)
+        normalized_stat.replace([np.inf, -np.inf], np.nan, inplace=True)
 
         #create subplots
+        fig = go.Figure()
         fig = make_subplots(rows = 1, cols = 3, subplot_titles = ('Meteorology Data', 'Gas Pollutants', 'Particle Pollutants'))
 
         #first subplot of meteorology data
         fig.add_trace(
             go.Bar(
                 x = list(self.meteorology_vars.values()),
-                y = norm_mean[self.meteorology_vars.keys()],
-                text = norm_mean[self.meteorology_vars.keys()].apply(self.as_percent),
+                y = normalized_stat[self.meteorology_vars.keys()],
+                text = normalized_stat[self.meteorology_vars.keys()].apply(self.as_percent),
                 marker_color = px.colors.qualitative.T10[0],
                 # customdata = data_mean[1:5] if data_stats == 'Mean' else data_median[1:5],
                 # hovertext = sn45_mean[1:5] if data_stats == 'Mean' else sn45_median[1:5],
@@ -97,8 +103,8 @@ class BarChart(FilterGraph):
         fig.add_trace(
             go.Bar(
                 x = list(self.gas_vars.values()),
-                y = norm_mean[self.gas_vars.keys()],
-                text = norm_mean[self.gas_vars.keys()].apply(self.as_percent),
+                y = normalized_stat[self.gas_vars.keys()],
+                text = normalized_stat[self.gas_vars.keys()].apply(self.as_percent),
                 marker_color=px.colors.qualitative.T10[2],
                 # customdata=data_mean[7:11] if data_stats == 'Mean' else data_median[7:11],
                 # hovertext=sn45_mean[7:11] if data_stats == 'Mean' else sn45_median[7:11],
@@ -121,8 +127,8 @@ class BarChart(FilterGraph):
         fig.add_trace(
             go.Bar(
                 x = list(self.particles_vars.values()),
-                y = norm_mean[self.particles_vars.keys()],
-                text = norm_mean[self.particles_vars.keys()].apply(self.as_percent),
+                y = normalized_stat[self.particles_vars.keys()],
+                text = normalized_stat[self.particles_vars.keys()].apply(self.as_percent),
                 marker_color=px.colors.qualitative.T10[5],
                 # customdata=data_mean[11:20] if data_stats == 'Mean' else data_median[11:20],
                 # hovertext=sn45_mean[11:20] if data_stats == 'Mean' else sn45_median[11:20],

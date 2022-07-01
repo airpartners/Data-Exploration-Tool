@@ -34,9 +34,12 @@ app.layout = html.Div([
         [
             #choose to plot either mean or median datasets at one time
             dcc.Dropdown(
-                ['Mean', 'Median'],
-                'Mean',
-                id='data-stats'
+                options = [
+                    {'label': 'Mean', 'value': 'mean'},
+                    {'label': 'Median', 'value': 'median'},
+                ],
+                value = 'mean',
+                id='stat-type'
             ),
             #choose to show or hide error bars
             dcc.RadioItems(
@@ -53,7 +56,7 @@ app.layout = html.Div([
     Output('select-time', 'figure'),
     Input('my-date-picker-range', 'start_date'),
     Input('my-date-picker-range', 'end_date'),
-    Input('data-stats', 'value'),
+    Input('stat-type', 'value'),
     Input('percentage-error','value')
 )
 def update_figure(start_date, end_date, data_stats, percentage_error):

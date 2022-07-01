@@ -2,6 +2,7 @@ from dash import Dash, html, dcc
 from dash.dependencies import Input, Output
 import datetime
 from filter_graph import FilterGraph # import from supporting file (contained in this repo)
+from data_importer import DataImporter
 
 # Parent class for TimeSeries, BarChart, CorrelationPlot, and PolarPlot
 class GraphFrame():
@@ -36,7 +37,7 @@ class GraphFrame():
         "line-height": "0%", # helps reduce the line spacing
     }
 
-    def __init__(self, app, data_importer, id_num, chart_type = 0, initial_display_status = 'block') -> None:
+    def __init__(self, app, data_importer: DataImporter, id_num, chart_type = 0, initial_display_status = 'block') -> None:
         self.app = app
         self.data_importer = data_importer
         self.id_num = id_num

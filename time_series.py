@@ -8,6 +8,7 @@ from graph_frame import GraphFrame
 
 class TimeSeries(GraphFrame):
     def get_html(self):
+        sensor_names = self.data_importer.get_all_sensor_names()
         # children = ...
         return \
             [
@@ -20,14 +21,8 @@ class TimeSeries(GraphFrame):
                         html.Div(
                             [
                                 dcc.Dropdown(
-                                    options = [
-                                        {'label': 'Sensor 1', 'value': '0'},
-                                        {'label': 'Sensor 2', 'value': '1'},
-                                        {'label': 'Sensor 3', 'value': '2'},
-                                        {'label': 'Sensor 4', 'value': '3'},
-                                        {'label': 'Sensor 5', 'value': '4'},
-                                        {'label': 'Sensor 6', 'value': '5'},
-                                    ],
+                                    options = [{'label': name, 'value': i} for i, name in enumerate(sensor_names)],
+
                                     # note: in order to set the default value, you have to set value = {the VALUE you want}.
                                     # Do NOT try to set value = {the LABEL you want}, e.g. value = 'Sensor 1'
                                     value = '0', # default value
@@ -66,28 +61,28 @@ class TimeSeries(GraphFrame):
                             ],
                             style = self.date_picker_style
                         ),
-                        html.Div(
-                            html.P("when the wind was blowing"),
-                            style = self.text_style
-                        ),
-                        html.Div(
-                            [
-                                dcc.Dropdown(
-                                    options = [
-                                        {'label': 'North',     'value': 'N'},
-                                        {'label': 'Northeast', 'value': 'NE'},
-                                        {'label': 'East',      'value': 'E'},
-                                        {'label': 'Southeast', 'value': 'SE'},
-                                        {'label': 'South',     'value': 'S'},
-                                        {'label': 'Southwest', 'value': 'SW'},
-                                        {'label': 'West',      'value': 'W'},
-                                        {'label': 'Northwest', 'value': 'NW'},
-                                    ],
-                                    value = 'NE', id = self.get_id("wind-direction")
-                                ),
-                            ],
-                            style = self.dropdown_style
-                        ),
+                        # html.Div(
+                        #     html.P("when the wind was blowing"),
+                        #     style = self.text_style
+                        # ),
+                        # html.Div(
+                        #     [
+                        #         dcc.Dropdown(
+                        #             options = [
+                        #                 {'label': 'North',     'value': 'N'},
+                        #                 {'label': 'Northeast', 'value': 'NE'},
+                        #                 {'label': 'East',      'value': 'E'},
+                        #                 {'label': 'Southeast', 'value': 'SE'},
+                        #                 {'label': 'South',     'value': 'S'},
+                        #                 {'label': 'Southwest', 'value': 'SW'},
+                        #                 {'label': 'West',      'value': 'W'},
+                        #                 {'label': 'Northwest', 'value': 'NW'},
+                        #             ],
+                        #             value = 'NE', id = self.get_id("wind-direction")
+                        #         ),
+                        #     ],
+                        #     style = self.dropdown_style
+                        # ),
                         html.Div(
                             html.P("?"),
                         ),
@@ -108,21 +103,21 @@ class TimeSeries(GraphFrame):
             Input(self.get_id('which-sensor'), 'value'),
             Input(self.get_id('start-date'), 'date'),
             Input(self.get_id('end-date'), 'date'),
-            Input(self.get_id('wind-direction'), 'value'),
+            # Input(self.get_id('wind-direction'), 'value'),
         )
-        def update_figure(which_sensor, start_date, end_date, wind_direction):
+        def update_figure(which_sensor, start_date, end_date):# , wind_direction):
             print(f"Graph with id {self.id_num} being called back!")
-            return self.graph_obj.update_figure(int(which_sensor), start_date, end_date, wind_direction)
+            return self.graph_obj.update_figure(int(which_sensor), start_date, end_date)# , wind_direction)
 
     class TimeSeriesGraph(FilterGraph):
-        def update_figure(self, which_sensor, start_date, end_date, wind_direction):
+        def update_figure(self, which_sensor, start_date, end_date):#, wind_direction):
 
             # select which sensor data to draw from
             df = self.data_importer.get_data_by_sensor(which_sensor)
 
             # filter by timestamp and wind direction
             df = self.filter_by_date(df, start_date, end_date)
-            df = self.filter_by_wind_direction(df, wind_direction)
+            # df = self.filter_by_wind_direction(df, wind_direction)
 
             # create the figure. It consists of a Figure frame and three lines created with go.Scatter()
             fig = go.Figure([
