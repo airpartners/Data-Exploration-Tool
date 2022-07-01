@@ -4,8 +4,8 @@ import dash_core_components as dcc
 import dash_html_components as html
 import pandas as pd
 
-from barpolat_class import BarPolar
-bar_polar=BarPolar()
+from polar_class import Polar
+bar_polar=Polar()
 '''
 QUOTIENT INDEX LIST
 temp_manifold: 0
@@ -45,16 +45,22 @@ app.layout = html.Div([
         # end_date = df_minor['date'].max().strftime("%Y-%m-%d"),
         id='my-date-picker-range'
     ),
-    dcc.Graph(id='bar-polar')
+    dcc.Dropdown(
+        id='dropdown', 
+        options=['co.ML', 'correctedNO', 'no2.ML', 'o3.ML', 'pm1.ML', 'pm25.ML', 'pm10.ML'], # ['CO', 'NO', 'NO2', 'O3', 'PM1', 'PM2.5', 'PM10']
+        value='co.ML'
+    ),
+    dcc.Graph(id='polar')
     ])
 
 @app.callback(
-    Output('bar-polar','figure'),
+    Output('polar','figure'),
     Input('my-date-picker-range', 'start_date'),
-    Input('my-date-picker-range', 'end_date')
+    Input('my-date-picker-range', 'end_date'),
+    Input('dropdown','value')
 )
-def update_figure(start_date, end_date):
-    return bar_polar.update_figure(start_date, end_date)
+def update_figure(start_date, end_date, variable_name):
+    return bar_polar.update_figure(start_date, end_date, variable_name)
 
 if __name__ == '__main__':
     app.run_server(debug=True)
