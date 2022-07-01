@@ -21,7 +21,6 @@ app = Dash(__name__)
 
 app.layout = html.Div([
     #apply filter to select time range
-    dcc.Graph(id='select-time'),
     dcc.DatePickerRange(
         clearable = True,
         with_portal = True,
@@ -48,7 +47,8 @@ app.layout = html.Div([
             ),
         ],
         style={'width': '48%', 'float': 'right', 'display': 'inline-block'}
-    )
+    ),
+    dcc.Graph(id='select-time'),
 ])
 
 

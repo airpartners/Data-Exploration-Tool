@@ -12,9 +12,6 @@ class BarChartGraph(GraphFrame):
         return \
             [
                 #apply filter to select time range
-                dcc.Graph(
-                    id = self.get_id('select-time')
-                ),
                 dcc.DatePickerRange(
                     clearable = True,
                     with_portal = True,
@@ -36,8 +33,12 @@ class BarChartGraph(GraphFrame):
                             id = self.get_id('percentage-error'),
                         ),
                     ],
-                    style={'width': '48%', 'float': 'right', 'display': 'inline-block'}
-                )
+                    style={'width': '48%', 'float': 'right', 'display': 'inline-block', 'margin-bottom': '50px'}
+                ),
+                dcc.Graph(
+                    id = self.get_id('select-time')
+                ),
+
             ]
 
     def add_graph_callback(self):
