@@ -180,8 +180,8 @@ class DataImporter():
             print(f"Generating stats from {raw_file}")
             sensor_name = self.get_sensor_name_from_file(raw_file)
             df_raw = pd.read_csv(raw_file)
-            df_stats[sensor_name, "mean"] = df_raw[self.numeric_columns_to_keep].mean()
-            df_stats[sensor_name, "median"] = df_raw[self.numeric_columns_to_keep].median()
+            df_stats[sensor_name, "mean"] = df_raw[self.numeric_columns_to_keep].mean(axis = 0)
+            df_stats[sensor_name, "median"] = df_raw[self.numeric_columns_to_keep].median(axis = 0)
 
         df_stats.to_parquet(stats_file)
         return df_stats
