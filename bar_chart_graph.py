@@ -42,8 +42,8 @@ class BarChartGraph(GraphFrame):
             ]
 
     def add_graph_callback(self):
-        self.filter_graph = FilterGraph()
-        self.barchart = BarChart()
+        self.filter_graph = FilterGraph(self.data_importer)
+        self.barchart = BarChart(self.data_importer)
 
         @self.app.callback(
             Output(self.get_id('select-time'         ), 'figure'),
