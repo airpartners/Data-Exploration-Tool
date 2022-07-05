@@ -65,7 +65,8 @@ class TimeSeries(GraphFrame):
                             style = self.text_style
                         ),
                         dcc.Dropdown(
-                            options = [{'label': var_name, 'value': var} for var, var_name in list(self.particles_vars.items()) + list(self.gas_vars.items())],
+                            options = [{'label': var_name, 'value': var} for var, var_name in
+                                list(self.particles_vars.items()) + list(self.gas_vars.items()) + list(self.flight_vars.items())],
                             # options = [{'label': name, 'value': i} for i, name in enumerate(sensor_names)],
                             value='pm25.ML',
                             multi = True,

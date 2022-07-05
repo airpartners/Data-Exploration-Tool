@@ -64,7 +64,13 @@ class GraphFrame():
         "pm25.ML": "PM2.5",
         "pm10.ML": "PM10",
     }
-    all_vars = meteorology_vars | gas_vars | particles_vars # | is the python syntax for adding or "merging" two dictionaries
+    flight_vars = {
+        'Opr': "Arrival/Departure",
+        'RW_group': "Runway Operation",
+        'count': "Flights"
+    }
+    # | is the python syntax for adding or "merging" two dictionaries
+    all_vars = meteorology_vars | gas_vars | particles_vars | flight_vars
 
     def __init__(self, app, data_importer: DataImporter, id_num, chart_type = 0, initial_display_status = 'block') -> None:
         self.app = app

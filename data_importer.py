@@ -1,7 +1,9 @@
 import pandas as pd
 import os
-from csv_file_paths import raw_csv_paths, processed_csv_paths, stats_file # import paths to csv files from another file in this repo.
-    # you should make a copy of csv_file_paths.py and change the path names to match the file locations on your computer.
+# import paths to csv files from another file in this repo.
+# you should make a copy of csv_file_paths.py and change the path names to match the file locations on your computer.
+from csv_file_paths import raw_csv_paths, processed_csv_paths, stats_file, flight_csv_dir, processed_flight_dir, final_flights
+from read_flight_data import FlightLoader
 
 class DataImporter():
     columns_to_keep = {
@@ -65,10 +67,19 @@ class DataImporter():
     numeric_columns_to_keep = [col for col, val in columns_to_keep.items() if val == 'numeric']
 
     def __init__(self):
+        # load in the flight data once
+        self.flight_loader = FlightLoader(flight_csv_dir, processed_flight_dir, final_flights)
+
+        # read and process all the sensor data
         self.list_of_sensor_dataframes = []
         for raw_file_path, processed_file_path in zip(raw_csv_paths, processed_csv_paths):
             # append the next sensor's worth of data to the list
-            self.list_of_sensor_dataframes.append(self.prepare_data(raw_file_path, processed_file_path))
+            df_sensor = self.prepare_data(raw_file_path, processed_file_path)
+            df_sensor = self.flight_loader.add_flight_data_to(df_sensor, date_time_column_name = "timestamp_local")
+            df_sensor = df_sensor.set_index("timestamp_local")
+            self.list_of_sensor_dataframes.append(df_sensor)
+
+        # calculate and store mean and median of entire dataset
         self.df_stats = self.make_stats()
 
     def check_pre_processed_file(self, processed_file_path):
@@ -168,6 +179,13 @@ class DataImporter():
         return sensor_names
 
     def make_stats(self):
+        """Generates the mean and median for each pollutant for the entire dataset. Used for normalizing sensor readings
+        over a given time period, for example in bar charts. Since the mean and median operate on the entire dataset (not just
+        hourly downsampled readings), this takes a long time to cumpute (~10s per sensor = ~1 minutes), so it stores the stats
+        in their own parquet file. It is important that the file type be a column-preserving file type (like parquet), because
+        the dataframe `df_stats` that is created has a nested column structure that is obliterated if you save it as a row-wise
+        file type like CSV.
+        """
         df_stats = self.check_pre_processed_file(stats_file)
         if df_stats is not None: # then the processed file already exists, and we don't need to recalculate it
             return df_stats
