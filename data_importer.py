@@ -1,35 +1,89 @@
 import pandas as pd
-from csv_file_paths import raw_csv_paths, processed_csv_paths # import paths to csv files from another file in this repo.
-    # you should make a copy of csv_file_paths.py and change the path names to match the file locations on your computer.
+import os
+# import paths to csv files from another file in this repo.
+# you should make a copy of csv_file_paths.py and change the path names to match the file locations on your computer.
+from csv_file_paths import raw_csv_paths, processed_csv_paths, stats_file, flight_csv_dir, processed_flight_dir, final_flights
+from read_flight_data import FlightLoader
 
 class DataImporter():
+    columns_to_keep = {
+        # 'date_local': 'numeric',
+        # 'timestamp': 'numeric',
+        # 'timestamp_local': 'numeric',
+        # 'temp_box': 'numeric',
+        'temp_manifold': 'numeric',
+        'rh_manifold': 'numeric',
+        'pressure': 'numeric',
+        'noise': 'numeric',
+        # 'solar': 'numeric',
+        # 'wind_dir': 'numeric',
+        # 'wind_speed': 'numeric',
+        # 'co': 'numeric',
+        # 'no': 'numeric',
+        # 'no2': 'numeric',
+        # 'o3': 'numeric',
+        # 'pm1': 'numeric',
+        # 'pm25': 'numeric',
+        # 'pm10': 'numeric',
+        # 'co2': 'numeric',
+        'bin0': 'numeric',
+        'bin1': 'numeric',
+        'bin2': 'numeric',
+        'bin3': 'numeric',
+        'bin4': 'numeric',
+        'bin5': 'numeric',
+        # 'no_ae': 'numeric',
+        # 'co_ae': 'numeric',
+        # 'no2_ae': 'numeric',
+        # 'date': 'numeric',
+        # 'originaldate': 'numeric',
+        # 'timestamp.x': 'numeric',
+        # 'originaldate.x': 'numeric',
+        # 'timestamp.y': 'numeric',
+        # 'originaldate.y': 'numeric',
+        # 'original_met_time': 'numeric',
+        # 'tmpc': 'numeric',
+        'wd': 'numeric',
+        'ws': 'numeric',
+        # 'day': 'numeric',
+        'correctedNO': 'numeric',
+        # 'timediff': 'numeric',
+        # 'removeCO': 'numeric',
+        # 'igor_date': 'numeric',
+        # 'igor_date_local': 'numeric',
+        # 'timestamp.ML': 'numeric',
+        'co.ML': 'numeric',
+        # 'no.ML': 'numeric',
+        'no2.ML': 'numeric',
+        'o3.ML': 'numeric',
+        # 'flag': 'numeric',
+        'pm1.ML': 'numeric',
+        'pm25.ML': 'numeric',
+        'pm10.ML': 'numeric',
+        # 'date.ML': 'numeric',
+        # 'originaldate.ML': 'numeric',
+        'wind_direction_cardinal': 'discrete',
+    }
+    numeric_columns_to_keep = [col for col, val in columns_to_keep.items() if val == 'numeric']
 
     def __init__(self):
+        # load in the flight data once
+        self.flight_loader = FlightLoader(flight_csv_dir, processed_flight_dir, final_flights)
+
+        # read and process all the sensor data
         self.list_of_sensor_dataframes = []
         for raw_file_path, processed_file_path in zip(raw_csv_paths, processed_csv_paths):
             # append the next sensor's worth of data to the list
-            self.list_of_sensor_dataframes.append(self.prepare_data(raw_file_path, processed_file_path))
+            df_sensor = self.prepare_data(raw_file_path, processed_file_path)
+            df_sensor = self.flight_loader.add_flight_data_to(df_sensor, date_time_column_name = "timestamp_local")
+            df_sensor = df_sensor.set_index("timestamp_local")
+            self.list_of_sensor_dataframes.append(df_sensor)
 
-    def discrete_wind_direction(self, degrees):
-        """Takes in a wind direction in degrees and bins it into cardinal directions"""
-        wind_dict = {
-            'N': [0, 22.5],
-            'NE': [22.5, 67.5],
-            'E': [67.5, 112.5],
-            'SE': [112.5, 157.5],
-            'S': [157.5, 202.5],
-            'SW': [202.5, 247.5],
-            'W': [247.5, 292.5],
-            'NW': [292.5, 337.5],
-        }
-        for direction, bounds in wind_dict.items():
-            if degrees >= bounds[0] and degrees < bounds[1]:
-                return direction
-            # else: # the direction is between 337.5 and 360 degrees
-        return "N"
+        # calculate and store mean and median of entire dataset
+        self.df_stats = self.make_stats()
 
     def check_pre_processed_file(self, processed_file_path):
-        """Takes in the expected path to a pre-processed csv file. First, it checks whether the processed file exists in the
+        """Takes in the expected path to a pre-processed parquet file. First, it checks whether the processed file exists in the
         specified location. If the processed file exists, it reads the processed file and returns it.
         If the processed file does not exist, returns None. A new processed file will be generated in prepare_data().
         If you change the processing method, delete the csv_file_paths.processed_csv_paths files, and use this funciton
@@ -60,14 +114,13 @@ class DataImporter():
         # convert timestamps to datetime objects, interpretable by Pandas
         df_processed = df_raw
         df_processed["timestamp_local"] = pd.to_datetime(df_raw["timestamp_local"], format = "%Y-%m-%dT%H:%M:%SZ")
-        df_processed["date"] = df_processed["timestamp_local"].dt.date # create date column
+        # df_processed["date"] = df_processed["timestamp_local"].dt.date # create date column
         # create a new column with cardinal wind directions
         wind_labels = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW', 'N']
         wind_breaks = [0, 22.5, 67.5, 112.5, 157.5, 202.5, 247.5, 292.5, 337.5, 360]
 
 
         df_processed["wind_direction_cardinal"] = pd.cut(df_processed["wind_dir"], wind_breaks, right = False, labels = wind_labels, ordered = False)
-        # df_processed["wind_direction_cardinal"] = df_processed["wind_dir"].apply(self.discrete_wind_direction)
 
         # define functions which will be used in the resample().agg() call below
         def percentile5(df):
@@ -90,84 +143,63 @@ class DataImporter():
         # Sadly, the resampling and aggregation process takes a long time (several seconds to a minute) to run. It is much faster
         # using built-in functions like "mean" (presumably because these are vectorized), as opposed to user-defined functions.
 
-        columns_to_keep = [
-            # 'date_local',
-            # 'timestamp',
-            'timestamp_local',
-            # 'temp_box',
-            'temp_manifold',
-            'rh_manifold',
-            'pressure',
-            'noise',
-            # 'solar',
-            # 'wind_dir',
-            # 'wind_speed',
-            # 'co',
-            # 'no',
-            # 'no2',
-            # 'o3',
-            # 'pm1',
-            # 'pm25',
-            # 'pm10',
-            # 'co2',
-            'bin0',
-            'bin1',
-            'bin2',
-            'bin3',
-            'bin4',
-            'bin5',
-            # 'no_ae',
-            # 'co_ae',
-            # 'no2_ae',
-            # 'date',
-            # 'originaldate',
-            # 'timestamp.x',
-            # 'originaldate.x',
-            # 'timestamp.y',
-            # 'originaldate.y',
-            # 'original_met_time',
-            # 'tmpc',
-            'wd',
-            'ws',
-            # 'day',
-            'correctedNO',
-            # 'timediff',
-            # 'removeCO',
-            # 'igor_date',
-            # 'igor_date_local',
-            # 'timestamp.ML',
-            'co.ML',
-            # 'no.ML',
-            'no2.ML',
-            'o3.ML',
-            # 'flag',
-            'pm1.ML',
-            'pm25.ML',
-            'pm10.ML',
-            # 'date.ML',
-            # 'originaldate.ML',
-            'wind_direction_cardinal'
-        ]
+        df_processed.set_index("timestamp_local", inplace = True)
+        df_processed = df_processed[self.columns_to_keep]
 
-        agg_funcs = {col_name: "mean" for col_name in columns_to_keep}
-        # agg_funcs = {col_name: ["mean", "median"] for col_name in columns_to_keep}
-        agg_funcs["wind_direction_cardinal"] = my_mode
-        agg_funcs.pop("timestamp_local") # remove this because it will become he index
+        agg_funcs = {}
+        for col_name, col_type in self.columns_to_keep.items():
+            if col_type == 'numeric':
+                agg_funcs[col_name] = "mean"
+            else:
+                agg_funcs[col_name] = my_mode
 
-        df_processed = df_processed[columns_to_keep]
+        # agg_funcs.pop("timestamp_local") # remove this because it will become the index
 
         resample_frequency = "1H"
-        df_processed = df_processed.set_index("timestamp_local").resample(resample_frequency).agg(
-            agg_funcs
-            # {
-            #     "pm25": [percentile5, "mean", percentile95],
-            #     "wind_direction_cardinal": my_mode
-            # }
-        ).reset_index()
+        df_processed = df_processed.resample(resample_frequency).agg(agg_funcs)
+
 
         # store the processed and downsampled dataframe to a csv, to be read next time
         df_processed.to_parquet(processed_file)
         return df_processed
 
-    def get_data_by_sensor(self, sensor_id):
+    def get_data_by_sensor(self, sensor_id, numeric_only = False):
+        if numeric_only:
+            return self.list_of_sensor_dataframes[sensor_id][self.numeric_columns_to_keep]
+        # else:
         return self.list_of_sensor_dataframes[sensor_id]
+
+    def get_sensor_name_from_file(self, filename):
+        return os.path.basename(filename).split('-')[0]
+
+    def get_all_sensor_names(self):
+        sensor_names = []
+        for filename in raw_csv_paths:
+            sensor_names.append(self.get_sensor_name_from_file(filename))
+        return sensor_names
+
+    def make_stats(self):
+        """Generates the mean and median for each pollutant for the entire dataset. Used for normalizing sensor readings
+        over a given time period, for example in bar charts. Since the mean and median operate on the entire dataset (not just
+        hourly downsampled readings), this takes a long time to cumpute (~10s per sensor = ~1 minutes), so it stores the stats
+        in their own parquet file. It is important that the file type be a column-preserving file type (like parquet), because
+        the dataframe `df_stats` that is created has a nested column structure that is obliterated if you save it as a row-wise
+        file type like CSV.
+        """
+        df_stats = self.check_pre_processed_file(stats_file)
+        if df_stats is not None: # then the processed file already exists, and we don't need to recalculate it
+            return df_stats
+
+        iterables = [self.get_all_sensor_names(), ["mean", "median"]]
+        columns = pd.MultiIndex.from_product(iterables, names = ["sensor", "agg_func"])
+        df_stats = pd.DataFrame(index = self.numeric_columns_to_keep, columns = columns)
+
+        for i, raw_file in enumerate(raw_csv_paths):
+            print(f"Generating stats from {raw_file}")
+            sensor_name = self.get_sensor_name_from_file(raw_file)
+            df_raw = pd.read_csv(raw_file)
+            df_stats[sensor_name, "mean"] = df_raw[self.numeric_columns_to_keep].mean(axis = 0)
+            df_stats[sensor_name, "median"] = df_raw[self.numeric_columns_to_keep].median(axis = 0)
+
+        df_stats.to_parquet(stats_file)
+        return df_stats

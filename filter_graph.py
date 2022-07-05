@@ -17,14 +17,17 @@ class FilterGraph():
         if start_date and end_date:
             return \
                 df[
-                    (df["timestamp_local"].dt.date >= pd.Timestamp(start_date).date()) &
-                    (df["timestamp_local"].dt.date <= pd.Timestamp(end_date).date()  )
+                    (df.index.date >= pd.Timestamp(start_date).date()) &
+                    (df.index.date <= pd.Timestamp(end_date).date()  )
+                    # (df["timestamp_local"].dt.date >= pd.Timestamp(start_date).date()) &
+                    # (df["timestamp_local"].dt.date <= pd.Timestamp(end_date).date()  )
                 ]
         # else:
         return df
 
     def filter_by_wind_direction(self, df, wind_direction):
         if wind_direction is not None:
-            return df[ df["wind_direction_cardinal", "my_mode"] == wind_direction ]
+            return df[ df["wind_direction_cardinal"] == wind_direction ]
+            # return df[ df["wind_direction_cardinal", "my_mode"] == wind_direction ]
         # else:
         return df

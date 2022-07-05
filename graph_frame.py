@@ -2,6 +2,7 @@ from dash import Dash, html, dcc
 from dash.dependencies import Input, Output
 import datetime
 from filter_graph import FilterGraph # import from supporting file (contained in this repo)
+from data_importer import DataImporter
 
 # Parent class for TimeSeries, BarChart, CorrelationPlot, and PolarPlot
 class GraphFrame():
@@ -36,7 +37,42 @@ class GraphFrame():
         "line-height": "0%", # helps reduce the line spacing
     }
 
-    def __init__(self, app, data_importer, id_num, chart_type = 0, initial_display_status = 'block') -> None:
+## /////////////////////////////////////////////////// ##
+## Variables
+
+    meteorology_vars = {
+        "temp_manifold": "Temperature (°C)",
+        "rh_manifold": "Humidity (%)",
+        "pressure": "Pressure (Pa)",
+        "noise": "Noise (dB)",
+        "ws": "Wind Speed (m/s)",
+    }
+    gas_vars = {
+        "co.ML": "CO",
+        "correctedNO": "NO",
+        "no2.ML": "NO2",
+        "o3.ML": "O3",
+    }
+    particles_vars = {
+        "bin0": "0.3-0.5 μm",
+        "bin1": "0.5-0.7 μm",
+        "bin2": "0.7-1.0 μm",
+        "bin3": "1.0-2.5 μm",
+        "bin4": "2.5-10 μm",
+        "bin5": "10+ μm",
+        "pm1.ML": "PM1",
+        "pm25.ML": "PM2.5",
+        "pm10.ML": "PM10",
+    }
+    flight_vars = {
+        'Opr': "Arrival/Departure",
+        'RW_group': "Runway Operation",
+        'count': "Flights"
+    }
+    # | is the python syntax for adding or "merging" two dictionaries
+    all_vars = meteorology_vars | gas_vars | particles_vars | flight_vars
+
+    def __init__(self, app, data_importer: DataImporter, id_num, chart_type = 0, initial_display_status = 'block') -> None:
         self.app = app
         self.data_importer = data_importer
         self.id_num = id_num
@@ -52,7 +88,7 @@ class GraphFrame():
     def get_layout(self, initial_display_status):
         return \
         html.Div(
-            children = self.get_html(),
+            children = self.get_html() + [html.Hr(style = {'border': '3px solid black'})],
             style = {'display': initial_display_status},
             id = self.get_id('frame')
         )

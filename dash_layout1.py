@@ -82,6 +82,7 @@ class Page():
         for chart_num in range(self.n_charts):
 
             self.layout.children.append(self.create_dropdown(chart_num))
+
             if chart_num == 0:
                 self.layout.children[-1].style = {'display': 'block'} # set the initial dropdown to visible
             # self.layout.children.append(self.create_button_set(chart_num))

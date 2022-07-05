@@ -6,7 +6,7 @@ from csv_file_paths import flight_csv_dir, processed_flight_dir, final_flights
 class FlightLoader():
     """Class for loading and processing the flight data from Logan Airport. To run, initialize the FlightLoader object with a
 `csv_dir`, `parquet_dir`, and `final_parquet_file`, then run flight_loader.process_files() and then flight_loader.combine_files().
-When it's done creating the files on your computer, you can use the function add_flight_data contained in the file add_flight_data.py
+When it's done creating the files on your computer, you can use the function add_flight_data_to contained in the file add_flight_data_to.py
 to add flight data into an existing dataframe.
     """
     def __init__(self, csv_dir, parquet_dir, final_parquet_file) -> None:
@@ -22,9 +22,18 @@ When `combine_files()` is called, it takes all the processed files in `parquet_d
         self.parquet_dir = parquet_dir
         self.final_parquet_file = final_parquet_file
 
-        self.df_combined = None
+        self.df_flights = None
+
+        self.process_files()
+        self.combine_files()
 
     def process_files(self):
+
+        try:
+            return pd.read_parquet(final_flights)
+        except(FileNotFoundError):
+            print(f'In DataImporter, looking for a processed file at "{final_flights}"')
+            print(f'Processed file does not exist; reading raw CSV files from "{self.csv_dir}" instead.')
 
         # first, process all the csv files to create parquet files
         for root, dirs, files in os.walk(self.csv_dir):
@@ -44,7 +53,8 @@ When `combine_files()` is called, it takes all the processed files in `parquet_d
                 self.add_parquet(parquet_path)
 
         # export the dataframeto a large parquet file, to be joined with the air quality dataframe
-        self.df_combined.to_parquet(self.final_parquet_file)
+        print(f'Finished performing processing. Now saving as "{self.final_parquet_file}."')
+        self.df_flights.to_parquet(self.final_parquet_file)
 
     def process_csv(self, csv_path, parquet_path):
         col_names = pd.read_csv(csv_path, nrows=0).columns.tolist() # get the column names without reading the whole file
@@ -79,20 +89,13 @@ When `combine_files()` is called, it takes all the processed files in `parquet_d
         return "Other"
 
     def add_parquet(self, parquet_path):
-        if self.df_combined is None:
-            self.df_combined = pd.read_parquet(parquet_path)
+        if self.df_flights is None:
+            self.df_flights = pd.read_parquet(parquet_path)
         else:
             df_new = pd.read_parquet(parquet_path)
-            pd.concat([self.df_combined, df_new], axis = 'index')
+            pd.concat([self.df_flights, df_new], axis = 'index')
 
-def main():
-    loader = FlightLoader(flight_csv_dir, processed_flight_dir, final_flights)
-    loader.process_files()
-    loader.combine_files()
-
-    df_flights = pd.read_parquet(final_flights)
-    print(df_flights.head())
-    print(len(df_flights.index))
-    pass
-
-main()
+    def add_flight_data_to(self, df, date_time_column_name = "timestamp_local"):
+        df_combined = df.merge(self.df_flights, left_on = date_time_column_name, right_on = "Date_Time")
+        df_combined = df_combined.rename(columns = {"Date_Time": date_time_column_name})
+        return df_combined
