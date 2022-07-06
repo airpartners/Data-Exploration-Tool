@@ -67,7 +67,12 @@ class GraphFrame():
     flight_vars = {
         'Opr': "Arrival/Departure",
         'RW_group': "Runway Operation",
-        'count': "Flights"
+        # 'count': "Flights",
+        # 'A': "Arrivals",
+        # 'D': "Departures",
+        'South-West': "Southwest Runway Group",
+        'North-West': "Northwest Runway Group",
+        'North-East': "Northeast Runway Group",
     }
     # | is the python syntax for adding or "merging" two dictionaries
     all_vars = meteorology_vars | gas_vars | particles_vars | flight_vars

@@ -76,7 +76,7 @@ class DataImporter():
             # append the next sensor's worth of data to the list
             df_sensor = self.prepare_data(raw_file_path, processed_file_path)
             df_sensor = self.flight_loader.add_flight_data_to(df_sensor, date_time_column_name = "timestamp_local")
-            df_sensor = df_sensor.set_index("timestamp_local")
+            df_sensor = df_sensor.reset_index().set_index("timestamp_local")
             self.list_of_sensor_dataframes.append(df_sensor)
 
         # calculate and store mean and median of entire dataset

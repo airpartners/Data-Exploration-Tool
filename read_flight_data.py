@@ -71,6 +71,9 @@ When `combine_files()` is called, it takes all the processed files in `parquet_d
 
         df_processed = df[["Date_Time", "Opr", "RW_group"]].set_index("Date_Time").resample(resample_frequency).agg(self.count_grouped_by, cols = ["Opr", "RW_group"]).reset_index()
 
+        # pivot the table to get one column for departures and one row for arrivals
+        df_processed = df_processed.pivot_table(index = "Date_Time", columns = "RW_group", values = "count", aggfunc = "max")
+
         df_processed.to_parquet(parquet_path)
         print("Finished processing", csv_path)
 
@@ -96,6 +99,6 @@ When `combine_files()` is called, it takes all the processed files in `parquet_d
             pd.concat([self.df_flights, df_new], axis = 'index')
 
     def add_flight_data_to(self, df, date_time_column_name = "timestamp_local"):
-        df_combined = df.merge(self.df_flights, left_on = date_time_column_name, right_on = "Date_Time")
+        df_combined = df.reset_index().merge(self.df_flights, left_on = date_time_column_name, right_on = "Date_Time").set_index(date_time_column_name)
         df_combined = df_combined.rename(columns = {"Date_Time": date_time_column_name})
         return df_combined
