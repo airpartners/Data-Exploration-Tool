@@ -48,13 +48,13 @@ class Polar(GraphFrame):
                         html.Div(
                             [
                                 dcc.Dropdown(
-                                    id='pollutant', 
+                                    id=self.get_id('pollutant'),
                                     options=['co.ML', 'correctedNO', 'no2.ML', 'o3.ML', 'pm1.ML', 'pm25.ML', 'pm10.ML'], # ['CO', 'NO', 'NO2', 'O3', 'PM1', 'PM2.5', 'PM10']
                                     value='co.ML'
                                 ),
                             ],
                             style = self.dropdown_style
-                        ), 
+                        ),
                         html.Div(
                             html.P(" between"),
                             style = self.text_style
@@ -90,7 +90,7 @@ class Polar(GraphFrame):
                 ),
                 # Placeholder for a graph to be created.
                 # This graph will be updated in the @app.callback: update_figure function below
-                dcc.Graph(id='polar')
+                dcc.Graph(id=self.get_id('polar'))
             ]
 
     def add_graph_callback(self):
@@ -107,7 +107,7 @@ class Polar(GraphFrame):
             print('whatever')
             return self.polar_class.update_figure(int(which_sensor), start_date, end_date, pollutant)
 
-    
+
 
     # if __name__ == '__main__':
     #     app.run_server(debug=True)
@@ -119,22 +119,24 @@ class PolarClass(FilterGraph):
         df = self.data_importer.get_data_by_sensor(which_sensor)
         df = self.filter_by_date(df, start_date, end_date)
 
+        print("Filtering by pollutant: ", pollutant)
+
         limit={
-            'co.ML': [0,9000], 
-            'correctedNO': [0,71000], 
-            'no2.ML': [0,71000], 
-            'o3.ML': [0,93000], 
-            'pm1.ML': [0,20], 
-            'pm25.ML': [0,20], 
+            'co.ML': [0,9000],
+            'correctedNO': [0,71000],
+            'no2.ML': [0,71000],
+            'o3.ML': [0,93000],
+            'pm1.ML': [0,20],
+            'pm25.ML': [0,20],
             'pm10.ML': [0,67]
         }
 
         fig = px.scatter_polar(df,
             r='ws',
-            theta='wd', 
-            size=self.df_filtered[pollutant], 
+            theta='wd',
+            size=df[pollutant],
             opacity=0.4,
-            color=self.df_filtered[pollutant],
+            color=df[pollutant],
             color_continuous_scale=[(0,"green"),(0.5,"yellow"),(0.75,"red"),(1,"purple")],
             range_color=limit[pollutant],
             # template="plotly_dark",
@@ -150,11 +152,11 @@ class PolarClass(FilterGraph):
                 }
             }
         )
-        fig.layout.annotations =[dict(showarrow=False, 
-                              text='Wind Speed (m/s)', 
-                              xanchor='left',   
-                              yanchor='bottom',  
-                              font=dict(size=12 ))]    
+        fig.layout.annotations =[dict(showarrow=False,
+                              text='Wind Speed (m/s)',
+                              xanchor='left',
+                              yanchor='bottom',
+                              font=dict(size=12 ))]
 
         return fig
 
