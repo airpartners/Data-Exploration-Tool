@@ -139,11 +139,24 @@ class TimeSeries(GraphFrame):
                 # )
             # ])
 
+            if len(pollutant) == 1:
+                y_label = self.all_vars[pollutant[0]]
+            else:
+                y_label = 'Pollutant (refer to legend)'
+
             fig.update_layout(
-                yaxis_title = 'PM2.5',
+                xaxis_title = 'Timestamp',
+                yaxis_title = y_label,
                 # title='PM2.5',
                 hovermode = "x", # where the magic happens
                 margin = {'t': 0}, # removes the awkward whitespace where the title used to be
             )
+
+            if normalize_height:
+                fig.layout.yaxis.tickformat = ',.0%'
+
+            for idx, poll in enumerate(pollutant):
+                fig.data[idx].name = self.all_vars[poll]
+                fig.data[idx].hovertemplate = self.all_vars[poll]
 
             return fig

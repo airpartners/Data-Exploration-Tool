@@ -24,7 +24,7 @@ class FilterGraph():
     def normalize_height(self, df, max_val = 1, do_it = True):
         if not do_it:
             return df
-        return df / df.select_dtypes('number').max() * max_val
+        return df / df.select_dtypes('number').max() * max_val # TODO: Write Stackoverflow answer: https://stackoverflow.com/questions/49412694/divide-two-pandas-dataframes-and-keep-non-numeric-columns
 
     def normalize_percent_diff(self, df, starting_val = 100, do_it = True):
         if not do_it:

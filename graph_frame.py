@@ -1,9 +1,13 @@
 from dash import Dash, html, dcc
 from dash.dependencies import Input, Output
 import pandas as pd
+import math
+import numpy as np
+from sigfig import round
 # import datetime
 # from filter_graph import FilterGraph # import from supporting file (contained in this repo)
 from data_importer import DataImporter
+
 
 # Parent class for TimeSeries, BarChart, CorrelationPlot, and PolarPlot
 class GraphFrame():
@@ -47,9 +51,12 @@ class GraphFrame():
     meteorology_vars = {
         "temp_manifold": "Temperature (°C)",
         "rh_manifold": "Humidity (%)",
-        "pressure": "Pressure (Pa)",
-        "noise": "Noise (dB)",
+        # "pressure": "Pressure (Pa)",
+        # "noise": "Noise (dB)",
         "ws": "Wind Speed (m/s)",
+        'South-West': "Takeoffs/Landings per hour (SouthWest Operation)",
+        'North-West': "Takeoffs/Landings per hour (NorthWest Operation)",
+        'North-East': "Takeoffs/Landings per hour (NorthEast Operation)",
     }
     gas_vars = {
         "co.ML": "CO (ppb)",
@@ -58,12 +65,12 @@ class GraphFrame():
         "o3.ML": "O3 (ppb)",
     }
     particles_vars = {
-        "bin0": "particles size 0.3-0.5μm (bin 0, count)",
-        "bin1": "particles size 0.5-0.7μm (bin 1, count)",
-        "bin2": "particles size 0.7-1.0μm (bin 2, count)",
-        "bin3": "particles size 1.0-2.5μm (bin 3, count)",
-        "bin4": "particles size 2.5-10μm (bin 4, count)",
-        "bin5": "particles size 10+ μm (bin 5, count)",
+        "bin0": "0.3-0.5μm particles (bin 0)",
+        "bin1": "0.5-0.7μm particles (bin 1)",
+        "bin2": "0.7-1.0μm particles (bin 2)",
+        "bin3": "1.0-2.5μm particles (bin 3)",
+        "bin4": "2.5-10μm particles (bin 4)",
+        "bin5": "10+ μm particles (bin 5)",
         "pm1.ML": "PM1 (μg/m^3)",
         "pm25.ML": "PM2.5 (μg/m^3)",
         "pm10.ML": "PM10 (μg/m^3)",
@@ -78,6 +85,7 @@ class GraphFrame():
         'North-West': "Takeoffs/Landings per hour (NorthWest Operation)",
         'North-East': "Takeoffs/Landings per hour (NorthEast Operation)",
     }
+
     # | is the python syntax for adding or "merging" two dictionaries
     all_vars = meteorology_vars | gas_vars | particles_vars | flight_vars
 
@@ -131,3 +139,11 @@ class GraphFrame():
         if not do_it:
             return df
         return df / df.select_dtypes('number').max() * max_val
+
+    def as_percent(self, x):
+        # handle non-numeric data
+        if not isinstance(x, (int, float)) or math.isinf(x) or math.isnan(x):
+            return np.nan
+
+        # format the number with +/- sign ('+'), commas in the thousands place (','), no sig figs ('.0'), and as a percentage ('%')
+        return format(round(x - 1, sigfigs = 2), '+,.0%')

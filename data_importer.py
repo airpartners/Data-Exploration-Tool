@@ -64,7 +64,7 @@ class DataImporter():
         # 'originaldate.ML': 'numeric',
         'wind_direction_cardinal': 'discrete',
     }
-    numeric_columns_to_keep = [col for col, val in columns_to_keep.items() if val == 'numeric']
+    numeric_columns_to_keep = [col for col, val in columns_to_keep.items() if val == 'numeric'] + ['South-West', 'North-West', 'North-East']
 
     def __init__(self):
         # load in the flight data once
@@ -190,16 +190,21 @@ class DataImporter():
         if df_stats is not None: # then the processed file already exists, and we don't need to recalculate it
             return df_stats
 
-        iterables = [self.get_all_sensor_names(), ["mean", "median"]]
+        iterables = [self.get_all_sensor_names(), ["mean", "median", "25_percent", "75_percent"]]
         columns = pd.MultiIndex.from_product(iterables, names = ["sensor", "agg_func"])
         df_stats = pd.DataFrame(index = self.numeric_columns_to_keep, columns = columns)
 
         for i, raw_file in enumerate(raw_csv_paths):
             print(f"Generating stats from {raw_file}")
             sensor_name = self.get_sensor_name_from_file(raw_file)
-            df_raw = pd.read_csv(raw_file)
+
+            df_raw["timestamp_local"] = pd.to_datetime(df_raw["timestamp_local"], format = "%Y-%m-%dT%H:%M:%SZ")
+            df_raw = self.flight_loader.add_flight_data_to(pd.read_csv(raw_file))
+
             df_stats[sensor_name, "mean"] = df_raw[self.numeric_columns_to_keep].mean(axis = 0)
             df_stats[sensor_name, "median"] = df_raw[self.numeric_columns_to_keep].median(axis = 0)
+            df_stats[sensor_name, "25_percent"] = df_raw[self.numeric_columns_to_keep].quantile(q = 0.25, axis = 0)
+            df_stats[sensor_name, "25_percent"] = df_raw[self.numeric_columns_to_keep].quantile(q = 0.75, axis = 0)
 
         df_stats.to_parquet(stats_file)
         return df_stats

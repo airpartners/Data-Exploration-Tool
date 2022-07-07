@@ -5,35 +5,11 @@ import numpy as np
 import math
 import plotly.express as px
 from filter_graph import FilterGraph
+from graph_frame import GraphFrame
 from sigfig import round
 
 
-class BarChart(FilterGraph):
-
-    meteorology_vars = {
-        "temp_manifold": "Temperature (°C)",
-        "rh_manifold": "Humidity (%)",
-        "pressure": "Pressure (Pa)",
-        "noise": "Noise (dB)",
-        "ws": "Wind Speed (m/s)",
-    }
-    gas_vars = {
-        "co.ML": "CO",
-        "correctedNO": "NO",
-        "no2.ML": "NO2",
-        "o3.ML": "O3",
-    }
-    particles_vars = {
-        "bin0": "0.3-0.5 μm",
-        "bin1": "0.5-0.7 μm",
-        "bin2": "0.7-1.0 μm",
-        "bin3": "1.0-2.5 μm",
-        "bin4": "2.5-10 μm",
-        "bin5": "10+ μm",
-        "pm1.ML": "PM1",
-        "pm25.ML": "PM2.5",
-        "pm10.ML": "PM10",
-    }
+class BarChart(GraphFrame):
 
     def as_percent(self, x):
         # handle non-numeric data

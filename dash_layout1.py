@@ -11,15 +11,15 @@ class Page():
     chart_names = {
         0: "Bar Chart",
         1: "Timeseries",
-        2: "Correlation Plot",
-        3: "Polar Plot",
+        2: "Polar Plot",
+        # 2: "Correlation Plot",
     }
 
     chart_classes = {
         0: BarChartGraph,
         1: TimeSeries,
-        2: TimeSeries,
-        3: Polar,
+        2: Polar,
+        # 2: TimeSeries,
     }
 
     def __init__(self, app, n_charts = 10) -> None:
@@ -37,8 +37,15 @@ class Page():
 
         self.create_layout()
 
-    def create_dropdown(self, chart_num, add_callback = True):
+    def create_dropdown(self, chart_num, initial_display_status, add_callback = True):
         print("Creating Dropdown with id", self.get_id('new-chart-dropdown', chart_num))
+        if not add_callback:
+            return html.Div(
+                children = f"Cannot add more than {self.n_charts} charts.",
+                id = self.get_id('new-chart-dropdown', chart_num),
+                style = {'display': initial_display_status},
+            )
+        # else:
         dropdown = \
         dcc.Dropdown(
             # children = "hh",
@@ -51,8 +58,8 @@ class Page():
             # note: in order to set the default value, you have to set value = {the VALUE you want}, e.g. value = 0.
             # Do NOT try to set value = {the LABEL you want}, e.g. value = 'Sensor 1'
             value = None, # default value
-            id = self.get_id('new-chart-dropdown', chart_num), # javascript id, used in @app.callback to reference this element, below
-            style = {'display': 'none'}
+            id = self.get_id('new-chart-dropdown', chart_num), # javascript id, used in @app.callback to reference this element
+            style = {'display': initial_display_status}
         )
         if add_callback:
             self.add_dropdown_callback(chart_num)
@@ -81,22 +88,24 @@ class Page():
     def create_layout(self):
         for chart_num in range(self.n_charts):
 
-            self.layout.children.append(self.create_dropdown(chart_num))
+            # add dropdown
+            initial_display_status = 'block' if chart_num == 0 else 'none'
+            if chart_num < self.n_charts - 1: # not the last element
+                self.layout.children.append(self.create_dropdown(chart_num, initial_display_status))
+            else:
+                # self.layout.children.append(f"Cannot add more than {self.n_charts} charts.")
+                self.layout.children.append(self.create_dropdown(chart_num, initial_display_status, add_callback = False))
 
-            if chart_num == 0:
-                self.layout.children[-1].style = {'display': 'block'} # set the initial dropdown to visible
-            # self.layout.children.append(self.create_button_set(chart_num))
-
+            # add graph frame
             for chart_type in range(self.n_chart_types):
                 chart_class = self.chart_classes[chart_type]
-                if chart_num == 0 and chart_type in [0, 1]:
-                    initial_display_status = 'block'
-                else:
-                    initial_display_status = 'none'
+
+                initial_display_status = 'block' if chart_num == 0 and chart_type in [0, 1] else 'none'
                 graph_frame = chart_class(self.app, self.data_importer, self.chart_ids[chart_num][chart_type], chart_type, initial_display_status)
+
                 self.layout.children.append(graph_frame.frame)
 
-        self.layout.children.append(self.create_dropdown(chart_num + 1, add_callback = False))
+        # self.layout.children.append(self.create_dropdown(chart_num + 1, add_callback = False))
 
     def get_id(self, id_str, id_num):
         return id_str + "-" + str(id_num)
@@ -104,7 +113,7 @@ class Page():
 if __name__ == '__main__':
     app = Dash(__name__) # initialize the app
 
-    p = Page(app, n_charts = 4)
+    p = Page(app, n_charts = 8)
     app.layout = html.Div(p.layout)
 
     app.run_server(debug=True)
