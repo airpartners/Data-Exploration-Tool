@@ -21,6 +21,16 @@ class FilterGraph():
         # else:
         return df
 
+    def normalize_height(self, df, max_val = 1, do_it = True):
+        if not do_it:
+            return df
+        return df / df.select_dtypes('number').max() * max_val
+
+    def normalize_percent_diff(self, df, starting_val = 100, do_it = True):
+        if not do_it:
+            return df
+        pass
+
     def filter_by_wind_direction(self, df, wind_direction):
         if wind_direction is not None:
             return df[ df["wind_direction_cardinal"] == wind_direction ]

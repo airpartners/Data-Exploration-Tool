@@ -1,10 +1,10 @@
-from cv2 import add
 from dash import Dash, html, dcc
 from dash.dependencies import Input, Output
 # from graph_frame import GraphFrame
 from time_series import TimeSeries
 from bar_chart_graph import BarChartGraph
 from data_importer import DataImporter
+from Polar import Polar
 
 class Page():
 
@@ -12,21 +12,21 @@ class Page():
         0: "Bar Chart",
         1: "Timeseries",
         2: "Correlation Plot",
-        # 4: "Polar Plot",
+        3: "Polar Plot",
     }
 
     chart_classes = {
         0: BarChartGraph,
         1: TimeSeries,
         2: TimeSeries,
-        # 4: "Polar Plot",
+        3: Polar,
     }
 
-    def __init__(self, app, n_charts = 10, n_chart_types = 3) -> None:
+    def __init__(self, app, n_charts = 10) -> None:
         self.app = app
         self.n_charts = n_charts
-        self.n_chart_types = n_chart_types
-        self.chart_ids = [list(range(n_chart_types * i, n_chart_types * (i + 1))) for i in range(n_charts + 1)] # this works!
+        self.n_chart_types = len(self.chart_classes.keys())
+        self.chart_ids = [list(range(self.n_chart_types * i, self.n_chart_types * (i + 1))) for i in range(n_charts + 1)] # this works!
         # self.chart_ids = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [9, 10, 11], [12, 13, 14], ..., [27, 28, 29], [30, 31, 32]]
         self.button_ids = list(range(n_charts + 1))
         # access this with self.chart_ids[chart_type][id_num]
@@ -89,7 +89,11 @@ class Page():
 
             for chart_type in range(self.n_chart_types):
                 chart_class = self.chart_classes[chart_type]
-                graph_frame = chart_class(self.app, self.data_importer, self.chart_ids[chart_num][chart_type], chart_type, initial_display_status = 'none')
+                if chart_num == 0 and chart_type in [0, 1]:
+                    initial_display_status = 'block'
+                else:
+                    initial_display_status = 'none'
+                graph_frame = chart_class(self.app, self.data_importer, self.chart_ids[chart_num][chart_type], chart_type, initial_display_status)
                 self.layout.children.append(graph_frame.frame)
 
         self.layout.children.append(self.create_dropdown(chart_num + 1, add_callback = False))
@@ -100,7 +104,7 @@ class Page():
 if __name__ == '__main__':
     app = Dash(__name__) # initialize the app
 
-    p = Page(app)
+    p = Page(app, n_charts = 4)
     app.layout = html.Div(p.layout)
 
     app.run_server(debug=True)
