@@ -90,18 +90,15 @@ class Page():
         for chart_num in range(self.n_charts):
 
             # add dropdown
-            initial_display_status = 'block' if chart_num == 0 else 'none'
-            if chart_num < self.n_charts - 1: # not the last element
-                self.layout.children.append(self.create_dropdown(chart_num, initial_display_status))
-            else:
-                # self.layout.children.append(f"Cannot add more than {self.n_charts} charts.")
-                self.layout.children.append(self.create_dropdown(chart_num, initial_display_status, add_callback = False))
+            initial_display_status = 'block' if chart_num == 2 else 'none'
+            add_callback = chart_num < self.n_charts - 1 # not the last element
+            self.layout.children.append(self.create_dropdown(chart_num, initial_display_status, add_callback))
 
             # add graph frame
             for chart_type in range(self.n_chart_types):
                 chart_class = self.chart_classes[chart_type]
 
-                initial_display_status = 'block' if chart_num == 0 and chart_type in [0, 1] else 'none'
+                initial_display_status = 'block' if chart_num in [0, 1] and chart_type == chart_num else 'none'
                 graph_frame = chart_class(self.app, self.data_importer, self.chart_ids[chart_num][chart_type], chart_type, initial_display_status)
 
                 self.layout.children.append(graph_frame.frame)
