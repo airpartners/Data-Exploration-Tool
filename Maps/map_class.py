@@ -50,27 +50,28 @@ class Map():
         percentage=pollutants*100
         percentage=percentage.round(3)
 
-        latitude = [42.38436682275741, 42.366293100928964, 42.372108131433066, 42.36425867647669, 42.361552197618515, 42.38730430752273]
-        longitude = [-71.00224008848411, -71.03119524615705, -70.99516411546733,  -71.02899217300163, -70.97258190197628, -71.00479111744103]
+        latitude = [42.38436682275741, 42.366293100928964, 42.372108131433066, 42.36425867647669, 42.361552197618515, 42.38273398676193]
+        longitude = [-71.00224008848411, -71.03119524615705, -70.99516411546733,  -71.02899217300163, -70.97258190197628, -70.99861095950514]
         sensor_name = ['SN45', 'SN46', 'SN49', 'SN62', 'SN67', 'SN72']
 
         
         fig = px.scatter_mapbox(
             lat=latitude, 
             lon=longitude, 
-            color=percentage.loc[variable_name],
+            color=pollutants.loc[variable_name],
             color_continuous_scale=[(0,"green"),(0.5,"yellow"),(0.75,"red"),(1,"purple")],
-            range_color=[0,300],
+            range_color=[0,3],
             # text = percentage.loc[variable_name],
             size = [10,10,10,10,10,10],
-            zoom=12,
+            zoom=12.7,
+            opacity=0.9,
             height=500)
         fig.update_layout(mapbox_style="open-street-map")
         fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
         fig.update_traces(go.Scattermapbox(
             customdata=percentage.loc[variable_name],
             hovertext=sensor_name, 
-            hovertemplate='<br><b>%{hovertext}<b><br>%{customdata}<span>&#37;</span>'
+            hovertemplate='<br>%{hovertext}<b><br>%{customdata}<span>&#37;</span></b> of 2-year mean'
         ))
         # fig.update_traces(go.Scattermapbox(
         #     lat=latitude,
