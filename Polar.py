@@ -21,71 +21,47 @@ class Polar(GraphFrame):
                             html.P("At "),
                             style = self.text_style
                         ),
-                        html.Div(
-                            [
-                                dcc.Dropdown(
-                                    options = [
-                                        {'label': 'SN45', 'value': '0'},
-                                        {'label': 'SN46', 'value': '1'},
-                                        {'label': 'SN49', 'value': '2'},
-                                        {'label': 'SN62', 'value': '3'},
-                                        {'label': 'SN67', 'value': '4'},
-                                        {'label': 'SN72', 'value': '5'},
-                                    ],
-                                    # note: in order to set the default value, you have to set value = {the VALUE you want}.
-                                    # Do NOT try to set value = {the LABEL you want}, e.g. value = 'Sensor 1'
-                                    value = '0', # default value
-                                    id = self.get_id("which-sensor"), # javascript id, used in @app.callback to reference this element, below
-                                    clearable = False # prevent users from deselecting all sensors
-                                ),
+                        dcc.Dropdown(
+                            options = [
+                                {'label': 'SN45', 'value': '0'},
+                                {'label': 'SN46', 'value': '1'},
+                                {'label': 'SN49', 'value': '2'},
+                                {'label': 'SN62', 'value': '3'},
+                                {'label': 'SN67', 'value': '4'},
+                                {'label': 'SN72', 'value': '5'},
                             ],
+                            # note: in order to set the default value, you have to set value = {the VALUE you want}.
+                            # Do NOT try to set value = {the LABEL you want}, e.g. value = 'Sensor 1'
+                            value = '0', # default value
+                            id = self.get_id("which-sensor"), # javascript id, used in @app.callback to reference this element, below
+                            clearable = False, # prevent users from deselecting all sensors
                             style = self.dropdown_style
                         ),
                         html.Div(
                             html.P(", what were the concentrations of"),
                             style = self.text_style
                         ),
-                        html.Div(
-                            [
-                                dcc.Dropdown(
-                                    id=self.get_id('pollutant'),
-                                    options=['co.ML', 'correctedNO', 'no2.ML', 'o3.ML', 'pm1.ML', 'pm25.ML', 'pm10.ML'], # ['CO', 'NO', 'NO2', 'O3', 'PM1', 'PM2.5', 'PM10']
-                                    value='co.ML'
-                                ),
-                            ],
+                        dcc.Dropdown(
+                            id=self.get_id('pollutant'),
+                            options=['co.ML', 'correctedNO', 'no2.ML', 'o3.ML', 'pm1.ML', 'pm25.ML', 'pm10.ML'], # ['CO', 'NO', 'NO2', 'O3', 'PM1', 'PM2.5', 'PM10']
+                            value='co.ML',
                             style = self.dropdown_style
                         ),
-                        html.Div(
-                            html.P(" between"),
-                            style = self.text_style
-                        ),
-                        html.Div(
-                            [
-                                dcc.DatePickerSingle(
-                                    display_format='MM/DD/Y',
-                                    date = datetime.date(2019, 12, 1), # default value
-                                    id = self.get_id('start-date'),
-                                ),
-                            ],
+                        " between",
+                        dcc.DatePickerSingle(
+                            display_format='MM/DD/Y',
+                            date = datetime.date(2019, 12, 1), # default value
+                            id = self.get_id('start-date'),
                             style = self.date_picker_style
                         ),
-                        html.Div(
-                            html.P(" and "),
-                            style = self.text_style
-                        ),
-                        html.Div(
-                            [
-                                dcc.DatePickerSingle(
-                                    date = datetime.date(2020, 1, 1), # default value
-                                    display_format='MM/DD/Y',
-                                    id = self.get_id('end-date'),
-                                ),
-                            ],
+                        "and",
+                        dcc.DatePickerSingle(
+                            date = datetime.date(2020, 1, 1), # default value
+                            display_format='MM/DD/Y',
+                            id = self.get_id('end-date'),
                             style = self.date_picker_style
                         ),
-                        html.Div(
-                            html.P("?"),
-                        ),
+                        "?"
                     ]
                 ),
                 # Placeholder for a graph to be created.

@@ -35,10 +35,10 @@ class BarChartGraph(GraphFrame):
                             id = self.get_id('data-stats')
                         ),
                         #choose to show or hide error bars
-                        dcc.RadioItems(
-                            options=[{'label': i, 'value': i} for i in ['Show Percentage Error', 'Hide Percentage Error']],
-                            id = self.get_id('percentage-error'),
-                        ),
+                        # dcc.RadioItems(
+                            # options=[{'label': i, 'value': i} for i in ['Show Percentage Error', 'Hide Percentage Error']],
+                            # id = self.get_id('percentage-error'),
+                        # ),
                     ],
                     style={'width': '48%', 'float': 'right', 'display': 'inline-block', 'margin-bottom': '50px'}
                 ),
@@ -55,9 +55,9 @@ class BarChartGraph(GraphFrame):
             Input( self.get_id('my-date-picker-range'), 'start_date'),
             Input( self.get_id('my-date-picker-range'), 'end_date'),
             Input( self.get_id('data-stats'          ), 'value'),
-            Input( self.get_id('percentage-error'    ), 'value')
+            # Input( self.get_id('percentage-error'    ), 'value')
         )
-        def update_figure(start_date, end_date, stat_type, percentage_error):
+        def update_figure(start_date, end_date, stat_type, percentage_error = False):
             '''
             Main plotting function
             '''

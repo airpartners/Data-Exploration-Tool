@@ -15,29 +15,47 @@ class GraphFrame():
     # define HTML styles for text and dropdown menus. Use this to change font size, alignment, etc.
     text_style = {
         # "display": "inline-block", # if you take this out, all successive elements will be displayed on separate lines
-        "display": "flex",
+        # "display": "flex",
+        "display": "inline-block",
         # "transform": "translateY(0%)", # vertical alignment
         # "position": "relative",
         "margin-left": "10px", # adds a horizontal space between dropdowns menus and next chunk of text
-        "font-size" : "30px",
+        "margin-right": "10px", # adds a horizontal space between dropdowns menus and next chunk of text
+        "font-size" : "24px",
         "font-family": "Arial",
         # "line-height": "0%", # helps reduce the line spacing
     }
 
     dropdown_style = {
         # "display": "inline-block",
-        "display": "flex",
-        "width": "200px",
+        # "display": "flex",
+        "display": "inline-block",
+        "width": "150px",
         # "height": "30px",
-        "margin-left": "10px",
+        "margin-left": "5px",
+        "margin-right": "15px",
         "font-size": "20px",
         "font-family": "Arial",
         # "line-height": "0%", # helps reduce the line spacing
     }
 
+    dropdown_style_2 = {
+        # "display": "block",
+        # "display": "flex",
+        "display": "inline-block",
+        "width": "500px",
+        # "height": "30px",
+        # "margin-right": "10px",
+        # "margin-left": "10px",
+        "font-size": "20px",
+        # "font-family": "Arial",
+        # "line-height": "0%", # helps reduce the line spacing
+    }
+
     date_picker_style = {
         # "display": "inline-block",
-        "display": "flex",
+        # "display": "flex",
+        "display": "inline-block",
         # "width": "200px", # not used or doesn't work
         # "height": "40px",
         "margin-left": "10px",
