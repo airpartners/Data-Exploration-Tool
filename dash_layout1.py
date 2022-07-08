@@ -1,6 +1,6 @@
 from dash import Dash, html, dcc
 from dash.dependencies import Input, Output
-# from graph_frame import GraphFrame
+from graph_frame import GraphFrame
 from time_series import TimeSeries
 from bar_chart_graph import BarChartGraph
 from data_importer import DataImporter
@@ -52,14 +52,15 @@ class Page():
             options = [
                 {'label': "Bar Chart", 'value': 0},
                 {'label': "Timeseries", 'value': 1},
-                {'label': "Correlation Plot", 'value': 2},
-                {'label': "Polar Plot", 'value': 3},
+                {'label': "Polar Plot", 'value': 2},
+                # {'label': "Correlation Plot", 'value': 3},
             ],
             # note: in order to set the default value, you have to set value = {the VALUE you want}, e.g. value = 0.
             # Do NOT try to set value = {the LABEL you want}, e.g. value = 'Sensor 1'
             value = None, # default value
             id = self.get_id('new-chart-dropdown', chart_num), # javascript id, used in @app.callback to reference this element
-            style = {'display': initial_display_status}
+            placeholder = "Create another graph...",
+            style = GraphFrame.dropdown_style_header | {'display': initial_display_status} # right-most dictionary xwins ties for keys
         )
         if add_callback:
             self.add_dropdown_callback(chart_num)

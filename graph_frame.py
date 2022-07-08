@@ -48,9 +48,13 @@ class GraphFrame():
         # "margin-right": "10px",
         # "margin-left": "10px",
         "font-size": "20px",
-        # "font-family": "Arial",
+        "font-family": "Arial",
         # "line-height": "0%", # helps reduce the line spacing
     }
+
+    dropdown_style_header = dropdown_style_2 | {"font-size": "20px", "font-weight": "bold"}
+    # dropdown_style_header["font-size"] = "20px"
+    # dropdown_style_header["font-weight"] = "bold"
 
     date_picker_style = {
         # "display": "inline-block",

@@ -17,10 +17,7 @@ class Polar(GraphFrame):
             [
                 html.Div(
                     [
-                        html.Div(
-                            html.P("At "),
-                            style = self.text_style
-                        ),
+                        "At",
                         dcc.Dropdown(
                             options = [
                                 {'label': 'SN45', 'value': '0'},
@@ -37,10 +34,7 @@ class Polar(GraphFrame):
                             clearable = False, # prevent users from deselecting all sensors
                             style = self.dropdown_style
                         ),
-                        html.Div(
-                            html.P(", what were the concentrations of"),
-                            style = self.text_style
-                        ),
+                        ", what were the concentrations of",
                         dcc.Dropdown(
                             id=self.get_id('pollutant'),
                             options=['co.ML', 'correctedNO', 'no2.ML', 'o3.ML', 'pm1.ML', 'pm25.ML', 'pm10.ML'], # ['CO', 'NO', 'NO2', 'O3', 'PM1', 'PM2.5', 'PM10']
@@ -62,7 +56,8 @@ class Polar(GraphFrame):
                             style = self.date_picker_style
                         ),
                         "?"
-                    ]
+                    ],
+                    style = self.text_style
                 ),
                 # Placeholder for a graph to be created.
                 # This graph will be updated in the @app.callback: update_figure function below
