@@ -78,12 +78,12 @@ class Page():
         def make_graphs_visible(chart_type):
             print(f"Dropdown with id is being called back!")
             output = [{'display': 'none'}] * self.n_chart_types # create it as a list so it can be modified
-            output.append({'display': 'none'})
+            output.append(GraphFrame.dropdown_style_header | {'display': 'none'})
             if chart_type is None:
                 return tuple(output) # then convert to a tuple before returning
             # else:
             output[chart_type] = {'display': 'block'}
-            output[-1] = {'display': 'block'}
+            output[-1] = GraphFrame.dropdown_style_header | {'display': 'block'}
             return tuple(output)
 
     def create_layout(self):
@@ -114,7 +114,7 @@ class Page():
 if __name__ == '__main__':
     app = Dash(__name__) # initialize the app
 
-    p = Page(app, n_charts = 8)
+    p = Page(app, n_charts = 10)
     app.layout = html.Div(p.layout)
 
     app.run_server(debug=True)
