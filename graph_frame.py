@@ -120,7 +120,7 @@ class GraphFrame():
     def get_layout(self, initial_display_status):
         return \
         html.Div(
-            children = self.get_html() + [html.Hr(style = {'border': '3px solid black'})],
+            children = self.get_html() + [html.Hr(style = {'border': '8px solid black'})],
             style = {'display': initial_display_status},
             id = self.get_id('frame')
         )
