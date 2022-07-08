@@ -37,9 +37,10 @@ class Polar(GraphFrame):
                         ", what were the concentrations of",
                         dcc.Dropdown(
                             id=self.get_id('pollutant'),
-                            options=['co.ML', 'correctedNO', 'no2.ML', 'o3.ML', 'pm1.ML', 'pm25.ML', 'pm10.ML'], # ['CO', 'NO', 'NO2', 'O3', 'PM1', 'PM2.5', 'PM10']
-                            value='co.ML',
-                            style = self.dropdown_style
+                            # options=['co.ML', 'correctedNO', 'no2.ML', 'o3.ML', 'pm1.ML', 'pm25.ML', 'pm10.ML'], # ['CO', 'NO', 'NO2', 'O3', 'PM1', 'PM2.5', 'PM10']
+                            options = self.gas_vars | self.particles_vars,
+                            value='pm25.ML',
+                            style = self.dropdown_style | {"width": "340px"}
                         ),
                         " between",
                         dcc.DatePickerSingle(
@@ -109,25 +110,26 @@ class PolarClass(FilterGraph):
             opacity=0.4,
             color=df[pollutant],
             color_continuous_scale=[(0,"green"),(0.5,"yellow"),(0.75,"red"),(1,"purple")],
-            range_color=limit[pollutant],
+            # range_color=limit[pollutant],
             # template="plotly_dark",
         )
 
         # add another column which is hour converted to degrees
         fig.update_layout(
-            polar={
+            polar = {
                 "angularaxis": {
                     "tickmode": "array",
                     "tickvals": list(range(0, 360, 360 // 8)),
                     "ticktext": ['N','NE','E','SE','S','SW','W','NW'],
                 }
-            }
+            },
         )
         fig.layout.annotations =[dict(showarrow=False,
                               text='Wind Speed (m/s)',
                               xanchor='left',
                               yanchor='bottom',
                               font=dict(size=12 ))]
+        fig.update_layout(margin = {'t': 0, 'l': 360, 'r': 360})
 
         return fig
 
