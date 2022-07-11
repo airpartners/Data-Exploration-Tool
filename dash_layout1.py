@@ -38,7 +38,7 @@ class Page():
 
         self.create_layout()
 
-    def create_dropdown(self, chart_num, initial_display_status, add_callback = True):
+    def create_dropdown(self, chart_num, initial_display_status, placeholder_text = None, add_callback = True):
         print("Creating Dropdown with id", self.get_id('new-chart-dropdown', chart_num))
         if not add_callback:
             return html.Div(
@@ -47,20 +47,26 @@ class Page():
                 style = {'display': initial_display_status},
             )
         # else:
+        options = [
+            {'label': "Timeseries", 'value': 0},
+            {'label': "Correlation Plot", 'value': 1},
+            {'label': "Polar Plot", 'value': 2},
+            {'label': "Bar Chart", 'value': 3},
+        ]
+
+        if placeholder_text in range(4):
+            placeholder = options[placeholder_text]["label"]
+        else:
+            placeholder = "Create another graph..."
+
         dropdown = \
         dcc.Dropdown(
-            # children = "hh",
-            options = [
-                {'label': "Timeseries", 'value': 0},
-                {'label': "Polar Plot", 'value': 2},
-                {'label': "Correlation Plot", 'value': 1},
-                {'label': "Bar Chart", 'value': 3},
-            ],
+            options = options,
             # note: in order to set the default value, you have to set value = {the VALUE you want}, e.g. value = 0.
             # Do NOT try to set value = {the LABEL you want}, e.g. value = 'Sensor 1'
             value = None, # default value
             id = self.get_id('new-chart-dropdown', chart_num), # javascript id, used in @app.callback to reference this element
-            placeholder = "Create another graph...",
+            placeholder = placeholder,
             style = GraphFrame.dropdown_style_header | {'display': initial_display_status} # right-most dictionary xwins ties for keys
         )
         if add_callback:
@@ -93,7 +99,7 @@ class Page():
             # add dropdown
             initial_display_status = 'block' if chart_num in [0, 1, 2, 3, 4] else 'none'
             add_callback = chart_num < self.n_charts - 1 # not the last element
-            self.layout.children.append(self.create_dropdown(chart_num, initial_display_status, add_callback))
+            self.layout.children.append(self.create_dropdown(chart_num, initial_display_status, placeholder_text = chart_num, add_callback = add_callback))
 
             # add graph frame
             for chart_type in range(self.n_chart_types):
