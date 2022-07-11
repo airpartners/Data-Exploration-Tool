@@ -20,16 +20,16 @@ class Polar(GraphFrame):
                         "At",
                         dcc.Dropdown(
                             options = [
-                                {'label': 'SN45', 'value': '0'},
-                                {'label': 'SN46', 'value': '1'},
-                                {'label': 'SN49', 'value': '2'},
-                                {'label': 'SN62', 'value': '3'},
-                                {'label': 'SN67', 'value': '4'},
-                                {'label': 'SN72', 'value': '5'},
+                                {'label': 'SN45', 'value': 0},
+                                {'label': 'SN46', 'value': 1},
+                                {'label': 'SN49', 'value': 2},
+                                {'label': 'SN62', 'value': 3},
+                                {'label': 'SN67', 'value': 4},
+                                {'label': 'SN72', 'value': 5},
                             ],
                             # note: in order to set the default value, you have to set value = {the VALUE you want}.
                             # Do NOT try to set value = {the LABEL you want}, e.g. value = 'Sensor 1'
-                            value = '0', # default value
+                            value = 0, # default value
                             id = self.get_id("which-sensor"), # javascript id, used in @app.callback to reference this element, below
                             clearable = False, # prevent users from deselecting all sensors
                             style = self.dropdown_style
@@ -76,8 +76,7 @@ class Polar(GraphFrame):
             Input(self.get_id('pollutant'), 'value'),
         )
         def update_figure(which_sensor, start_date, end_date, pollutant):
-            print('whatever')
-            return self.polar_class.update_figure(int(which_sensor), start_date, end_date, pollutant)
+            return self.polar_class.update_figure(which_sensor, start_date, end_date, pollutant)
 
 
 
@@ -94,35 +93,35 @@ class PolarClass(FilterGraph):
         print("Filtering by pollutant: ", pollutant)
 
         limit={
-            'co.ML': [0,9000],
-            'correctedNO': [0,71000],
-            'no2.ML': [0,71000],
-            'o3.ML': [0,93000],
-            'pm1.ML': [0,20],
-            'pm25.ML': [0,20],
+            'co.ML': [0,9000], 
+            'correctedNO': [0,71000], 
+            'no2.ML': [0,71000], 
+            'o3.ML': [0,93000], 
+            'pm1.ML': [0,20], 
+            'pm25.ML': [0,20], 
             'pm10.ML': [0,67]
         }
 
         fig = px.scatter_polar(df,
             r='ws',
-            theta='wd',
-            size=df[pollutant],
+            theta='wd', 
+            size=df[pollutant], 
             opacity=0.4,
             color=df[pollutant],
             color_continuous_scale=[(0,"green"),(0.5,"yellow"),(0.75,"red"),(1,"purple")],
-            # range_color=limit[pollutant],
+            range_color=limit[pollutant],
             # template="plotly_dark",
         )
 
         # add another column which is hour converted to degrees
         fig.update_layout(
-            polar = {
+            polar={
                 "angularaxis": {
                     "tickmode": "array",
                     "tickvals": list(range(0, 360, 360 // 8)),
                     "ticktext": ['N','NE','E','SE','S','SW','W','NW'],
                 }
-            },
+            }
         )
         fig.layout.annotations =[dict(showarrow=False,
                               text='Wind Speed (m/s)',
