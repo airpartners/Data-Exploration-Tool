@@ -47,11 +47,13 @@ elif user_profile == "zxiong":
         "C:/Users/zxiong/Desktop/Olin/Air Partners/downsampled/sn72-final-w-ML-PM.parquet",
     ]
 
-    flight_csv_dir = "C:/dev/Air Partners/Data Analysis/data/flights/raw/"
+    stats_file = "C:/Users/zxiong/Desktop/Olin/Air Partners/Code/stats.parquet"
 
-    processed_flight_dir = "C:/dev/Air Partners/Data Analysis/data/flights/processed/"
+    flight_csv_dir = "C:/Users/zxiong/Desktop/Olin/Air Partners/flight data/raw"
 
-    final_flights = "C:/dev/Air Partners/Data Analysis/data/flights/final/combined_flights.parquet"
+    processed_flight_dir = "C:/Users/zxiong/Desktop/Olin/Air Partners/flight data/intermediate files"
+
+    final_flights = "C:/Users/zxiong/Desktop/Olin/Air Partners/flight data/final files/final_flights.parquet"
 
 else: # if not Ian or Lauren, feel free to make a copy of this and change the file names below:
     raw_csv_paths = [
