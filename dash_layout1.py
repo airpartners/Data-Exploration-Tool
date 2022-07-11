@@ -5,21 +5,22 @@ from time_series import TimeSeries
 from bar_chart_graph import BarChartGraph
 from data_importer import DataImporter
 from Polar import Polar
+from Scatterplot_final import Scatter
 
 class Page():
 
     chart_names = {
-        0: "Bar Chart",
-        1: "Timeseries",
+        0: "Timeseries",
+        1: "Correlation Plot",
         2: "Polar Plot",
-        # 2: "Correlation Plot",
+        3: "Bar Chart"
     }
 
     chart_classes = {
-        0: BarChartGraph,
-        1: TimeSeries,
+        0: TimeSeries,
+        1: Scatter,
         2: Polar,
-        # 2: TimeSeries,
+        3: BarChartGraph
     }
 
     def __init__(self, app, n_charts = 10) -> None:
@@ -50,10 +51,10 @@ class Page():
         dcc.Dropdown(
             # children = "hh",
             options = [
-                {'label': "Bar Chart", 'value': 0},
-                {'label': "Timeseries", 'value': 1},
+                {'label': "Timeseries", 'value': 0},
                 {'label': "Polar Plot", 'value': 2},
-                # {'label': "Correlation Plot", 'value': 3},
+                {'label': "Correlation Plot", 'value': 1},
+                {'label': "Bar Chart", 'value': 3},
             ],
             # note: in order to set the default value, you have to set value = {the VALUE you want}, e.g. value = 0.
             # Do NOT try to set value = {the LABEL you want}, e.g. value = 'Sensor 1'
@@ -90,7 +91,7 @@ class Page():
         for chart_num in range(self.n_charts):
 
             # add dropdown
-            initial_display_status = 'block' if chart_num == 2 else 'none'
+            initial_display_status = 'block' if chart_num in [0, 1, 2, 3, 4] else 'none'
             add_callback = chart_num < self.n_charts - 1 # not the last element
             self.layout.children.append(self.create_dropdown(chart_num, initial_display_status, add_callback))
 
@@ -98,7 +99,7 @@ class Page():
             for chart_type in range(self.n_chart_types):
                 chart_class = self.chart_classes[chart_type]
 
-                initial_display_status = 'block' if chart_num in [0, 1] and chart_type == chart_num else 'none'
+                initial_display_status = 'block' if chart_num in [0, 1, 2, 3] and chart_type == chart_num else 'none'
                 graph_frame = chart_class(self.app, self.data_importer, self.chart_ids[chart_num][chart_type], chart_type, initial_display_status)
 
                 self.layout.children.append(graph_frame.frame)
