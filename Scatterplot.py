@@ -37,7 +37,8 @@ app.layout = html.Div([
     html.Div([
         html.Div([
             dcc.Dropdown(
-                ['wind_dir', 'temp_box', 'pm10', 'pm25', 'no2'],
+                ['temp_manifold','rh_manifold','pressure','bin0','bin1','bin2','bin3','bin4','bin5',
+                'wd','ws','correctedNO','co.ML','no2.ML','o3.ML','pm1.ML','pm25.ML','pm10.ML'],
                 id='xaxis-column'
             ),
             dcc.RadioItems(
@@ -50,7 +51,8 @@ app.layout = html.Div([
 
         html.Div([
             dcc.Dropdown(
-                ['wind_dir', 'temp_box', 'pm10', 'pm25', 'no2'],
+                ['temp_manifold','rh_manifold','pressure','bin0','bin1','bin2','bin3','bin4','bin5',
+                'wd','ws','correctedNO','co.ML','no2.ML','o3.ML','pm1.ML','pm25.ML','pm10.ML'],
                 multi=True,
                 id='yaxis-column'
             ),
