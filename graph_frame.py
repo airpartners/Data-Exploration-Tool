@@ -87,12 +87,12 @@ class GraphFrame():
         "o3.ML": "O3 (ppb)",
     }
     particles_vars = {
-        "bin0": "0.3-0.5μm particles (bin 0)",
-        "bin1": "0.5-0.7μm particles (bin 1)",
-        "bin2": "0.7-1.0μm particles (bin 2)",
-        "bin3": "1.0-2.5μm particles (bin 3)",
-        "bin4": "2.5-10μm particles (bin 4)",
-        "bin5": "10+ μm particles (bin 5)",
+        # "bin0": "0.3-0.5μm particles (bin 0)",
+        # "bin1": "0.5-0.7μm particles (bin 1)",
+        # "bin2": "0.7-1.0μm particles (bin 2)",
+        # "bin3": "1.0-2.5μm particles (bin 3)",
+        # "bin4": "2.5-10μm particles (bin 4)",
+        # "bin5": "10+ μm particles (bin 5)",
         "pm1.ML": "PM1 (μg/m^3)",
         "pm25.ML": "PM2.5 (μg/m^3)",
         "pm10.ML": "PM10 (μg/m^3)",
