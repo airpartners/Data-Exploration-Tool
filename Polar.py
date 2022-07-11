@@ -1,3 +1,4 @@
+from asyncore import poll
 import dash
 from dash import Dash, dcc, html, Input, Output
 import dash_core_components as dcc
@@ -5,6 +6,7 @@ import dash_html_components as html
 import datetime
 import pandas as pd
 import plotly.express as px
+import plotly.graph_objects as go
 
 from filter_graph import FilterGraph # import from supporting file (contained in this repo)
 from graph_frame import GraphFrame
@@ -89,6 +91,9 @@ class PolarClass(FilterGraph):
     def update_figure(self, which_sensor, start_date, end_date, pollutant):
         df = self.data_importer.get_data_by_sensor(which_sensor)
         df = self.filter_by_date(df, start_date, end_date)
+        df['ws'] = [round (num,2) for num in df['ws']]
+        df['wd'] = [round (num,2) for num in df['wd']]
+        df[pollutant] = [round (num,2) for num in df[pollutant]]
 
         print("Filtering by pollutant: ", pollutant)
 
@@ -105,11 +110,12 @@ class PolarClass(FilterGraph):
         fig = px.scatter_polar(df,
             r='ws',
             theta='wd', 
-            size=df[pollutant], 
+            size=pollutant,
             opacity=0.4,
-            color=df[pollutant],
+            color=pollutant,
             color_continuous_scale=[(0,"green"),(0.5,"yellow"),(0.75,"red"),(1,"purple")],
             range_color=limit[pollutant],
+            hover_name=df.index,
             # template="plotly_dark",
         )
 
@@ -129,6 +135,11 @@ class PolarClass(FilterGraph):
                               yanchor='bottom',
                               font=dict(size=12 ))]
         fig.update_layout(margin = {'t': 0, 'l': 360, 'r': 360})
+        # fig.update_traces(go.Scatterpolar(
+        #     text=df[pollutant],
+        #     customdata=df.index,
+        #     hovertemplate='interesting<br>%{text}<br><b>{customdata}</b>'
+        # ))
 
         return fig
 
