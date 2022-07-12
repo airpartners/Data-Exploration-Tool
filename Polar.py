@@ -91,25 +91,27 @@ class PolarClass(FilterGraph):
     def update_figure(self, which_sensor, start_date, end_date, pollutant):
         df = self.data_importer.get_data_by_sensor(which_sensor)
         df = self.filter_by_date(df, start_date, end_date)
-        df['ws'] = [round (num,2) for num in df['ws']]
-        df['wd'] = [round (num,2) for num in df['wd']]
-        df[pollutant] = [round (num,2) for num in df[pollutant]]
+        # df['ws'] = [round (num,2) for num in df['ws']]
+        # df['wd'] = [round (num,2) for num in df['wd']]
+        # df[pollutant] = [round (num,2) for num in df[pollutant]]
+        df = df.round(2)
+        df.sort_values(pollutant, ascending = True, inplace = True)
 
         print("Filtering by pollutant: ", pollutant)
 
         limit={
-            'co.ML': [0,9000], 
-            'correctedNO': [0,71000], 
-            'no2.ML': [0,71000], 
-            'o3.ML': [0,93000], 
-            'pm1.ML': [0,20], 
-            'pm25.ML': [0,20], 
+            'co.ML': [0,9000],
+            'correctedNO': [0,71000],
+            'no2.ML': [0,71000],
+            'o3.ML': [0,93000],
+            'pm1.ML': [0,20],
+            'pm25.ML': [0,20],
             'pm10.ML': [0,67]
         }
 
         fig = px.scatter_polar(df,
             r='ws',
-            theta='wd', 
+            theta='wd',
             size=pollutant,
             opacity=0.4,
             color=pollutant,
