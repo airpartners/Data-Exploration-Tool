@@ -1,10 +1,11 @@
 from dash import Dash, html, dcc
 from dash.dependencies import Input, Output
+import dash_daq as daq
 import pandas as pd
 import math
 import numpy as np
 from sigfig import round
-# import datetime
+import datetime
 # from filter_graph import FilterGraph # import from supporting file (contained in this repo)
 from data_importer import DataImporter
 
@@ -67,6 +68,53 @@ class GraphFrame():
         # "line-height": "0%", # helps reduce the line spacing
     }
 
+## //////////////////////////////////////////////////////// ##
+##  Reused HTML components
+
+    def date_picker(self, my_id = 'date-picker-range'):
+        return \
+            dcc.DatePickerRange(
+                display_format = 'MM/DD/Y',
+                min_date_allowed = datetime.date(2019, 9, 8),
+                max_date_allowed = datetime.date(2021, 3, 5),
+                start_date = datetime.date(2019, 12, 1), # default value
+                end_date = datetime.date(2019, 12, 31), # default value
+                id = self.get_id(my_id),
+            )
+
+    def sensor_picker(self, my_id = 'which-sensor'):
+        return \
+            dcc.Dropdown(
+                options = [{'label': self.sensor_locations[name], 'value': i} for i, name in enumerate(self.sensor_names)],
+                # note: in order to set the default value, you have to set value = {the VALUE you want}.
+                # Do NOT try to set value = {the LABEL you want}, e.g. value = 'Sensor 1'
+                value = 0, # default value
+                id = self.get_id(my_id), # javascript id, used in @app.callback to reference this element, below
+                clearable = False, # prevent users from deselecting all sensors
+                style = self.dropdown_style
+            )
+
+    def pollutant_picker(self, my_id = 'pollutant-dropdown'):
+        return \
+            dcc.Dropdown(
+                options = [{'label': var_name, 'value': var} for var, var_name in
+                    list(self.particles_vars.items()) + list(self.gas_vars.items()) + list(self.flight_vars.items())],
+                value='pm25.ML',
+                multi = True,
+                id = self.get_id(my_id),
+                style = self.dropdown_style_2
+            )
+
+    def normalize_switch(self, my_id = 'normalize-height'):
+        return \
+            daq.BooleanSwitch(
+                id = self.get_id(my_id),
+                on = True,
+                style = {'display': 'block'},
+                label = "Ignore units",
+                labelPosition = "top"
+            )
+
 ## /////////////////////////////////////////////////// ##
 ## Variables
 
@@ -111,6 +159,8 @@ class GraphFrame():
     # | is the python syntax for adding or "merging" two dictionaries
     all_vars = meteorology_vars | gas_vars | particles_vars | flight_vars
 
+## //////////////////////////////////////////////////////// ##
+##  Sensor locations and names
     sensor_locations_long = {
         "sn45": "Orient Heights (West end); 65 St Andrew Road, East Boston",
         "sn46": "Jeffries Point (Maverick end); 198 Everett Street, East Boston",
@@ -132,6 +182,7 @@ class GraphFrame():
     def __init__(self, app, data_importer: DataImporter, id_num, chart_type = 0, initial_display_status = 'block') -> None:
         self.app = app
         self.data_importer = data_importer
+        self.sensor_names = self.data_importer.get_all_sensor_names()
         self.id_num = id_num
         self.frame = self.get_layout(initial_display_status)
         self.add_graph_callback()

@@ -13,50 +13,19 @@ from graph_frame import GraphFrame
 class TimeSeries(GraphFrame):
 
     def get_html(self):
-        sensor_names = self.data_importer.get_all_sensor_names()
         # children = ...
         return \
             [
                 html.Div(
                     [
                         "At ",
-                        dcc.Dropdown(
-                            options = [{'label': self.sensor_locations[name], 'value': i} for i, name in enumerate(sensor_names)],
-
-                            # note: in order to set the default value, you have to set value = {the VALUE you want}.
-                            # Do NOT try to set value = {the LABEL you want}, e.g. value = 'Sensor 1'
-                            value = 0, # default value
-                            id = self.get_id("which-sensor"), # javascript id, used in @app.callback to reference this element, below
-                            clearable = False, # prevent users from deselecting all sensors
-                            style = self.dropdown_style
-                        ),
+                        self.sensor_picker(),
                         "in the date range of ",
-                        dcc.DatePickerRange(
-                            display_format = 'MM/DD/Y',
-                            min_date_allowed = datetime.date(2019, 9, 8),
-                            max_date_allowed = datetime.date(2021, 3, 5),
-                            start_date = datetime.date(2019, 12, 1), # default value
-                            end_date = datetime.date(2019, 12, 31), # default value
-                            id = self.get_id('date-picker-range'),
-                        ),
+                        self.date_picker(),
                         ", what was the value of ",
-                        dcc.Dropdown(
-                            options = [{'label': var_name, 'value': var} for var, var_name in
-                                list(self.particles_vars.items()) + list(self.gas_vars.items()) + list(self.flight_vars.items())],
-                            # options = [{'label': name, 'value': i} for i, name in enumerate(sensor_names)],
-                            value='pm25.ML',
-                            multi = True,
-                            id = self.get_id('pollutant-dropdown'),
-                            style = self.dropdown_style_2
-                        ),
+                        self.pollutant_picker(),
                         "?",
-                        daq.BooleanSwitch(
-                            id = self.get_id('normalize-height'),
-                            on = True,
-                            style = {'display': 'block'},
-                            label = "Ignore units",
-                            labelPosition = "top"
-                        ),
+                        self.normalize_switch(),
                     ],
                     style = self.text_style
                 ),
