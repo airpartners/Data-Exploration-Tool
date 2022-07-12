@@ -102,80 +102,111 @@ class BarChartGraph(GraphFrame):
             fig = go.Figure()
             fig = make_subplots(rows = 1, cols = 3, subplot_titles = ('Meteorology Data', 'Gas Pollutants', 'Particle Pollutants'))
 
-            def add_sub_barchart(vars, name):
-                pass
+            def add_sub_barchart(vars, col, color):
+                if normalize_height:
+                    normalized_text = normalized_stat[vars.keys()].apply(self.as_percent)
+                else:
+                    normalized_text = normalized_stat[vars.keys()].apply(self.as_float)
 
-            #first subplot of meteorology data
-            fig.add_trace(
-                go.Bar(
-                    x = list(self.meteorology_vars.values()),
-                    y = normalized_stat[self.meteorology_vars.keys()],
-                    text = normalized_text,
-                    marker_color = px.colors.qualitative.T10[0],
-                    # customdata = data_mean[1:5] if data_stats == 'Mean' else data_median[1:5],
-                    # hovertext = sn45_mean[1:5] if data_stats == 'Mean' else sn45_median[1:5],
-                    # hovertemplate = '<br><b>%{x}</b><br>Filtered data mean:%{customdata}<br>Entire data set median:%{hovertext}<br>Quotient of mean:%{y}'
-                    # if data_stats == 'Mean' else
-                    # '<br><b>%{x}</b><br>Filtered data median:%{customdata}<br>Entire data set median:%{hovertext}<br>Quotient of median:%{y}',
-                    # name = 'meteorology data',
-                    showlegend = False,
-                    # error_y =
-                    #     dict(
-                    #         type = 'data', # value of error bar given in data coordinates
-                    #         array = error_by_mean[1:5] if data_stats == 'Mean' else error_by_median[1:7],
-                    #         visible = True if percentage_error=='Show Percentage Error' else False
-                    #     )
-                ),
-            row = 1, col = 1
-            )
+                fig.add_trace(
+                    go.Bar(
+                        x = list(vars.values()),
+                        y = normalized_stat[vars.keys()],
+                        text = normalized_text,
+                        marker_color = px.colors.qualitative.T10[color],
+                        # customdata = data_mean[1:5] if data_stats == 'Mean' else data_median[1:5],
+                        # hovertext = sn45_mean[1:5] if data_stats == 'Mean' else sn45_median[1:5],
+                        # hovertemplate = '<br><b>%{x}</b><br>Filtered data mean:%{customdata}<br>Entire data set median:%{hovertext}<br>Quotient of mean:%{y}'
+                        # if data_stats == 'Mean' else
+                        # '<br><b>%{x}</b><br>Filtered data median:%{customdata}<br>Entire data set median:%{hovertext}<br>Quotient of median:%{y}',
+                        # name = 'meteorology data',
+                        showlegend = False,
+                        # error_y =
+                        #     dict(
+                        #         type = 'data', # value of error bar given in data coordinates
+                        #         array = error_by_mean[1:5] if data_stats == 'Mean' else error_by_median[1:7],
+                        #         visible = True if percentage_error=='Show Percentage Error' else False
+                        #     )
+                    ),
+                    row = 1,
+                    col = col
+                )
 
-            #second subplot of pollutant gas concentration data
-            fig.add_trace(
-                go.Bar(
-                    x = list(self.gas_vars.values()),
-                    y = normalized_stat[self.gas_vars.keys()],
-                    text = normalized_text,
-                    marker_color=px.colors.qualitative.T10[2],
-                    # customdata=data_mean[7:11] if data_stats == 'Mean' else data_median[7:11],
-                    # hovertext=sn45_mean[7:11] if data_stats == 'Mean' else sn45_median[7:11],
-                    # hovertemplate='<br><b>%{x}</b><br>Filtered data mean:%{customdata}<br>Entire data set median:%{hovertext}<br>Quotient of mean:%{y}'
-                    # if data_stats == 'Mean' else
-                    # '<br><b>%{x}</b><br>Filtered data median:%{customdata}<br>Entire data set median:%{hovertext}<br>Quotient of median:%{y}',
-                    # name='pollutant gas data',
-                    showlegend=False,
-                    # error_y =
-                    #     dict(
-                    #         type='data', # value of error bar given in data coordinates
-                    #         array=error_by_mean[7:11] if data_stats == 'Mean' else error_by_median[7:11],
-                    #         visible = True if percentage_error=='Show Percentage Error' else False
-                    #     )
-                ),
-            row=1, col=2
-            )
+            add_sub_barchart(self.meteorology_vars, 1, color = 0)
+            add_sub_barchart(self.gas_vars, 2, color = 2)
+            add_sub_barchart(self.particles_vars, 3, color = 5)
 
-            #third subplot of pollutant particle concentration data
-            fig.add_trace(
-                go.Bar(
-                    x = list(self.particles_vars.values()),
-                    y = normalized_stat[self.particles_vars.keys()],
-                    text = normalized_text,
-                    marker_color = px.colors.qualitative.T10[5],
-                    # customdata=data_mean[11:20] if data_stats == 'Mean' else data_median[11:20],
-                    # hovertext=sn45_mean[11:20] if data_stats == 'Mean' else sn45_median[11:20],
-                    # hovertemplate='<br><b>%{x}</b><br>Filtered data mean:%{customdata}<br>Entire data set median:%{hovertext}<br>Quotient of mean:%{y}'
-                    # if data_stats == 'Mean' else
-                    # '<br><b>%{x}</b><br>Filtered data median:%{customdata}<br>Entire data set median:%{hovertext}<br>Quotient of median:%{y}',
-                    # name='pollutant particle data',
-                    showlegend=False,
-                    # error_y =
-                    #     dict(
-                    #         type='data', # value of error bar given in data coordinates
-                    #         array=error_by_mean[11:20] if data_stats == 'Mean' else error_by_median[11:20],
-                    #         visible = True if percentage_error=='Show Percentage Error' else False
-                    #     )
-                ),
-            row=1, col=3
-            )
+            # #first subplot of meteorology data
+            # fig.add_trace(
+            #     go.Bar(
+            #         x = list(self.meteorology_vars.values()),
+            #         y = normalized_stat[self.meteorology_vars.keys()],
+            #         text = normalized_text,
+            #         marker_color = px.colors.qualitative.T10[0],
+            #         # customdata = data_mean[1:5] if data_stats == 'Mean' else data_median[1:5],
+            #         # hovertext = sn45_mean[1:5] if data_stats == 'Mean' else sn45_median[1:5],
+            #         # hovertemplate = '<br><b>%{x}</b><br>Filtered data mean:%{customdata}<br>Entire data set median:%{hovertext}<br>Quotient of mean:%{y}'
+            #         # if data_stats == 'Mean' else
+            #         # '<br><b>%{x}</b><br>Filtered data median:%{customdata}<br>Entire data set median:%{hovertext}<br>Quotient of median:%{y}',
+            #         # name = 'meteorology data',
+            #         showlegend = False,
+            #         # error_y =
+            #         #     dict(
+            #         #         type = 'data', # value of error bar given in data coordinates
+            #         #         array = error_by_mean[1:5] if data_stats == 'Mean' else error_by_median[1:7],
+            #         #         visible = True if percentage_error=='Show Percentage Error' else False
+            #         #     )
+            #     ),
+            # row = 1, col = 1
+            # )
+
+            # #second subplot of pollutant gas concentration data
+            # fig.add_trace(
+            #     go.Bar(
+            #         x = list(self.gas_vars.values()),
+            #         y = normalized_stat[self.gas_vars.keys()],
+            #         text = normalized_text,
+            #         marker_color=px.colors.qualitative.T10[2],
+            #         # customdata=data_mean[7:11] if data_stats == 'Mean' else data_median[7:11],
+            #         # hovertext=sn45_mean[7:11] if data_stats == 'Mean' else sn45_median[7:11],
+            #         # hovertemplate='<br><b>%{x}</b><br>Filtered data mean:%{customdata}<br>Entire data set median:%{hovertext}<br>Quotient of mean:%{y}'
+            #         # if data_stats == 'Mean' else
+            #         # '<br><b>%{x}</b><br>Filtered data median:%{customdata}<br>Entire data set median:%{hovertext}<br>Quotient of median:%{y}',
+            #         # name='pollutant gas data',
+            #         showlegend=False,
+            #         # error_y =
+            #         #     dict(
+            #         #         type='data', # value of error bar given in data coordinates
+            #         #         array=error_by_mean[7:11] if data_stats == 'Mean' else error_by_median[7:11],
+            #         #         visible = True if percentage_error=='Show Percentage Error' else False
+            #         #     )
+            #     ),
+            # row=1, col=2
+            # )
+
+            # #third subplot of pollutant particle concentration data
+            # fig.add_trace(
+            #     go.Bar(
+            #         x = list(self.particles_vars.values()),
+            #         y = normalized_stat[self.particles_vars.keys()],
+            #         text = normalized_text,
+            #         marker_color = px.colors.qualitative.T10[5],
+            #         # customdata=data_mean[11:20] if data_stats == 'Mean' else data_median[11:20],
+            #         # hovertext=sn45_mean[11:20] if data_stats == 'Mean' else sn45_median[11:20],
+            #         # hovertemplate='<br><b>%{x}</b><br>Filtered data mean:%{customdata}<br>Entire data set median:%{hovertext}<br>Quotient of mean:%{y}'
+            #         # if data_stats == 'Mean' else
+            #         # '<br><b>%{x}</b><br>Filtered data median:%{customdata}<br>Entire data set median:%{hovertext}<br>Quotient of median:%{y}',
+            #         # name='pollutant particle data',
+            #         showlegend=False,
+            #         # error_y =
+            #         #     dict(
+            #         #         type='data', # value of error bar given in data coordinates
+            #         #         array=error_by_mean[11:20] if data_stats == 'Mean' else error_by_median[11:20],
+            #         #         visible = True if percentage_error=='Show Percentage Error' else False
+            #         #     )
+            #     ),
+            # row=1, col=3
+            # )
 
             #add title
             # fig.update_layout(title_text="Bar Chart of Standardized Data", title_font_size=30)
