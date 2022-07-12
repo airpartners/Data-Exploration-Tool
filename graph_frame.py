@@ -109,7 +109,7 @@ class GraphFrame():
         return \
             daq.BooleanSwitch(
                 id = self.get_id(my_id),
-                on = True,
+                on = False,
                 style = {'display': 'block'},
                 label = "Ignore units",
                 labelPosition = "top"
