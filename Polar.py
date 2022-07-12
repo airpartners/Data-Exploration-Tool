@@ -20,47 +20,13 @@ class Polar(GraphFrame):
                 html.Div(
                     [
                         "At",
-                        dcc.Dropdown(
-                            options = [
-                                {'label': 'SN45', 'value': 0},
-                                {'label': 'SN46', 'value': 1},
-                                {'label': 'SN49', 'value': 2},
-                                {'label': 'SN62', 'value': 3},
-                                {'label': 'SN67', 'value': 4},
-                                {'label': 'SN72', 'value': 5},
-                            ],
-                            # note: in order to set the default value, you have to set value = {the VALUE you want}.
-                            # Do NOT try to set value = {the LABEL you want}, e.g. value = 'Sensor 1'
-                            value = 0, # default value
-                            id = self.get_id("which-sensor"), # javascript id, used in @app.callback to reference this element, below
-                            clearable = False, # prevent users from deselecting all sensors
-                            style = self.dropdown_style
-                        ),
+                        self.sensor_picker(),
                         ", what were the concentrations of",
-                        dcc.Dropdown(
-                            id=self.get_id('pollutant'),
-                            # options=['co.ML', 'correctedNO', 'no2.ML', 'o3.ML', 'pm1.ML', 'pm25.ML', 'pm10.ML'], # ['CO', 'NO', 'NO2', 'O3', 'PM1', 'PM2.5', 'PM10']
-                            options = self.gas_vars | self.particles_vars,
-                            value='pm25.ML',
-                            style = self.dropdown_style | {"width": "340px"}
-                        ),
-                        " between",
-                        dcc.DatePickerSingle(
-                            display_format='MM/DD/Y',
-                            date = datetime.date(2019, 12, 1), # default value
-                            id = self.get_id('start-date'),
-                            style = self.date_picker_style
-                        ),
-                        "and",
-                        dcc.DatePickerSingle(
-                            date = datetime.date(2020, 1, 1), # default value
-                            display_format='MM/DD/Y',
-                            id = self.get_id('end-date'),
-                            style = self.date_picker_style
-                        ),
+                        self.pollutant_picker(),
+                        " on the date range of",
+                        self.date_picker(),
                         "?"
                     ],
-                    style = self.text_style
                 ),
                 # Placeholder for a graph to be created.
                 # This graph will be updated in the @app.callback: update_figure function below
@@ -73,9 +39,9 @@ class Polar(GraphFrame):
         @self.app.callback(
             Output(self.get_id('polar'),'figure'),
             Input(self.get_id('which-sensor'), 'value'),
-            Input(self.get_id('start-date'), 'date'),
-            Input(self.get_id('end-date'), 'date'),
-            Input(self.get_id('pollutant'), 'value'),
+            Input( self.get_id('date-picker-range'), 'start_date'),
+            Input( self.get_id('date-picker-range'), 'end_date'),
+            Input(self.get_id('pollutant-dropdown'), 'value'),
         )
         def update_figure(which_sensor, start_date, end_date, pollutant):
             return self.polar_class.update_figure(which_sensor, start_date, end_date, pollutant)
