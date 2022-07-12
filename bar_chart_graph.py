@@ -21,9 +21,13 @@ class BarChartGraph(GraphFrame):
                 "At ",
                 self.sensor_picker(),
                 "what were the average pollution levels over the period of ",
-                #apply filter to select time range
-                self.date_picker(),
-                ", relative to the baseline average?",
+                self.date_picker(), #apply filter to select time range
+                html.Div(
+                    ", relative to the baseline average",
+                    id = self.get_id('relative-text'),
+                    style = self.text_style
+                ),
+                "?",
                 # html.Div(
                 #     [
                 #         #choose to plot either mean or median datasets at one time
@@ -50,7 +54,8 @@ class BarChartGraph(GraphFrame):
     def add_graph_callback(self):
 
         @self.app.callback(
-            Output(self.get_id('select-time'         ), 'figure'),
+            Output(self.get_id('select-time'), 'figure'),
+            Output(self.get_id('relative-text'), 'style'),
             Input( self.get_id('which-sensor'), 'value'),
             Input( self.get_id('date-picker-range'), 'start_date'),
             Input( self.get_id('date-picker-range'), 'end_date'),
@@ -178,7 +183,8 @@ class BarChartGraph(GraphFrame):
             # removes the awkward whitespace where the title used to be
 
             #mark the line y=1 i.e. when filtered mean/median equals entire dataset mean/median
-            fig.add_hline(y=1, line_width=3, line_dash="dot", line_color="navy", annotation=dict(text='Average'))
+            if normalize_height:
+                fig.add_hline(y=1, line_width=3, line_dash="dot", line_color="navy", annotation=dict(text='Average'))
             # fig.update_layout(
             #     go.layout(
             #         yaxis=dict(
@@ -195,4 +201,10 @@ class BarChartGraph(GraphFrame):
             #         ),
             #     )
             # )
-            return fig
+
+            if normalize_height:
+                relative_text_style = self.text_style
+            else:
+                relative_text_style = self.text_style | {'display': 'none'}
+
+            return fig, relative_text_style
