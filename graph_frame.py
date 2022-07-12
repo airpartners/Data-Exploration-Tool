@@ -30,7 +30,7 @@ class GraphFrame():
         # "display": "inline-block",
         # "display": "flex",
         "display": "inline-block",
-        "width": "150px",
+        "width": "400px",
         # "height": "30px",
         "margin-left": "5px",
         "margin-right": "15px",
@@ -110,6 +110,24 @@ class GraphFrame():
 
     # | is the python syntax for adding or "merging" two dictionaries
     all_vars = meteorology_vars | gas_vars | particles_vars | flight_vars
+
+    sensor_locations_long = {
+        "sn45": "Orient Heights (West end); 65 St Andrew Road, East Boston",
+        "sn46": "Jeffries Point (Maverick end); 198 Everett Street, East Boston",
+        "sn49": "Winthrop (Maze); 3 Elmer Ave, Winthrop",
+        "sn62": "Jeffries Point (Airport end); 551 Sumner EB",
+        "sn67": "Point Shirley; 86 bay View Ave, Winthrop",
+        "sn72": "Orient Heights (East end); 21 Anna Voy, EB",
+    }
+
+    sensor_locations = {
+        "sn45": "Orient Heights (West end)",
+        "sn46": "Jeffries Point (Maverick end)",
+        "sn49": "Winthrop",
+        "sn62": "Jeffries Point (Airport end)",
+        "sn67": "Point Shirley",
+        "sn72": "Orient Heights (East end)",
+    }
 
     def __init__(self, app, data_importer: DataImporter, id_num, chart_type = 0, initial_display_status = 'block') -> None:
         self.app = app

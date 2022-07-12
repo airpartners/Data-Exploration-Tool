@@ -21,7 +21,7 @@ class TimeSeries(GraphFrame):
                     [
                         "At ",
                         dcc.Dropdown(
-                            options = [{'label': name, 'value': i} for i, name in enumerate(sensor_names)],
+                            options = [{'label': self.sensor_locations[name], 'value': i} for i, name in enumerate(sensor_names)],
 
                             # note: in order to set the default value, you have to set value = {the VALUE you want}.
                             # Do NOT try to set value = {the LABEL you want}, e.g. value = 'Sensor 1'

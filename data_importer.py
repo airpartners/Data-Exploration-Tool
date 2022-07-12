@@ -170,7 +170,7 @@ class DataImporter():
         return self.list_of_sensor_dataframes[sensor_id]
 
     def get_sensor_name_from_file(self, filename):
-        return os.path.basename(filename).split('-')[0]
+        return os.path.basename(filename).split('-')[0].lower()
 
     def get_all_sensor_names(self):
         sensor_names = []
