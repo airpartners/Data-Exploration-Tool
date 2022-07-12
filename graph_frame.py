@@ -194,7 +194,7 @@ class GraphFrame():
         return \
         html.Div(
             children = self.get_html() + [html.Hr(style = {'border': '8px solid black'})],
-            style = {'display': initial_display_status},
+            style = self.text_style | {'display': initial_display_status},
             id = self.get_id('frame')
         )
 
@@ -238,3 +238,11 @@ class GraphFrame():
 
         # format the number with +/- sign ('+'), commas in the thousands place (','), no sig figs ('.0'), and as a percentage ('%')
         return format(round(x - 1, sigfigs = 2), '+,.0%')
+
+    def as_float(self, x):
+        # handle non-numeric data
+        if not isinstance(x, (int, float)) or math.isinf(x) or math.isnan(x):
+            return np.nan
+
+        # format the number with +/- sign ('+'), commas in the thousands place (','), no sig figs ('.0'), and as a percentage ('%')
+        return format(x, '.1f')
