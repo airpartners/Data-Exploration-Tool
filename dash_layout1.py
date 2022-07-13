@@ -6,7 +6,7 @@ from bar_chart_graph import BarChartGraph
 from data_importer import DataImporter
 from Polar import Polar
 from Scatterplot_final import Scatter
-from calendar import CalendarPlot
+from calendar_plot import CalendarPlot
 
 class Page():
 
