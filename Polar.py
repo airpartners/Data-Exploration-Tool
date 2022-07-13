@@ -110,14 +110,14 @@ class PolarClass(FilterGraph):
         # ))
 
         # Add images
-        fig.add_layout_image(
-            dict(
-                source="C:/dev/Air Partners/Data Analysis/data/east_boston/maps/sensor_sn11.png",
-                x=0,
-                y=0,
-            )
-        )
-        fig.update_layout(template="plotly_white")
+        # fig.add_layout_image(
+        #     dict(
+        #         source="C:/dev/Air Partners/Data Analysis/data/east_boston/maps/sensor_sn11.png",
+        #         x=0,
+        #         y=0,
+        #     )
+        # )
+        # fig.update_layout(template="plotly_white")
 
         return fig
 
