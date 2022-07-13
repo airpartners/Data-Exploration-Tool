@@ -40,8 +40,8 @@ class CalendarPlot(GraphFrame):
         @self.app.callback(
             Output(self.get_id('calendar-plot'),'figure'),
             Input(self.get_id('which-sensor'), 'value'),
-            Input(self.get_id('start-date'), 'date'),
-            Input(self.get_id('end-date'), 'date'),
+            Input(self.get_id('date-picker-range'), 'start_date'),
+            Input(self.get_id('date-picker-range'), 'end_date'),
             Input(self.get_id('pollutant-dropdown'), 'value')
             )
 
@@ -57,16 +57,28 @@ class CalendarPlot(GraphFrame):
             df = self.filter_by_date(df, start_date, end_date)
 
 
+            # df.index = pd.date_range('01/01/2018',
+            #                         periods=8,
+            #                         freq='W')
 
+            # print(df.index)
+            # pollution_level = np.array(df[pollutant])
+            # pollution_level = list(np.average(pollution_level.reshape(-1, 24), axis=1))
 
             dummy_df = pd.DataFrame({
                 "ds": pd.date_range(start_date, end_date),
+                "value": np.random.randint(
+                    low=0, high=30,
+                    size=(pd.to_datetime(end_date) - pd.to_datetime(start_date)).days + 1,),
             })
 
             # creating the plot
-            fig = calplot(
-                    x=dummy_df["ds"],
-                    y=df[pollutant]
+            fig = calplot(dummy_df,
+                    x='ds',
+                    y='value',
+                    # data=df[pollutant]
+                    # cmap='YlGn', 
+                    # colorbar=True
             )
 
             return fig

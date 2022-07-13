@@ -57,6 +57,7 @@ class Page():
             {'label': "Correlation Plot", 'value': 1},
             {'label': "Polar Plot", 'value': 2},
             {'label': "Bar Chart", 'value': 3},
+            {'label': "Calendar Plot", 'value': 4},
         ]
 
         if placeholder_text in range(4):
