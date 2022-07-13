@@ -52,7 +52,13 @@ class Map():
 
         latitude = [42.38436682275741, 42.366293100928964, 42.372108131433066, 42.36425867647669, 42.361552197618515, 42.38273398676193]
         longitude = [-71.00224008848411, -71.03119524615705, -70.99516411546733,  -71.02899217300163, -70.97258190197628, -70.99861095950514]
-        sensor_name = ['SN45', 'SN46', 'SN49', 'SN62', 'SN67', 'SN72']
+        sensor_name = [
+            'Orient Heights (West end)', 
+            'Jeffries Point (Maverick end)', 
+            'Winthrop', 
+            'Jeffries Point (Airport end)', 
+            'Point Shirley', 
+            'Orient Heights (East end)']
 
         
         fig = px.scatter_mapbox(
