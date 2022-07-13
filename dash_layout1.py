@@ -6,6 +6,7 @@ from bar_chart_graph import BarChartGraph
 from data_importer import DataImporter
 from Polar import Polar
 from Scatterplot_final import Scatter
+from calendar import CalendarPlot
 
 class Page():
 
@@ -13,14 +14,16 @@ class Page():
         0: "Timeseries",
         1: "Correlation Plot",
         2: "Polar Plot",
-        3: "Bar Chart"
+        3: "Bar Chart",
+        4: "Calendar Plot"
     }
 
     chart_classes = {
         0: TimeSeries,
         1: Scatter,
         2: Polar,
-        3: BarChartGraph
+        3: BarChartGraph,
+        4: CalendarPlot
     }
 
     def __init__(self, app, n_charts = 10) -> None:
