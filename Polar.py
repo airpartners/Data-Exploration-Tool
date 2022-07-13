@@ -21,9 +21,9 @@ class Polar(GraphFrame):
                     [
                         "At",
                         self.sensor_picker(),
-                        ", what were the concentrations of",
+                        ", what were the concentrations of ",
                         self.pollutant_picker(),
-                        " on the date range of",
+                        " on the date range of ",
                         self.date_picker(),
                         "?"
                     ],

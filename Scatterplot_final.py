@@ -19,22 +19,7 @@ class Scatter(GraphFrame):
                 html.Div(
                     [
                         "At",
-                        dcc.Dropdown(
-                            options = [
-                                {'label': 'SN45', 'value': 0},
-                                {'label': 'SN46', 'value': 1},
-                                {'label': 'SN49', 'value': 2},
-                                {'label': 'SN62', 'value': 3},
-                                {'label': 'SN67', 'value': 4},
-                                {'label': 'SN72', 'value': 5},
-                            ],
-                            # note: in order to set the default value, you have to set value = {the VALUE you want}.
-                            # Do NOT try to set value = {the LABEL you want}, e.g. value = 'Sensor 1'
-                            value = 0, # default value
-                            id = self.get_id("which-sensor"), # javascript id, used in @app.callback to reference this element, below
-                            clearable = False, # prevent users from deselecting all sensors
-                            style = self.dropdown_style
-                        ),
+                        self.sensor_picker(),
                         ", what were the correlations between",
                         dcc.Dropdown(
                             id=self.get_id('x-axis'),
@@ -46,27 +31,14 @@ class Scatter(GraphFrame):
                         dcc.Dropdown(
                             id=self.get_id('y-axis'),
                             options = self.all_vars,
-                            multi = True,                            
+                            multi = True,
                             value='pm25.ML',
                             style = self.dropdown_style | {"width": "340px"}
                         ),
-                        " when dates are between",
-                        dcc.DatePickerSingle(
-                            display_format='MM/DD/Y',
-                            date = datetime.date(2019, 12, 1), # default value
-                            id = self.get_id('start-date'),
-                            style = self.date_picker_style
-                        ),
-                        "and",
-                        dcc.DatePickerSingle(
-                            date = datetime.date(2020, 1, 1), # default value
-                            display_format='MM/DD/Y',
-                            id = self.get_id('end-date'),
-                            style = self.date_picker_style
-                        ),
+                        " for dates in the range of ",
+                        self.date_picker('date-picker-range'),
                         "?"
                     ],
-                    style = self.text_style
                 ),
                 # Placeholder for a graph to be created.
                 # This graph will be updated in the @app.callback: update_figure function below
@@ -78,8 +50,8 @@ class Scatter(GraphFrame):
         @self.app.callback(
             Output(self.get_id('scatterplot'),'figure'),
             Input(self.get_id('which-sensor'), 'value'),
-            Input(self.get_id('start-date'), 'date'),
-            Input(self.get_id('end-date'), 'date'),
+            Input(self.get_id('date-picker-range'), 'start_date'),
+            Input(self.get_id('date-picker-range'), 'end_date'),
             Input(self.get_id('x-axis'), 'value'),
             Input(self.get_id('y-axis'), 'value'),
             )
@@ -101,25 +73,27 @@ class Scatter(GraphFrame):
 
             # fig.update_yaxes(title=str(yaxis_column_name),
             #                 type='linear' if yaxis_type == 'Linear' else 'log')
-                            
-
-            fig.update_layout(transition_duration=500)
-
-            # set title and caption
-            string1 = "Scatter plot"
-            myTitle = '<b>'+string1+'</b>'
-
-            string2 = 'This is the caption'
-            myCaption = string2
 
 
-            fig.update_layout(title=go.layout.Title(
-                text=myTitle, font=dict(
-                family="Courier New, monospace",
-                size=22,
-                color="#000000"
-                ))
+            fig.update_layout(
+                transition_duration = 500,
+                margin = {'t': 0}, # removes the awkward whitespace where the title used to be
             )
 
+            # # set title and caption
+            # string1 = "Scatter plot"
+            # myTitle = '<b>'+string1+'</b>'
+
+            # string2 = 'This is the caption'
+            # myCaption = string2
+
+
+            # fig.update_layout(title=go.layout.Title(
+            #     text=myTitle, font=dict(
+            #     family="Courier New, monospace",
+            #     size=22,
+            #     color="#000000"
+            #     ))
+            # )
+
             return fig
-        

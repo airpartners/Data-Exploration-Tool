@@ -44,9 +44,11 @@ class Page():
             return html.Div(
                 children = f"Cannot add more than {self.n_charts} charts.",
                 id = self.get_id('new-chart-dropdown', chart_num),
-                style = {'display': initial_display_status},
+                style = GraphFrame.text_style | {'display': initial_display_status},
             )
         # else:
+
+        # `options` is formatted in this way, because this is the format that dcc.Dropdown requires
         options = [
             {'label': "Timeseries", 'value': 0},
             {'label': "Correlation Plot", 'value': 1},
@@ -78,7 +80,6 @@ class Page():
         @self.app.callback(
             *[Output(self.get_id('frame', id_num), 'style') for id_num in self.chart_ids[chart_num]],
             Output(self.get_id('new-chart-dropdown', chart_num + 1), 'style'),
-            # Output(self.get_id('button', chart_num)) # maybe we don't need to hide the old buttons
             Input(self.get_id('new-chart-dropdown', chart_num), 'value'),
             prevent_initial_call = True
         )
@@ -89,7 +90,7 @@ class Page():
             if chart_type is None:
                 return tuple(output) # then convert to a tuple before returning
             # else:
-            output[chart_type] = {'display': 'block'}
+            output[chart_type] = GraphFrame.text_style | {'display': 'block'}
             output[-1] = GraphFrame.dropdown_style_header | {'display': 'block'}
             return tuple(output)
 
