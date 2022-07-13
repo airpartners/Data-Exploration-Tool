@@ -20,7 +20,7 @@ class Scatter(GraphFrame):
                     [
                         "At",
                         self.sensor_picker(),
-                        ", what were the correlations between",
+                        ", what was the correlation between",
                         dcc.Dropdown(
                             id=self.get_id('x-axis'),
                             options = self.all_vars,
