@@ -27,6 +27,16 @@ class GraphFrame():
         # "line-height": "0%", # helps reduce the line spacing
     }
 
+    text_style_explanation = {
+        "display": "inline-block",
+        # "transform": "translateY(0%)", # vertical alignment
+        # "position": "relative",
+        "margin-left": "10px", # adds a horizontal space between dropdowns menus and next chunk of text
+        "margin-right": "10px", # adds a horizontal space between dropdowns menus and next chunk of text
+        "font-size" : "14px",
+        "font-family": "Times New Roman, Serif",
+    }
+
     dropdown_style = {
         # "display": "inline-block",
         # "display": "flex",
@@ -71,7 +81,7 @@ class GraphFrame():
 ## //////////////////////////////////////////////////////// ##
 ##  Reused HTML components
 
-    def date_picker(self, my_id = 'date-picker-range'):
+    def date_picker(self, id = 'date-picker-range'):
         return \
             dcc.DatePickerRange(
                 display_format = 'MM/DD/Y',
@@ -79,36 +89,36 @@ class GraphFrame():
                 max_date_allowed = datetime.date(2021, 3, 5),
                 start_date = datetime.date(2019, 12, 1), # default value
                 end_date = datetime.date(2019, 12, 31), # default value
-                id = self.get_id(my_id),
+                id = self.get_id(id),
             )
 
-    def sensor_picker(self, my_id = 'which-sensor'):
+    def sensor_picker(self, id = 'which-sensor'):
         return \
             dcc.Dropdown(
                 options = [{'label': self.sensor_locations[name], 'value': i} for i, name in enumerate(self.sensor_names)],
                 # note: in order to set the default value, you have to set value = {the VALUE you want}.
                 # Do NOT try to set value = {the LABEL you want}, e.g. value = 'Sensor 1'
                 value = 0, # default value
-                id = self.get_id(my_id), # javascript id, used in @app.callback to reference this element, below
+                id = self.get_id(id), # javascript id, used in @app.callback to reference this element, below
                 clearable = False, # prevent users from deselecting all sensors
                 style = self.dropdown_style
             )
 
-    def pollutant_picker(self, my_id = 'pollutant-dropdown'):
+    def pollutant_picker(self, id = 'pollutant-dropdown'):
         return \
             dcc.Dropdown(
                 options = [{'label': var_name, 'value': var} for var, var_name in
                     list(self.particles_vars.items()) + list(self.gas_vars.items()) + list(self.flight_vars.items())],
                 value='pm25.ML',
                 multi = True,
-                id = self.get_id(my_id),
+                id = self.get_id(id),
                 style = self.dropdown_style_2
             )
 
-    def normalize_switch(self, my_id = 'normalize-height'):
+    def normalize_switch(self, id = 'normalize-height'):
         return \
             daq.BooleanSwitch(
-                id = self.get_id(my_id),
+                id = self.get_id(id),
                 on = False,
                 style = {'display': 'block'},
                 label = "Ignore units",
@@ -191,12 +201,33 @@ class GraphFrame():
         return id_str + "-" + str(self.id_num)
 
     def get_layout(self, initial_display_status):
+        children = []
+        children.append(
+            html.Div(
+                self.get_explanation(),
+                style = self.text_style_explanation,
+            )
+        )
+        children.append(
+            html.Div(
+                self.get_html(),
+                style = self.text_style,
+            )
+        )
+        children.append(
+            html.Hr(style = {'border': '8px solid black'})
+        )
+
         return \
         html.Div(
-            children = self.get_html() + [html.Hr(style = {'border': '8px solid black'})],
+            children = children,
             style = self.text_style | {'display': initial_display_status},
             id = self.get_id('frame')
         )
+
+    def get_explanation(self):
+        print("This GraphFrame method should be overwritten by the child class.")
+        return None
 
     def get_html(self):
         print("This GraphFrame method must be overwritten by the child class.")

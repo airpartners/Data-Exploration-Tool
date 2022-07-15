@@ -12,6 +12,15 @@ from graph_frame import GraphFrame
 
 class TimeSeries(GraphFrame):
 
+    def get_explanation(self):
+        return [
+            html.P("Text some text some text some text."),
+            html.P("Text some text some text some text."),
+            html.P("Text some text some text some text."),
+            html.P("Text some text some text some text."),
+            html.P("Text some text some text some text."),
+        ]
+
     def get_html(self):
         # children = ...
         return \

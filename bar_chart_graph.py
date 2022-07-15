@@ -45,7 +45,7 @@ class BarChartGraph(GraphFrame):
                 #     ],
                 #     style={'width': '48%', 'float': 'right', 'display': 'inline-block', 'margin-bottom': '50px'}
                 # ),
-                self.normalize_switch(my_id = 'normalize-height'),
+                self.normalize_switch(id = 'normalize-height'),
                 dcc.Graph(
                     id = self.get_id('select-time')
                 ),
