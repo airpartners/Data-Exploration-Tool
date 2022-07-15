@@ -18,7 +18,7 @@ class Scatter(GraphFrame):
             "Select a sensor location and a date range between September 2019 and April 2020. You can choose what to display on the x-axis and y-axis respectively, and a correlation line is going to display in the graph to show the correlation between your y-axis variable and your x-axis variable. ",
         ]),
             html.P(["For example, if you choose “temperature” on the x-axis and “PM2.5” on the axis, the coefficient m of the displayed equation “PM2.5 = m * temperature + c” indicates how much PM2.5 concentration is correlated to the temperature. ",
-            "The R squared value shows how scattered the data points are, and the range goes from 0 to1. a higher R squared value (generally equals or exceeds 0.4) means a more convincing x-axis variable coefficient (m)."
+            "The R squared value shows how scattered the data points are, and the range goes from 0 to1. A higher R squared value (generally equals or exceeds 0.4) means a more convincing x-axis variable coefficient (m)."
         ])
         ]
 
