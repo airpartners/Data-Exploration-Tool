@@ -8,6 +8,16 @@ from graph_frame import GraphFrame
 
 
 class CalendarPlot(GraphFrame):
+    def get_explanation(self):
+        return [
+            html.P("Text some text some text some text."),
+            html.P("Text some text some text some text."),
+            html.P("Text some text some text some text."),
+            html.P("Text some text some text some text."),
+            html.P("Text some text some text some text."),
+        ]
+
+
     def get_html(self):
         # children = ...
         return \
@@ -77,7 +87,7 @@ class CalendarPlot(GraphFrame):
                     x='ds',
                     y='value',
                     # data=df[pollutant]
-                    # cmap='YlGn', 
+                    # cmap='YlGn',
                     # colorbar=True
             )
 
