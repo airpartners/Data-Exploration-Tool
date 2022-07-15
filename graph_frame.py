@@ -114,7 +114,7 @@ class GraphFrame():
 
                 multi = multi,
                 id = self.get_id(my_id),
-                
+
                 style = self.dropdown_style_2
             )
 
