@@ -33,9 +33,11 @@ class GraphFrame():
         # "position": "relative",
         "margin-left": "10px", # adds a horizontal space between dropdowns menus and next chunk of text
         "margin-right": "10px", # adds a horizontal space between dropdowns menus and next chunk of text
-        "font-size" : "14px",
+        "font-size" : "18px",
         "font-family": "Times New Roman, Serif",
     }
+
+    # text_style_bold = text_style_explanation |
 
     dropdown_style = {
         # "display": "inline-block",
@@ -54,7 +56,7 @@ class GraphFrame():
         # "display": "block",
         # "display": "flex",
         "display": "inline-block",
-        "width": "500px",
+        "width": "400px",
         # "height": "30px",
         # "margin-right": "10px",
         # "margin-left": "10px",
@@ -101,7 +103,7 @@ class GraphFrame():
                 value = 0, # default value
                 id = self.get_id(id), # javascript id, used in @app.callback to reference this element, below
                 clearable = False, # prevent users from deselecting all sensors
-                style = self.dropdown_style
+                style = self.dropdown_style | {"width": "350px"}
             )
 
 
@@ -115,7 +117,7 @@ class GraphFrame():
                 multi = multi,
                 id = self.get_id(my_id),
 
-                style = self.dropdown_style_2
+                style = self.dropdown_style_2 | {"width": ("800px" if multi else "350px")}
             )
 
     def normalize_switch(self, id = 'normalize-height'):

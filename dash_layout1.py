@@ -45,7 +45,7 @@ class Page():
         print("Creating Dropdown with id", self.get_id('new-chart-dropdown', chart_num))
         if not add_callback:
             return html.Div(
-                children = f"Cannot add more than {self.n_charts} charts.",
+                children = f"Cannot add more than {self.n_charts - 1} charts.",
                 id = self.get_id('new-chart-dropdown', chart_num),
                 style = GraphFrame.text_style | {'display': initial_display_status},
             )

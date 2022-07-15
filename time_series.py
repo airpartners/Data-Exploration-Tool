@@ -14,11 +14,11 @@ class TimeSeries(GraphFrame):
 
     def get_explanation(self):
         return [
-            html.P("Text some text some text some text."),
-            html.P("Text some text some text some text."),
-            html.P("Text some text some text some text."),
-            html.P("Text some text some text some text."),
-            html.P("Text some text some text some text."),
+            html.P([html.B("Timeseries:"), " Shows the pollution levels at a certain sensor over time. ",
+            "Select a date range between September 2019 and April 2020, and select one or more pollutants to show at once. ",
+            "To compare variables with different magnitudes, use the ", html.B('"Ignore units"'), "button ",
+            "to scale the values to fit the whole range."]
+            )
         ]
 
     def get_html(self):
