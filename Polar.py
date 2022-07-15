@@ -33,7 +33,7 @@ class Polar(GraphFrame):
                         "At",
                         self.sensor_picker(),
                         ", what were the concentrations of ",
-                        self.pollutant_picker(),
+                        self.pollutant_picker(multi = False),
                         " on the date range of ",
                         self.date_picker(),
                         "?"
@@ -119,6 +119,16 @@ class PolarClass(FilterGraph):
         #     customdata=df.index,
         #     hovertemplate='interesting<br>%{text}<br><b>{customdata}</b>'
         # ))
+
+        # Add images
+        fig.add_layout_image(
+            dict(
+                source="C:/dev/Air Partners/Data Analysis/data/east_boston/maps/sensor_sn11.png",
+                x=0,
+                y=0,
+            )
+        )
+        fig.update_layout(template="plotly_white")
 
         return fig
 
