@@ -14,6 +14,16 @@ from graph_frame import GraphFrame
 from barchart_class import BarChart
 
 class BarChartGraph(GraphFrame):
+    def get_explanation(self):
+        return [
+            html.P("Text some text some text some text."),
+            html.P("Text some text some text some text."),
+            html.P("Text some text some text some text."),
+            html.P("Text some text some text some text."),
+            html.P("Text some text some text some text."),
+        ]
+
+
     def get_html(self):
         # children = ...
         return \
@@ -45,7 +55,7 @@ class BarChartGraph(GraphFrame):
                 #     ],
                 #     style={'width': '48%', 'float': 'right', 'display': 'inline-block', 'margin-bottom': '50px'}
                 # ),
-                self.normalize_switch(my_id = 'normalize-height'),
+                self.normalize_switch(id = 'normalize-height'),
                 dcc.Graph(
                     id = self.get_id('select-time')
                 ),
