@@ -16,7 +16,7 @@ class TimeSeries(GraphFrame):
         return [
             html.P([html.B("Timeseries:"), " Shows the pollution levels at a certain sensor over time. ",
             "Select a date range between September 2019 and April 2020, and select one or more pollutants to show at once. ",
-            "To compare variables with different magnitudes, use the ", html.B('"Ignore units"'), "button ",
+            "To compare variables with different magnitudes, use the ", html.B('"Ignore units"'), " button ",
             "to scale the values to fit the whole range."]
             )
         ]

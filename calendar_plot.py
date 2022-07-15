@@ -10,11 +10,11 @@ from graph_frame import GraphFrame
 class CalendarPlot(GraphFrame):
     def get_explanation(self):
         return [
-            html.P("Text some text some text some text."),
-            html.P("Text some text some text some text."),
-            html.P("Text some text some text some text."),
-            html.P("Text some text some text some text."),
-            html.P("Text some text some text some text."),
+            # html.P("Text some text some text some text."),
+            # html.P("Text some text some text some text."),
+            # html.P("Text some text some text some text."),
+            # html.P("Text some text some text some text."),
+            # html.P("Text some text some text some text."),
         ]
 
 

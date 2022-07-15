@@ -16,13 +16,13 @@ from barchart_class import BarChart
 class BarChartGraph(GraphFrame):
     def get_explanation(self):
         return [
-            html.P("Text some text some text some text."),
-            html.P("Text some text some text some text."),
-            html.P("Text some text some text some text."),
-            html.P("Text some text some text some text."),
-            html.P("Text some text some text some text."),
+            html.P([html.B("Bar Chart:"), " Shows a summary of the pollution levels of multiple fine particle categories. ",
+            "Select a date range between September 2019 and April 2020. The bar chart shows the particle concentrations in parts per billion (ppb) or micrograms per cubic meter (μg/m^3). ",
+            ]),
+            html.P(["To compare variables to the average pollutant concentration at that sensor, use the ", html.B('"Ignore units"'), " button. ",
+            "When the units are ignored, the bar chart shows the standardized data that is calculated by dividing the mean particle concentration during the selected time slot by the 2-year mean concentration of the same particles measured from the same sensor. "
+            ]),
         ]
-
 
     def get_html(self):
         # children = ...
