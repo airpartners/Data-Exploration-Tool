@@ -12,6 +12,15 @@ from filter_graph import FilterGraph # import from supporting file (contained in
 from graph_frame import GraphFrame
 
 class Scatter(GraphFrame):
+    def get_explanation(self):
+        return [
+            html.P("Text some text some text some text."),
+            html.P("Text some text some text some text."),
+            html.P("Text some text some text some text."),
+            html.P("Text some text some text some text."),
+            html.P("Text some text some text some text."),
+        ]
+
     def get_html(self):
         # children = ...
         return \
