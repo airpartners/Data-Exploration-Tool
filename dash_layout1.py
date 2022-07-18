@@ -147,59 +147,61 @@ class Page():
     def create_sidebar(self):
         sidebar = html.Div(
             children = [
-                html.Button(
-                    children = "Hide map",
-                    style = {'writing-mode': 'horizontal-tb'},
-                    n_clicks = 0,
-                    id = 'map-button',
-                ),
-                html.Div(
-                    [
+                # html.Button(
+                #     children = "Hide map",
+                #     style = {'writing-mode': 'horizontal-tb'},
+                #     n_clicks = 0,
+                #     id = 'map-button',
+                # ),
+                # ----
+                # html.Div(
+                #     [
                         html.H2("Sensor Locations"),
                         html.Hr(),
                         get_sensor_map(),
-                    ],
-                    id = 'sidebar-contents',
-                    style = {'display': 'block'},
-                )
+                #     ],
+                #     id = 'sidebar-contents',
+                #     style = {'display': 'block'},
+                # )
+                # ----
             ],
             n_clicks = 0,
             style = self.sidebar_style,
             id = 'sidebar',
         )
 
-        @self.app.callback(
-            Output('outer_main', 'style'),
-            Output('sidebar', 'style'),
-            Output('map-button', 'style'),
-            Output('sidebar-contents', 'style'),
-            Output('map-button', 'children'),
-            Input('map-button', 'n_clicks'),
-            # prevent_initial_call = True
-        )
-        def toggle_map(n_clicks):
-            toggle = n_clicks % 2
-            if toggle == 0:
-                width = self.sidebar_width[0]
-                orientation = "horizontal-tb"
-                transform = "rotate(0deg)"
-                button_message = "Hide map"
-                sidebar_contents_display = "block"
-            else:
-                width = self.sidebar_width[1]
-                orientation = "vertical-rl"
-                transform = "rotate(-90deg)"
-                button_message = "Show map"
-                sidebar_contents_display = "none"
+        # @self.app.callback(
+        #     Output('outer_main', 'style'),
+        #     Output('sidebar', 'style'),
+        #     Output('map-button', 'style'),
+        #     Output('sidebar-contents', 'style'),
+        #     Output('map-button', 'children'),
+        #     Input('map-button', 'n_clicks'),
+        #     # prevent_initial_call = True
+        # )
+        # def toggle_map(n_clicks):
+        #     toggle = n_clicks % 2
+        #     if toggle == 0:
+        #         width = self.sidebar_width[0]
+        #         orientation = "horizontal-tb"
+        #         transform = "rotate(0deg)"
+        #         button_message = "Hide map"
+        #         sidebar_contents_display = "block"
+        #     else:
+        #         width = self.sidebar_width[1]
+        #         orientation = "vertical-rl"
+        #         transform = "rotate(-90deg)"
+        #         button_message = "Show map"
+        #         sidebar_contents_display = "none"
 
-            return (
-                self.outer_layout_style | {'margin-right': width},
-                self.sidebar_style | {'width': width},
-                # {'writing-mode': orientation},
-                {'transform': transform},
-                {'display': sidebar_contents_display},
-                button_message
-            )
+        #     return (
+        #         self.outer_layout_style | {'margin-right': width},
+        #         self.sidebar_style | {'width': width},
+        #         # {'writing-mode': orientation},
+        #         {'transform': transform},
+        #         {'display': sidebar_contents_display},
+        #         button_message
+        #     )
 
         return sidebar
 
