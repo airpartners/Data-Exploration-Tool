@@ -1,6 +1,7 @@
 from dash import Dash, html, dcc
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, State
 import dash_daq as daq
+import dash_bootstrap_components as dbc
 import pandas as pd
 import math
 import numpy as np
@@ -208,28 +209,35 @@ class GraphFrame():
 
     def get_layout(self, initial_display_status):
         children = []
+
         children.append(
-            html.Div(
-                self.get_explanation(),
-                style = self.text_style_explanation,
-            )
+                html.Details(
+                    children = self.get_explanation(),
+                    open = True,
+                    id = self.get_id("explanation"),
+                    style = self.text_style_explanation,
+                )
         )
+
         children.append(
             html.Div(
                 self.get_html(),
                 style = self.text_style,
             )
         )
+
         children.append(
             html.Hr(style = {'border': '8px solid black'})
         )
 
-        return \
+        return_div = \
         html.Div(
             children = children,
             style = self.text_style | {'display': initial_display_status},
             id = self.get_id('frame')
         )
+
+        return return_div
 
     def get_explanation(self):
         print("This GraphFrame method should be overwritten by the child class.")
@@ -237,11 +245,11 @@ class GraphFrame():
 
     def get_html(self):
         print("This GraphFrame method must be overwritten by the child class.")
-        assert(False)
+        # assert(False)
 
     def add_graph_callback(self):
         print("This GraphFrame method must be overwritten by the child class.")
-        assert(False)
+        # assert(False)
 
     # methods for filtering and post-processing data for graphing
     def filter_by_date(self, df, start_date, end_date):
