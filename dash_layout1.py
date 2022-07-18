@@ -27,7 +27,22 @@ class Page():
         4: CalendarPlot
     }
 
-    sidebar_width = "16rem"
+    sidebar_width = ["16rem", "1rem"]
+
+    sidebar_style = {
+        "position": "fixed",
+        "top": 0,
+        # "left": 0,
+        "right": 0,
+        "bottom": 0,
+        "width": sidebar_width[0],
+        "padding": "2rem 1rem",
+        "background-color": "#f8f9fa",
+    }
+
+    outer_layout_style = {
+        'margin-right': sidebar_width[0]
+    }
 
     def __init__(self, app, n_charts = 10) -> None:
         self.app = app
@@ -39,9 +54,12 @@ class Page():
         # access this with self.chart_ids[chart_type][id_num]
         self.next_id_num = 0 # prepare for the next graph to be added
         self.inner_layout = html.Div(children = [], id = 'inner_main')
-        self.outer_layout = html.Div(children = [], id = 'outer_main', style = {
-            'margin-right': self.sidebar_width
-        })
+
+        self.outer_layout = html.Div(
+            children = [self.inner_layout, self.create_sidebar()],
+            id = 'outer_main',
+            style = self.outer_layout_style,
+        )
 
         self.data_importer = DataImporter()
 
@@ -122,27 +140,50 @@ class Page():
 
                 self.inner_layout.children.append(graph_frame.frame)
 
-        self.outer_layout.children = [self.inner_layout, self.create_sidebar()]
         # self.inner_layout.children.append(self.create_dropdown(chart_num + 1, add_callback = False))
 
     def create_sidebar(self):
-        sidebar = html.Div(
+        sidebar = html.Details(
             [
+                html.Summary(
+                    children = "Hide map",
+                    style = {'writing-mode': 'horizontal-tb'},
+                    id = 'map-button-text',
+                ),
                 html.H2("Sensor Locations"),
                 html.Hr(),
                 get_sensor_map()
             ],
-            style = {
-                "position": "fixed",
-                "top": 0,
-                # "left": 0,
-                "right": 0,
-                "bottom": 0,
-                "width": self.sidebar_width,
-                "padding": "2rem 1rem",
-                "background-color": "#f8f9fa",
-            },
+            open = True,
+            n_clicks = 0,
+            style = self.sidebar_style,
+            id = 'sidebar',
         )
+
+        @self.app.callback(
+            Output('outer_main', 'style'),
+            Output('sidebar', 'style'),
+            Output('map-button-text', 'style'),
+            Output('map-button-text', 'children'),
+            Input('sidebar', 'n_clicks'),
+            Input('sidebar', 'open'),
+            prevent_initial_call = True
+        )
+        def toggle_map(n_clicks, is_open):
+            print("is_open:", is_open)
+            toggle = n_clicks % 2
+            # width = self.sidebar_width[0] if is_open else self.sidebar_width[1]
+            width = self.sidebar_width[toggle]
+            orientation = ["horizontal-tb", "vertical-rl"][toggle]
+            button_message = ["Hide map", "Show map"][toggle]
+            print("width:", width)
+            return (
+                self.outer_layout_style | {'margin-right': width},
+                self.sidebar_style | {'width': width},
+                {'writing-mode': orientation},
+                button_message
+            )
+
         return sidebar
 
     def get_id(self, id_str, id_num):
