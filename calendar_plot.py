@@ -26,10 +26,8 @@ class CalendarPlot(GraphFrame):
                     [
                         "At ",
                         self.sensor_picker(),
-                        "in the date range of ",
-                        self.date_picker(),
                         ", what was the level of ",
-                        self.pollutant_picker(),
+                        self.pollutant_picker(multi = False),
                         "?",
                     ],
                     style = self.text_style
@@ -50,12 +48,10 @@ class CalendarPlot(GraphFrame):
         @self.app.callback(
             Output(self.get_id('calendar-plot'),'figure'),
             Input(self.get_id('which-sensor'), 'value'),
-            Input(self.get_id('date-picker-range'), 'start_date'),
-            Input(self.get_id('date-picker-range'), 'end_date'),
             Input(self.get_id('pollutant-dropdown'), 'value')
             )
 
-        def update_figure(which_sensor, start_date, end_date, pollutant):
+        def update_figure(which_sensor, pollutant):
 
             if isinstance(pollutant, str):
                 pollutant = [pollutant]
@@ -63,9 +59,8 @@ class CalendarPlot(GraphFrame):
             # select which sensor data to draw from
             df = self.data_importer.get_data_by_sensor(which_sensor)
 
-            # filter by timestamp and wind direction
-            df = self.filter_by_date(df, start_date, end_date)
-
+            # calculate daily average                
+            df=df.resample('D').mean()
 
             # df.index = pd.date_range('01/01/2018',
             #                         periods=8,
@@ -74,20 +69,22 @@ class CalendarPlot(GraphFrame):
             # print(df.index)
             # pollution_level = np.array(df[pollutant])
             # pollution_level = list(np.average(pollution_level.reshape(-1, 24), axis=1))
+            
 
+            start_date = df.index[0]
+            end_date = df.index[-1]
             dummy_df = pd.DataFrame({
                 "ds": pd.date_range(start_date, end_date),
-                "value": np.random.randint(
-                    low=0, high=30,
-                    size=(pd.to_datetime(end_date) - pd.to_datetime(start_date)).days + 1,),
+                "value": df[pollutant].squeeze()
             })
+            print(dummy_df)
 
             # creating the plot
             fig = calplot(dummy_df,
                     x='ds',
                     y='value',
                     # data=df[pollutant]
-                    # cmap='YlGn',
+                    colorscale=[(0,"white"),(0.000001,"green"),(0.5,"yellow"),(0.75,"red"),(1,"purple")],
                     # colorbar=True
             )
 
