@@ -24,5 +24,8 @@ def make_map_image(self, sensor_name, lat_long, zoom = 13):
     fig.write_image(file = f"C:/dev/Air Partners/Data Analysis/data/east_boston/maps/sensor_{sensor_name}.png")
     pass
 
-make_map_image('a', 'sn11', (42.38436682275741, -71.00224008848411))
-pass
+def main():
+    make_map_image('a', 'sn11', (42.38436682275741, -71.00224008848411))
+    pass
+
+main()

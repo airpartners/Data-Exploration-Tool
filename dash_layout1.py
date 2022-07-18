@@ -7,6 +7,7 @@ from data_importer import DataImporter
 from Polar import Polar
 from Scatterplot_final import Scatter
 from calendar_plot import CalendarPlot
+from get_sensor_map import get_sensor_map
 
 class Page():
 
@@ -127,20 +128,9 @@ class Page():
     def create_sidebar(self):
         sidebar = html.Div(
             [
-                html.H2("Sidebar"),
+                html.H2("Sensor Locations"),
                 html.Hr(),
-                html.P(
-                    "A simple sidebar layout with navigation links"
-                ),
-                # dbc.Nav(
-                #     [
-                #         dbc.NavLink("Home", href="/", active="exact"),
-                #         dbc.NavLink("Page 1", href="/page-1", active="exact"),
-                #         dbc.NavLink("Page 2", href="/page-2", active="exact"),
-                #     ],
-                #     vertical=True,
-                #     pills=True,
-                # ),
+                get_sensor_map()
             ],
             style = {
                 "position": "fixed",
