@@ -121,7 +121,7 @@ class TimeSeries(GraphFrame):
                 xaxis_title = 'Timestamp',
                 yaxis_title = y_label,
                 # title='PM2.5',
-                hovermode = "x", # where the magic happens
+                # hovermode = "x", # where the magic happens
                 margin = {'t': 0}, # removes the awkward whitespace where the title used to be
                 xaxis=dict(
                     rangeselector=dict(
@@ -159,14 +159,21 @@ class TimeSeries(GraphFrame):
                         visible=True,
                     ),
                     type="date"
-                )
+                ),
+                
             )
 
             if normalize_height:
                 fig.layout.yaxis.tickformat = ',.0%'
 
-            for idx, poll in enumerate(pollutant):
-                fig.data[idx].name = self.all_vars[poll]
-                fig.data[idx].hovertemplate = self.all_vars[poll]
+            # for idx, poll in enumerate(pollutant):
+            #     fig.data[idx].name = self.all_vars[poll]
+            #     fig.data[idx].hovertemplate = self.all_vars[poll]
+
+            fig.update_traces(go.Scatter(
+                text=pollutant*len(df.index),
+                customdata=df[pollutant],
+                hovertemplate='<br><b>%{text}</b><br>%{customdata}'
+            ))
 
             return fig
