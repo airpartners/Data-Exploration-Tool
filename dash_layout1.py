@@ -26,6 +26,8 @@ class Page():
         4: CalendarPlot
     }
 
+    sidebar_width = "20rem"
+
     def __init__(self, app, n_charts = 10) -> None:
         self.app = app
         self.n_charts = n_charts
@@ -35,7 +37,10 @@ class Page():
         self.button_ids = list(range(n_charts + 1))
         # access this with self.chart_ids[chart_type][id_num]
         self.next_id_num = 0 # prepare for the next graph to be added
-        self.layout = html.Div(children = [], id = 'main')
+        self.inner_layout = html.Div(children = [], id = 'inner_main')
+        self.outer_layout = html.Div(children = [], id = 'outer_main', style = {
+            'margin-right': self.sidebar_width
+        })
 
         self.data_importer = DataImporter()
 
@@ -99,12 +104,13 @@ class Page():
             return tuple(output)
 
     def create_layout(self):
+        # create the inner layout: everything that appears in the body of te page
         for chart_num in range(self.n_charts):
 
             # add dropdown
             initial_display_status = 'block' if chart_num in [0, 1, 2, 3, 4] else 'none'
             add_callback = chart_num < self.n_charts - 1 # not the last element
-            self.layout.children.append(self.create_dropdown(chart_num, initial_display_status, placeholder_text = chart_num, add_callback = add_callback))
+            self.inner_layout.children.append(self.create_dropdown(chart_num, initial_display_status, placeholder_text = chart_num, add_callback = add_callback))
 
             # add graph frame
             for chart_type in range(self.n_chart_types):
@@ -113,9 +119,41 @@ class Page():
                 initial_display_status = 'block' if chart_num in [0, 1, 2, 3] and chart_type == chart_num else 'none'
                 graph_frame = chart_class(self.app, self.data_importer, self.chart_ids[chart_num][chart_type], chart_type, initial_display_status)
 
-                self.layout.children.append(graph_frame.frame)
+                self.inner_layout.children.append(graph_frame.frame)
 
-        # self.layout.children.append(self.create_dropdown(chart_num + 1, add_callback = False))
+        self.outer_layout.children = [self.inner_layout, self.create_sidebar()]
+        # self.inner_layout.children.append(self.create_dropdown(chart_num + 1, add_callback = False))
+
+    def create_sidebar(self):
+        sidebar = html.Div(
+            [
+                html.H2("Sidebar"),
+                html.Hr(),
+                html.P(
+                    "A simple sidebar layout with navigation links"
+                ),
+                # dbc.Nav(
+                #     [
+                #         dbc.NavLink("Home", href="/", active="exact"),
+                #         dbc.NavLink("Page 1", href="/page-1", active="exact"),
+                #         dbc.NavLink("Page 2", href="/page-2", active="exact"),
+                #     ],
+                #     vertical=True,
+                #     pills=True,
+                # ),
+            ],
+            style = {
+                "position": "fixed",
+                "top": 0,
+                # "left": 0,
+                "right": 0,
+                "bottom": 0,
+                "width": self.sidebar_width,
+                "padding": "2rem 1rem",
+                "background-color": "#f8f9fa",
+            },
+        )
+        return sidebar
 
     def get_id(self, id_str, id_num):
         return id_str + "-" + str(id_num)
@@ -124,6 +162,7 @@ if __name__ == '__main__':
     app = Dash(__name__) # initialize the app
 
     p = Page(app, n_charts = 10)
-    app.layout = html.Div(p.layout)
+    # app.layout = html.Div(p.layout)
+    app.layout = html.Div(p.outer_layout)
 
     app.run_server(debug=True)
