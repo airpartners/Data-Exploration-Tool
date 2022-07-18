@@ -77,14 +77,14 @@ class CalendarPlot(GraphFrame):
                 "ds": pd.date_range(start_date, end_date),
                 "value": df[pollutant].squeeze()
             })
-            print(dummy_df)
 
             # creating the plot
             fig = calplot(dummy_df,
                     x='ds',
                     y='value',
                     # data=df[pollutant]
-                    colorscale=[(0,"white"),(0.000001,"green"),(0.5,"yellow"),(0.75,"red"),(1,"purple")],
+                    years_title=True,
+                    colorscale=[(0,"white"),(0.000000000001,"green"),(0.5,"yellow"),(0.8,"red"),(1,"purple")],
                     # colorbar=True
             )
 
