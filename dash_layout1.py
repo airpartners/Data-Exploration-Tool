@@ -11,19 +11,19 @@ from calendar_plot import CalendarPlot
 class Page():
 
     chart_names = {
-        0: "Timeseries",
-        1: "Correlation Plot",
-        2: "Polar Plot",
-        3: "Bar Chart",
-        4: "Calendar Plot"
+        0: "Calendar Plot",
+        1: "Timeseries",
+        2: "Correlation Plot",
+        3: "Polar Plot",
+        4: "Bar Chart",
     }
 
     chart_classes = {
-        0: TimeSeries,
-        1: Scatter,
-        2: Polar,
-        3: BarChartGraph,
-        4: CalendarPlot
+        0: CalendarPlot,
+        1: TimeSeries,
+        2: Scatter,
+        3: Polar,
+        4: BarChartGraph,
     }
 
     def __init__(self, app, n_charts = 10) -> None:
@@ -53,11 +53,11 @@ class Page():
 
         # `options` is formatted in this way, because this is the format that dcc.Dropdown requires
         options = [
-            {'label': "Timeseries", 'value': 0},
-            {'label': "Correlation Plot", 'value': 1},
-            {'label': "Polar Plot", 'value': 2},
-            {'label': "Bar Chart", 'value': 3},
-            {'label': "Calendar Plot", 'value': 4},
+            {'label': "Calendar Plot", 'value': 0},
+            {'label': "Timeseries", 'value': 1},
+            {'label': "Correlation Plot", 'value': 2},
+            {'label': "Polar Plot", 'value': 3},
+            {'label': "Bar Chart", 'value': 4},
         ]
 
         if placeholder_text in range(4):
