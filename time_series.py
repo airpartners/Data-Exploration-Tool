@@ -29,8 +29,8 @@ class TimeSeries(GraphFrame):
                     [
                         "At ",
                         self.sensor_picker(),
-                        "in the date range of ",
-                        self.date_picker(),
+                        # "in the date range of ",
+                        # self.date_picker(),
                         ", what was the value of ",
                         self.pollutant_picker(),
                         "?",
@@ -53,12 +53,13 @@ class TimeSeries(GraphFrame):
         @self.app.callback(
             Output(self.get_id('graph-to-update'), 'figure'),
             Input(self.get_id('which-sensor'), 'value'),
-            Input(self.get_id('date-picker-range'), 'start_date'),
-            Input(self.get_id('date-picker-range'), 'end_date'),
+            # Input(self.get_id('date-picker-range'), 'start_date'),
+            # Input(self.get_id('date-picker-range'), 'end_date'),
             Input(self.get_id('pollutant-dropdown'), 'value'),
             Input(self.get_id('normalize-height'), 'on'),
         )
-        def update_figure(which_sensor, start_date, end_date, pollutant, normalize_height):
+        # def update_figure(which_sensor, start_date, end_date, pollutant, normalize_height):
+        def update_figure(which_sensor, pollutant, normalize_height):
             print(f"Graph with id {self.id_num} being called back!")
 
             if isinstance(pollutant, str):
@@ -67,8 +68,8 @@ class TimeSeries(GraphFrame):
             # select which sensor data to draw from
             df = self.data_importer.get_data_by_sensor(which_sensor)
 
-            # filter by timestamp and wind direction
-            df = self.filter_by_date(df, start_date, end_date)
+            # # filter by timestamp and wind direction
+            # df = self.filter_by_date(df, start_date, end_date)
             # df = self.filter_by_wind_direction(df, wind_direction)
 
             if normalize_height:
@@ -76,7 +77,7 @@ class TimeSeries(GraphFrame):
 
             # create the figure. It consists of a Figure frame and three lines created with go.Scatter()
 
-            fig = px.line(df, df.index, y = pollutant)
+            fig = px.line(df, df.index, y = pollutant, render_mode='webg1')
 
             # fig = go.Figure([
             #     go.Line(
@@ -109,6 +110,8 @@ class TimeSeries(GraphFrame):
                 # )
             # ])
 
+            start_date = df.index[0]
+            end_date = df.index[-1]
             if len(pollutant) == 1:
                 y_label = self.all_vars[pollutant[0]]
             else:
@@ -120,6 +123,43 @@ class TimeSeries(GraphFrame):
                 # title='PM2.5',
                 hovermode = "x", # where the magic happens
                 margin = {'t': 0}, # removes the awkward whitespace where the title used to be
+                xaxis=dict(
+                    rangeselector=dict(
+                        buttons=list([
+                            dict(count=1,
+                                label="1d",
+                                step="day",
+                                stepmode="backward"),
+                            dict(count=7,
+                                label="1w",
+                                step="day",
+                                stepmode="backward"),
+                            dict(count=1,
+                                label="1m",
+                                step="month",
+                                stepmode="backward"),
+                            dict(count=3,
+                                label="3m",
+                                step="month",
+                                stepmode="todate"),
+                            dict(count=6,
+                                label="6m",
+                                step="month",
+                                stepmode="backward"),
+                            dict(count=1,
+                                label="1y",
+                                step="year",
+                                stepmode="backward"),
+                            dict(step="all")
+                        ])
+                    ),
+                    rangeslider=dict(
+                        autorange=True,
+                        range=[start_date, end_date],
+                        visible=True,
+                    ),
+                    type="date"
+                )
             )
 
             if normalize_height:
