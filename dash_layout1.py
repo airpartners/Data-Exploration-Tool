@@ -61,6 +61,8 @@ class Page():
             style = self.outer_layout_style,
         )
 
+        self.sidebar_is_open = True
+
         self.data_importer = DataImporter()
 
         self.create_layout()
@@ -143,18 +145,24 @@ class Page():
         # self.inner_layout.children.append(self.create_dropdown(chart_num + 1, add_callback = False))
 
     def create_sidebar(self):
-        sidebar = html.Details(
-            [
-                html.Summary(
+        sidebar = html.Div(
+            children = [
+                html.Button(
                     children = "Hide map",
                     style = {'writing-mode': 'horizontal-tb'},
-                    id = 'map-button-text',
+                    n_clicks = 0,
+                    id = 'map-button',
                 ),
-                html.H2("Sensor Locations"),
-                html.Hr(),
-                get_sensor_map()
+                html.Div(
+                    [
+                        html.H2("Sensor Locations"),
+                        html.Hr(),
+                        get_sensor_map(),
+                    ],
+                    id = 'sidebar-contents',
+                    style = {'display': 'block'},
+                )
             ],
-            open = True,
             n_clicks = 0,
             style = self.sidebar_style,
             id = 'sidebar',
@@ -163,24 +171,33 @@ class Page():
         @self.app.callback(
             Output('outer_main', 'style'),
             Output('sidebar', 'style'),
-            Output('map-button-text', 'style'),
-            Output('map-button-text', 'children'),
-            Input('sidebar', 'n_clicks'),
-            Input('sidebar', 'open'),
-            prevent_initial_call = True
+            Output('map-button', 'style'),
+            Output('sidebar-contents', 'style'),
+            Output('map-button', 'children'),
+            Input('map-button', 'n_clicks'),
+            # prevent_initial_call = True
         )
-        def toggle_map(n_clicks, is_open):
-            print("is_open:", is_open)
+        def toggle_map(n_clicks):
             toggle = n_clicks % 2
-            # width = self.sidebar_width[0] if is_open else self.sidebar_width[1]
-            width = self.sidebar_width[toggle]
-            orientation = ["horizontal-tb", "vertical-rl"][toggle]
-            button_message = ["Hide map", "Show map"][toggle]
-            print("width:", width)
+            if toggle == 0:
+                width = self.sidebar_width[0]
+                orientation = "horizontal-tb"
+                transform = "rotate(0deg)"
+                button_message = "Hide map"
+                sidebar_contents_display = "block"
+            else:
+                width = self.sidebar_width[1]
+                orientation = "vertical-rl"
+                transform = "rotate(-90deg)"
+                button_message = "Show map"
+                sidebar_contents_display = "none"
+
             return (
                 self.outer_layout_style | {'margin-right': width},
                 self.sidebar_style | {'width': width},
-                {'writing-mode': orientation},
+                # {'writing-mode': orientation},
+                {'transform': transform},
+                {'display': sidebar_contents_display},
                 button_message
             )
 
@@ -192,7 +209,7 @@ class Page():
 if __name__ == '__main__':
     app = Dash(__name__) # initialize the app
 
-    p = Page(app, n_charts = 10)
+    p = Page(app, n_charts = 5)
     # app.layout = html.Div(p.layout)
     app.layout = html.Div(p.outer_layout)
 
