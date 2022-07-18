@@ -26,7 +26,7 @@ class Page():
         4: CalendarPlot
     }
 
-    sidebar_width = "20rem"
+    sidebar_width = "16rem"
 
     def __init__(self, app, n_charts = 10) -> None:
         self.app = app
