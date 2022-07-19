@@ -25,10 +25,14 @@ def get_sensor_map():
         color_discrete_sequence=['#FF0000'],
         size = [1, 1, 1, 1, 1, 1],
         zoom=11,
-        height=600
+        height=600,
+        # customdata=sensor_name
+        # hoverinfo="name",
     )
 
     fig.update_layout(mapbox_style="open-street-map")
     fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
+    fig.update_traces(customdata = sensor_name, hovertemplate = "%{customdata}")
+    # fig.update_traces(hoverinfo = "name")
 
     return dcc.Graph(id = 'sidebar-map', figure = fig)
