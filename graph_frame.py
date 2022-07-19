@@ -32,8 +32,10 @@ class GraphFrame():
         "display": "inline-block",
         # "transform": "translateY(0%)", # vertical alignment
         # "position": "relative",
-        "margin-left": "10px", # adds a horizontal space between dropdowns menus and next chunk of text
-        "margin-right": "10px", # adds a horizontal space between dropdowns menus and next chunk of text
+        "margin-left": "20px", # adds a horizontal space between dropdowns menus and next chunk of text
+        "margin-right": "50px", # adds a horizontal space between dropdowns menus and next chunk of text
+        "margin-top": "20px",
+        "margin-bottom": "20px",
         "font-size" : "18px",
         "font-family": "Times New Roman, Serif",
         "background-color": "#F2F2F2"

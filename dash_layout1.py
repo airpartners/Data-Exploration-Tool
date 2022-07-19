@@ -7,6 +7,7 @@ from data_importer import DataImporter
 from Polar import Polar
 from Scatterplot_final import Scatter
 from calendar_plot import CalendarPlot
+from get_sensor_map import get_sensor_map
 
 class Page():
 
@@ -26,6 +27,23 @@ class Page():
         4: BarChartGraph,
     }
 
+    sidebar_width = ["16rem", "1rem"]
+
+    sidebar_style = {
+        "position": "fixed",
+        "top": 0,
+        # "left": 0,
+        "right": 0,
+        "bottom": 0,
+        "width": sidebar_width[0],
+        "padding": "2rem 1rem",
+        "background-color": "#f8f9fa",
+    }
+
+    outer_layout_style = {
+        'margin-right': sidebar_width[0]
+    }
+
     def __init__(self, app, n_charts = 10) -> None:
         self.app = app
         self.n_charts = n_charts
@@ -35,7 +53,15 @@ class Page():
         self.button_ids = list(range(n_charts + 1))
         # access this with self.chart_ids[chart_type][id_num]
         self.next_id_num = 0 # prepare for the next graph to be added
-        self.layout = html.Div(children = [], id = 'main')
+        self.inner_layout = html.Div(children = [], id = 'inner_main')
+
+        self.outer_layout = html.Div(
+            children = [self.inner_layout, self.create_sidebar()],
+            id = 'outer_main',
+            style = self.outer_layout_style,
+        )
+
+        self.sidebar_is_open = True
 
         self.data_importer = DataImporter()
 
@@ -99,12 +125,13 @@ class Page():
             return tuple(output)
 
     def create_layout(self):
+        # create the inner layout: everything that appears in the body of te page
         for chart_num in range(self.n_charts):
 
             # add dropdown
             initial_display_status = 'block' if chart_num in [0, 1, 2, 3, 4] else 'none'
             add_callback = chart_num < self.n_charts - 1 # not the last element
-            self.layout.children.append(self.create_dropdown(chart_num, initial_display_status, placeholder_text = chart_num, add_callback = add_callback))
+            self.inner_layout.children.append(self.create_dropdown(chart_num, initial_display_status, placeholder_text = chart_num, add_callback = add_callback))
 
             # add graph frame
             for chart_type in range(self.n_chart_types):
@@ -113,9 +140,70 @@ class Page():
                 initial_display_status = 'block' if chart_num in [0, 1, 2, 3] and chart_type == chart_num else 'none'
                 graph_frame = chart_class(self.app, self.data_importer, self.chart_ids[chart_num][chart_type], chart_type, initial_display_status)
 
-                self.layout.children.append(graph_frame.frame)
+                self.inner_layout.children.append(graph_frame.frame)
 
-        # self.layout.children.append(self.create_dropdown(chart_num + 1, add_callback = False))
+        # self.inner_layout.children.append(self.create_dropdown(chart_num + 1, add_callback = False))
+
+    def create_sidebar(self):
+        sidebar = html.Div(
+            children = [
+                # html.Button(
+                #     children = "Hide map",
+                #     style = {'writing-mode': 'horizontal-tb'},
+                #     n_clicks = 0,
+                #     id = 'map-button',
+                # ),
+                # ----
+                # html.Div(
+                #     [
+                        html.H2("Sensor Locations"),
+                        html.Hr(),
+                        get_sensor_map(),
+                #     ],
+                #     id = 'sidebar-contents',
+                #     style = {'display': 'block'},
+                # )
+                # ----
+            ],
+            n_clicks = 0,
+            style = self.sidebar_style,
+            id = 'sidebar',
+        )
+
+        # @self.app.callback(
+        #     Output('outer_main', 'style'),
+        #     Output('sidebar', 'style'),
+        #     Output('map-button', 'style'),
+        #     Output('sidebar-contents', 'style'),
+        #     Output('map-button', 'children'),
+        #     Input('map-button', 'n_clicks'),
+        #     # prevent_initial_call = True
+        # )
+        # def toggle_map(n_clicks):
+        #     toggle = n_clicks % 2
+        #     if toggle == 0:
+        #         width = self.sidebar_width[0]
+        #         orientation = "horizontal-tb"
+        #         transform = "rotate(0deg)"
+        #         button_message = "Hide map"
+        #         sidebar_contents_display = "block"
+        #     else:
+        #         width = self.sidebar_width[1]
+        #         orientation = "vertical-rl"
+        #         transform = "rotate(-90deg)"
+        #         button_message = "Show map"
+        #         sidebar_contents_display = "none"
+
+        #     return (
+        #         self.outer_layout_style | {'margin-right': width},
+        #         self.sidebar_style | {'width': width},
+        #         # {'writing-mode': orientation},
+        #         {'transform': transform},
+        #         {'display': sidebar_contents_display},
+        #         button_message
+        #     )
+
+        return sidebar
 
     def get_id(self, id_str, id_num):
         return id_str + "-" + str(id_num)
@@ -123,7 +211,8 @@ class Page():
 if __name__ == '__main__':
     app = Dash(__name__) # initialize the app
 
-    p = Page(app, n_charts = 10)
-    app.layout = html.Div(p.layout)
+    p = Page(app, n_charts = 5)
+    # app.layout = html.Div(p.layout)
+    app.layout = html.Div(p.outer_layout)
 
     app.run_server(debug=True)

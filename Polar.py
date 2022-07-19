@@ -116,7 +116,9 @@ class PolarClass(FilterGraph):
                               xanchor='left',
                               yanchor='bottom',
                               font=dict(size=12 ))]
-        fig.update_layout(margin = {'t': 0, 'l': 360, 'r': 360})
+
+        margins = 200
+        fig.update_layout(margin = {'t': 0, 'l': margins, 'r': margins})
         # fig.update_traces(go.Scatterpolar(
         #     text=df[pollutant],
         #     customdata=df.index,
