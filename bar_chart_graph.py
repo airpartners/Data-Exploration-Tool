@@ -142,7 +142,7 @@ class BarChartGraph(GraphFrame):
                     col = col
                 )
 
-            add_sub_barchart(self.meteorology_vars, 1, color = 0)
+            add_sub_barchart(self.meteorology_vars | self.flight_vars, 1, color = 0)
             add_sub_barchart(self.gas_vars, 2, color = 2)
             add_sub_barchart(self.particles_vars, 3, color = 5)
 

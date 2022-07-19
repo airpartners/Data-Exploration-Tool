@@ -143,9 +143,9 @@ class GraphFrame():
         # "pressure": "Pressure (Pa)",
         # "noise": "Noise (dB)",
         "ws": "Wind Speed (m/s)",
-        'South-West': "Takeoffs/Landings per hour (SouthWest Operation)",
-        'North-West': "Takeoffs/Landings per hour (NorthWest Operation)",
-        'North-East': "Takeoffs/Landings per hour (NorthEast Operation)",
+        # 'South-West': "Takeoffs/Landings per hour (SouthWest Operation)",
+        # 'North-West': "Takeoffs/Landings per hour (NorthWest Operation)",
+        # 'North-East': "Takeoffs/Landings per hour (NorthEast Operation)",
     }
     gas_vars = {
         "co.ML": "CO (ppb)",
@@ -170,9 +170,13 @@ class GraphFrame():
         # 'count': "Flights",
         # 'A': "Arrivals",
         # 'D': "Departures",
-        'South-West': "Takeoffs/Landings per hour (SouthWest Operation)",
-        'North-West': "Takeoffs/Landings per hour (NorthWest Operation)",
-        'North-East': "Takeoffs/Landings per hour (NorthEast Operation)",
+        # # #
+        # 'South-West': "Takeoffs/Landings per hour (SouthWest Operation)",
+        # 'North-West': "Takeoffs/Landings per hour (NorthWest Operation)",
+        # 'North-East': "Takeoffs/Landings per hour (NorthEast Operation)",
+        # # #
+        'adverse_flight_count': "Adverse Takeoffs/Landings",
+        'count': "Total Takeoffs/Landings",
     }
 
     # | is the python syntax for adding or "merging" two dictionaries

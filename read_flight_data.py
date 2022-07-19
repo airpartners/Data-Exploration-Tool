@@ -105,12 +105,13 @@ When `combine_files()` is called, it takes all the processed files in `parquet_d
 
         resample_frequency = "1H"
         df["Date_Time"] = pd.to_datetime(df["Date"], format = "%Y-%m-%d %H:%M:%S")
-        df["RW_group"] = df["RW"].apply(self.get_RW_group)
+        # df["RW_group"] = df["RW"].apply(self.get_RW_group)
+        df["RW_group"] = df["RW"]
 
         df_processed = df[["Date_Time", "Opr", "RW_group"]].set_index("Date_Time").resample(resample_frequency).agg(self.count_grouped_by, cols = ["Opr", "RW_group"]).reset_index()
 
         # pivot the table to get one column for departures and one row for arrivals
-        df_processed = df_processed.pivot_table(index = "Date_Time", columns = "RW_group", values = "count", aggfunc = "max")
+        # df_processed = df_processed.pivot_table(index = "Date_Time", columns = "RW_group", values = "count", aggfunc = "max")
 
         df_processed.to_parquet(parquet_path)
         print("Finished processing", csv_path)
@@ -129,6 +130,14 @@ When `combine_files()` is called, it takes all the processed files in `parquet_d
         # else:
         return "Other"
 
+    def is_adverse_runway(self, RW, opr, sensor_name = None):
+        if sensor_name is None:
+            return None
+        if opr not in ["D", "A"]:
+            return None
+        # else:
+        return RW in self.adverse_runways[sensor_name][opr]
+
     def add_parquet(self, parquet_path):
         if self.df_flights is None:
             self.df_flights = pd.read_parquet(parquet_path)
@@ -136,7 +145,10 @@ When `combine_files()` is called, it takes all the processed files in `parquet_d
             df_new = pd.read_parquet(parquet_path)
             pd.concat([self.df_flights, df_new], axis = 'index')
 
-    def add_flight_data_to(self, df, date_time_column_name = "timestamp_local"):
-        df_combined = df.reset_index().merge(self.df_flights, left_on = date_time_column_name, right_on = "Date_Time").set_index(date_time_column_name)
+    def add_flight_data_to(self, df, sensor_name = None, date_time_column_name = "timestamp_local"):
+        self.df_flights["is_adverse_runway"] = self.df_flights.apply(lambda df: self.is_adverse_runway(df["RW_group"], df["Opr"], sensor_name), axis = 1)
+        self.df_flights["adverse_flight_count"] = self.df_flights.apply(lambda df: df["count"] if df["is_adverse_runway"] else 0, axis = 1)
+        self.df_flights2 = self.df_flights.groupby(["Date_Time"])[["adverse_flight_count", "count"]].sum()
+        df_combined = df.reset_index().merge(self.df_flights2, left_on = date_time_column_name, right_on = "Date_Time").set_index(date_time_column_name)
         df_combined = df_combined.rename(columns = {"Date_Time": date_time_column_name})
         return df_combined

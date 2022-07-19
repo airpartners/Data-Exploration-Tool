@@ -64,7 +64,7 @@ class DataImporter():
         # 'originaldate.ML': 'numeric',
         'wind_direction_cardinal': 'discrete',
     }
-    numeric_columns_to_keep = [col for col, val in columns_to_keep.items() if val == 'numeric'] + ['South-West', 'North-West', 'North-East']
+    numeric_columns_to_keep = [col for col, val in columns_to_keep.items() if val == 'numeric'] + ["count", "adverse_flight_count"]# ['South-West', 'North-West', 'North-East']
 
     def __init__(self):
         # load in the flight data once
@@ -74,9 +74,11 @@ class DataImporter():
         self.list_of_sensor_dataframes = []
         for raw_file_path, processed_file_path in zip(raw_csv_paths, processed_csv_paths):
             # append the next sensor's worth of data to the list
+            sensor_name = self.get_sensor_name_from_file(raw_file_path)
             df_sensor = self.prepare_data(raw_file_path, processed_file_path)
-            df_sensor = self.flight_loader.add_flight_data_to(df_sensor, date_time_column_name = "timestamp_local")
-            df_sensor = df_sensor.reset_index().set_index("timestamp_local")
+            df_sensor = self.flight_loader.add_flight_data_to(df_sensor, sensor_name = sensor_name, date_time_column_name = "timestamp_local")
+            if df_sensor.index.name != "timestamp_local":
+                df_sensor = df_sensor.set_index("timestamp_local")
             self.list_of_sensor_dataframes.append(df_sensor)
 
         # calculate and store mean and median of entire dataset
