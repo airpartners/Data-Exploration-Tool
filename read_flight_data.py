@@ -9,6 +9,44 @@ class FlightLoader():
 When it's done creating the files on your computer, you can use the function add_flight_data_to contained in the file add_flight_data_to.py
 to add flight data into an existing dataframe.
     """
+
+    adverse_runways = {
+        "sn45": {
+            "D": ["22R", "22L", "4R", "4L"],
+            "A": ["22R", "22L"]
+            },
+        "sn72": {
+            "D": ["22R", "22L", "4R", "4L"],
+            "A": ["22R", "22L"]
+            },
+        "sn46": {
+            "D": ["33L", "15R", "15L"],
+            "A": ["33L", "15R", "15L"]
+            },
+        "sn62": {
+            "D": ["33L", "15R", "15L"],
+            "A": ["33L", "15R", "15L"]
+            },
+        "sn67": {
+            "D": ["9", "27"],
+            "A": ["27"]
+            },
+        "sn49": {
+            "D": ["22R", "22L", "4R", "4L"],
+            "A": ["22R", "22L"]
+            },
+    }
+
+    adverse_wind_dir = {
+        "sn45": ["S", "SW"],
+        "sn72": ["S", "SW"],
+        "sn46": ["E", "SE", "NE"],
+        "sn62": ["E", "SE", "NE"],
+        "sn67": ["W", "NW"],
+        "sn49": ["W", "SW"],
+    }
+
+
     def __init__(self, csv_dir, parquet_dir, final_parquet_file) -> None:
         """`csv_dir` should be the path to a directory on your computer with a list of CSV files to be parsed.
 The Logan Airport data comes in a bunch of files separated by month, which can be downloaded sheet-wise from this google spreadsheet (April 2020 - May 2021):
