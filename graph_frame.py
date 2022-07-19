@@ -112,10 +112,13 @@ class GraphFrame():
 
 
     def pollutant_picker(self, my_id = 'pollutant-dropdown', multi = True):
+        vars = list(self.particles_vars.items()) + list(self.gas_vars.items())
+        if multi:
+            vars.extend(list(self.flight_vars.items()))
+
         return \
             dcc.Dropdown(
-                options = [{'label': var_name, 'value': var} for var, var_name in
-                    list(self.particles_vars.items()) + list(self.gas_vars.items()) + list(self.flight_vars.items())],
+                options = [{'label': var_name, 'value': var} for var, var_name in vars],
                 value='pm25.ML',
 
                 multi = multi,
