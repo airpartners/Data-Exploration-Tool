@@ -7,6 +7,11 @@ from data_importer import DataImporter
 from Polar import Polar
 from Scatterplot_final import Scatter
 from calendar_plot import CalendarPlot
+<<<<<<< Updated upstream
+=======
+from get_sensor_map import get_sensor_map
+from calendar_spike import CalendarSpikePlot
+>>>>>>> Stashed changes
 
 class Page():
 
@@ -19,7 +24,7 @@ class Page():
     }
 
     chart_classes = {
-        0: CalendarPlot,
+        0: CalendarSpikePlot,
         1: TimeSeries,
         2: Scatter,
         3: Polar,

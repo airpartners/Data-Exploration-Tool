@@ -120,13 +120,66 @@ class TimeSeries(GraphFrame):
                 # title='PM2.5',
                 hovermode = "x", # where the magic happens
                 margin = {'t': 0}, # removes the awkward whitespace where the title used to be
+<<<<<<< Updated upstream
+=======
+                xaxis=dict(
+                    rangeselector=dict(
+                        buttons=list([
+                            dict(count=1,
+                                label="1d",
+                                step="day",
+                                stepmode="todate"),
+                            dict(count=7,
+                                label="1w",
+                                step="day",
+                                stepmode="todate"),
+                            dict(count=1,
+                                label="1m",
+                                step="month",
+                                stepmode="todate"),
+                            dict(count=3,
+                                label="3m",
+                                step="month",
+                                stepmode="todate"),
+                            dict(count=6,
+                                label="6m",
+                                step="month",
+                                stepmode="todate"),
+                            dict(count=1,
+                                label="1y",
+                                step="year",
+                                stepmode="todate"),
+                            dict(step="all")
+                        ])
+                    ),
+                    rangeslider=dict(
+                        autorange=True,
+                        range=[start_date, end_date],
+                        visible=True,
+                    ),
+                    type="date"
+                ),
+                
+>>>>>>> Stashed changes
             )
 
             if normalize_height:
                 fig.layout.yaxis.tickformat = ',.0%'
 
+<<<<<<< Updated upstream
             for idx, poll in enumerate(pollutant):
                 fig.data[idx].name = self.all_vars[poll]
                 fig.data[idx].hovertemplate = self.all_vars[poll]
+=======
+            # for idx, poll in enumerate(pollutant):
+            #     fig.data[idx].name = self.all_vars[poll]
+            #     fig.data[idx].hovertemplate = self.all_vars[poll]
+
+            # fig.update_traces(go.Scatter(
+            #     text=pollutant*len(df.index),
+            #     customdata=df[pollutant],
+            #     hovertemplate='<br><b>%{text}</b><br>%{customdata}'
+            # ))
+>>>>>>> Stashed changes
 
             return fig
