@@ -95,7 +95,8 @@ class DataImporter():
             df_processed = pd.read_parquet(processed_file_path) # skip the column names
         except(FileNotFoundError):
             print(f'In DataImporter, looking for a processed file at "{processed_file_path}"')
-            print(f'Processed file does not exist; performing processing and saving as "{processed_file_path}".')
+            print(f'Because the processed file does not yet exist; we will now perform processing and save a new processed file as "{processed_file_path}".')
+            print('(This is normal operation and is not an error message.)')
             return None
         return df_processed
 
