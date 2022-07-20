@@ -86,7 +86,7 @@ class Page():
             {'label': "Bar Chart", 'value': 4},
         ]
 
-        if placeholder_text in range(4):
+        if placeholder_text in range(5):
             placeholder = options[placeholder_text]["label"]
         else:
             placeholder = "Create another graph..."
@@ -129,7 +129,7 @@ class Page():
         for chart_num in range(self.n_charts):
 
             # add dropdown
-            initial_display_status = 'block' if chart_num in [0, 1, 2, 3, 4] else 'none'
+            initial_display_status = 'block' if chart_num in [0, 1, 2, 3, 4, 5] else 'none'
             add_callback = chart_num < self.n_charts - 1 # not the last element
             self.inner_layout.children.append(self.create_dropdown(chart_num, initial_display_status, placeholder_text = chart_num, add_callback = add_callback))
 
@@ -137,7 +137,7 @@ class Page():
             for chart_type in range(self.n_chart_types):
                 chart_class = self.chart_classes[chart_type]
 
-                initial_display_status = 'block' if chart_num in [0, 1, 2, 3] and chart_type == chart_num else 'none'
+                initial_display_status = 'block' if chart_num in [0, 1, 2, 3, 4] and chart_type == chart_num else 'none'
                 graph_frame = chart_class(self.app, self.data_importer, self.chart_ids[chart_num][chart_type], chart_type, initial_display_status)
 
                 self.inner_layout.children.append(graph_frame.frame)
@@ -211,7 +211,7 @@ class Page():
 if __name__ == '__main__':
     app = Dash(__name__) # initialize the app
 
-    p = Page(app, n_charts = 5)
+    p = Page(app, n_charts = 6)
     # app.layout = html.Div(p.layout)
     app.layout = html.Div(p.outer_layout)
 
