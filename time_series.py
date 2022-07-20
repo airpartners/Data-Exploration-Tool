@@ -68,7 +68,7 @@ class TimeSeries(GraphFrame):
             # select which sensor data to draw from
             df = self.data_importer.get_data_by_sensor(which_sensor)
 
-            # # filter by timestamp and wind direction
+            # filter by timestamp and wind direction
             # df = self.filter_by_date(df, start_date, end_date)
             # df = self.filter_by_wind_direction(df, wind_direction)
 

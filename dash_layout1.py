@@ -9,6 +9,7 @@ from Polar import Polar
 from Scatterplot_final import Scatter
 from calendar_plot import CalendarPlot
 from get_sensor_map import get_sensor_map
+from presets import Presets
 
 class Page():
 
@@ -148,6 +149,8 @@ class Page():
         # self.inner_layout.children.append(self.create_dropdown(chart_num + 1, add_callback = False))
 
     def create_sidebar(self):
+        presets = Presets(self.app)
+
         sidebar = html.Div(
             children = [
                 # html.Button(
@@ -157,15 +160,17 @@ class Page():
                 #     id = 'map-button',
                 # ),
                 # ----
-                # html.Div(
-                #     [
-                        html.H2("Sensor Locations"),
+                html.Div(
+                    [
+                        html.H2("COVID Pandemic Dates Selection"),
+                        presets.layout, 
                         html.Hr(),
+                        html.H2("Sensor Locations"),
                         get_sensor_map(),
-                #     ],
+                    ],
                 #     id = 'sidebar-contents',
                 #     style = {'display': 'block'},
-                # )
+                )
                 # ----
             ],
             n_clicks = 0,
