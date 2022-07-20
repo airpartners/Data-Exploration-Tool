@@ -60,16 +60,18 @@ class GraphFrame():
         # "display": "block",
         # "display": "flex",
         "display": "inline-block",
-        "width": "400px",
+        "width": "350px",
         # "height": "30px",
         # "margin-right": "10px",
         # "margin-left": "10px",
-        "font-size": "20px",
+        "font-size": "18px",
         "font-family": "Arial",
         # "line-height": "0%", # helps reduce the line spacing
+        "overflow-y": "visible",
+        "max-height": "200%",
     }
 
-    dropdown_style_header = dropdown_style_2 | {"font-size": "20px", "font-weight": "bold"}
+    dropdown_style_header = dropdown_style_2 | {"font-size": "20px", "font-weight": "bold", "overflow-y": "hidden"}
     # dropdown_style_header["font-size"] = "20px"
     # dropdown_style_header["font-weight"] = "bold"
 
@@ -111,9 +113,9 @@ class GraphFrame():
             )
 
 
-    def pollutant_picker(self, my_id = 'pollutant-dropdown', multi = True):
+    def pollutant_picker(self, my_id = 'pollutant-dropdown', multi = True, show_flights = True):
         vars = list(self.particles_vars.items()) + list(self.gas_vars.items())
-        if multi:
+        if show_flights:
             vars.extend(list(self.flight_vars.items()))
 
         return \
@@ -124,7 +126,7 @@ class GraphFrame():
                 multi = multi,
                 id = self.get_id(my_id),
 
-                style = self.dropdown_style_2 | {"width": ("800px" if multi else "350px")}
+                style = (self.dropdown_style_2 | {"width": "800px"}) if multi else (self.dropdown_style | {"width": "300px"})
             )
 
     def normalize_switch(self, id = 'normalize-height'):
