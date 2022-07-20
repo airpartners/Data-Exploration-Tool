@@ -83,6 +83,12 @@ When `combine_files()` is called, it takes all the processed files in `parquet_d
                     self.process_csv(csv_path, parquet_path)
 
     def combine_files(self):
+        try:
+            self.df_flights = pd.read_parquet(self.final_parquet_file)
+            return
+        except(FileNotFoundError):
+            print("Final processed file not found, so generating it instead. This is not an error message.")
+
         # then, concatenate all the processed parquet files into one long dataframe
         for root, dirs, files in os.walk(self.parquet_dir):
             for filename in files:
@@ -96,6 +102,7 @@ When `combine_files()` is called, it takes all the processed files in `parquet_d
         # export the dataframeto a large parquet file, to be joined with the air quality dataframe
         print(f'Finished performing processing. Now saving as "{self.final_parquet_file}."')
         self.df_flights.to_parquet(self.final_parquet_file)
+        print("finished saving")
 
     def process_csv(self, csv_path, parquet_path):
         col_names = pd.read_csv(csv_path, nrows=0).columns.tolist() # get the column names without reading the whole file
@@ -143,7 +150,7 @@ When `combine_files()` is called, it takes all the processed files in `parquet_d
 
     def add_parquet(self, parquet_path):
         if self.df_flights is None:
-            self.df_flights = pd.read_parquet(parquet_path) 
+            self.df_flights = pd.read_parquet(parquet_path)
         else:
             df_new = pd.read_parquet(parquet_path)
             self.df_flights = pd.concat([self.df_flights, df_new], axis = 'index')

@@ -68,7 +68,9 @@ class DataImporter():
 
     def __init__(self):
         # load in the flight data once
+        print("loading flights")
         self.flight_loader = FlightLoader(flight_csv_dir, processed_flight_dir, final_flights)
+        print("done loading flights")
 
         # read and process all the sensor data
         self.list_of_sensor_dataframes = []
@@ -76,9 +78,11 @@ class DataImporter():
             # append the next sensor's worth of data to the list
             sensor_name = self.get_sensor_name_from_file(raw_file_path)
             df_sensor = self.prepare_data(raw_file_path, processed_file_path)
-            df_sensor = self.flight_loader.add_flight_data_to(df_sensor, sensor_name = sensor_name, date_time_column_name = "timestamp_local")
-            if df_sensor.index.name != "timestamp_local":
-                df_sensor = df_sensor.set_index("timestamp_local")
+            # print("adding flight data to")
+            # df_sensor = self.flight_loader.add_flight_data_to(df_sensor, sensor_name = sensor_name, date_time_column_name = "timestamp_local")
+            # print("done adding flight data to")
+            # if df_sensor.index.name != "timestamp_local":
+            #     df_sensor = df_sensor.set_index("timestamp_local")
             self.list_of_sensor_dataframes.append(df_sensor)
 
         # calculate and store mean and median of entire dataset
@@ -161,6 +165,11 @@ class DataImporter():
         resample_frequency = "1H"
         df_processed = df_processed.resample(resample_frequency).agg(agg_funcs)
 
+        sensor_name = self.get_sensor_name_from_file(raw_file)
+        df_processed = self.flight_loader.add_flight_data_to(df_processed, sensor_name = sensor_name)
+
+        if df_processed.index.name != "timestamp_local":
+            df_processed = df_processed.set_index("timestamp_local")
 
         # store the processed and downsampled dataframe to a csv, to be read next time
         df_processed.to_parquet(processed_file)

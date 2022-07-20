@@ -5,6 +5,7 @@ from time_series import TimeSeries
 from bar_chart_graph import BarChartGraph
 from data_importer import DataImporter
 from Polar import Polar
+# from polar_plot_v2 import Polar
 from Scatterplot_final import Scatter
 from calendar_plot import CalendarPlot
 from get_sensor_map import get_sensor_map
@@ -63,7 +64,9 @@ class Page():
 
         self.sidebar_is_open = True
 
+        print("importing data")
         self.data_importer = DataImporter()
+        print("done importing data")
 
         self.create_layout()
 
