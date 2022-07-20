@@ -90,6 +90,9 @@ When `combine_files()` is called, it takes all the processed files in `parquet_d
                 parquet_path = os.path.join(root, filename)
                 self.add_parquet(parquet_path)
 
+        # sort values
+        self.df_flights.sort_values("Date_Time", inplace = True)
+
         # export the dataframeto a large parquet file, to be joined with the air quality dataframe
         print(f'Finished performing processing. Now saving as "{self.final_parquet_file}."')
         self.df_flights.to_parquet(self.final_parquet_file)
@@ -143,7 +146,7 @@ When `combine_files()` is called, it takes all the processed files in `parquet_d
             self.df_flights = pd.read_parquet(parquet_path)
         else:
             df_new = pd.read_parquet(parquet_path)
-            pd.concat([self.df_flights, df_new], axis = 'index')
+            self.df_flights = pd.concat([self.df_flights, df_new], axis = 'index')
 
     def add_flight_data_to(self, df, sensor_name = None, date_time_column_name = "timestamp_local"):
         self.df_flights["is_adverse_runway"] = self.df_flights.apply(lambda df: self.is_adverse_runway(df["RW_group"], df["Opr"], sensor_name), axis = 1)

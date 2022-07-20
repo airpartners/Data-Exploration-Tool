@@ -4,6 +4,7 @@ import plotly.express as px
 import dash_core_components as dcc
 
 def get_sensor_map():
+    print("Starting getting sensor map...")
     latitude = [42.38436682275741, 42.366293100928964, 42.372108131433066, 42.36425867647669, 42.361552197618515, 42.38730430752273]
     longitude = [-71.00224008848411, -71.03119524615705, -70.99516411546733,  -71.02899217300163, -70.97258190197628, -71.00479111744103]
     # sensor_name = ['SN45', 'SN46', 'SN49', 'SN62', 'SN67', 'SN72']
@@ -34,5 +35,7 @@ def get_sensor_map():
     fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
     fig.update_traces(customdata = sensor_name, hovertemplate = "%{customdata}")
     # fig.update_traces(hoverinfo = "name")
+
+    print("Finished getting sensor map!")
 
     return dcc.Graph(id = 'sidebar-map', figure = fig)
