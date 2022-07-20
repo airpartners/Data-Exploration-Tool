@@ -143,7 +143,7 @@ When `combine_files()` is called, it takes all the processed files in `parquet_d
 
     def add_parquet(self, parquet_path):
         if self.df_flights is None:
-            self.df_flights = pd.read_parquet(parquet_path)
+            self.df_flights = pd.read_parquet(parquet_path) 
         else:
             df_new = pd.read_parquet(parquet_path)
             self.df_flights = pd.concat([self.df_flights, df_new], axis = 'index')
