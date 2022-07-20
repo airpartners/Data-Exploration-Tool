@@ -36,7 +36,7 @@ class Polar(GraphFrame):
                         "At",
                         self.sensor_picker(),
                         ", what were the concentrations of ",
-                        self.pollutant_picker(multi = False),
+                        self.pollutant_picker(multi = False, show_flights = False),
                         " on the date range of ",
                         self.date_picker(),
                         "?"

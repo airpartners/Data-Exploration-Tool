@@ -111,9 +111,9 @@ class GraphFrame():
             )
 
 
-    def pollutant_picker(self, my_id = 'pollutant-dropdown', multi = True):
+    def pollutant_picker(self, my_id = 'pollutant-dropdown', multi = True, show_flights = True):
         vars = list(self.particles_vars.items()) + list(self.gas_vars.items())
-        if multi:
+        if show_flights:
             vars.extend(list(self.flight_vars.items()))
 
         return \

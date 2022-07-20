@@ -27,7 +27,7 @@ class CalendarPlot(GraphFrame):
                         "At ",
                         self.sensor_picker(),
                         ", what was the level of ",
-                        self.pollutant_picker(multi = False),
+                        self.pollutant_picker(multi = False, show_flights = True),
                         "?",
                     ],
                     style = self.text_style
@@ -59,7 +59,7 @@ class CalendarPlot(GraphFrame):
             # select which sensor data to draw from
             df = self.data_importer.get_data_by_sensor(which_sensor)
 
-            # calculate daily average                
+            # calculate daily average
             df=df.resample('D').mean()
 
             # df.index = pd.date_range('01/01/2018',
@@ -69,7 +69,7 @@ class CalendarPlot(GraphFrame):
             # print(df.index)
             # pollution_level = np.array(df[pollutant])
             # pollution_level = list(np.average(pollution_level.reshape(-1, 24), axis=1))
-            
+
 
             start_date = df.index[0]
             end_date = df.index[-1]
