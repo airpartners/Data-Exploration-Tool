@@ -63,7 +63,16 @@ class Polar(GraphFrame):
             df = df.round(2)
 
             wind_speed_labels = ["Calm", "Moderate", "Strong"]
-            df["wind_category"] = pd.cut(df["ws"], bins = [0, 1.5, 7.9, 100], labels = wind_speed_labels)
+            wind_direction_labels = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"]
+
+            n_angles = len(wind_direction_labels)
+            angles = [-1]
+            angles.extend(range(int(360 / n_angles / 2), int(360 - 360 / n_angles / 2), int(360 / (n_angles - 1))))
+            angles.append(361)
+
+            df["ws_category"] = pd.cut(df["ws"], bins = [0, 1.5, 7.9, 100], labels = wind_speed_labels)
+            df["wd_category"] = pd.cut(df["wd"] % 360, bins = angles, labels = wind_direction_labels)
+            df_polar = df.groupby(["ws_category", "wd_category"]).mean()
 
             # print("Filtering by pollutant: ", pollutant)
 
@@ -79,15 +88,15 @@ class Polar(GraphFrame):
 
             fig = make_subplots(rows = 1, cols = 3, subplot_titles = wind_speed_labels, specs = [[{"type": "polar"}]*3])
             for i, label in enumerate(wind_speed_labels):
-                df_polar = df[df["wind_category"] == label]
+                df_subplot = df_polar.loc[label]
                 # print(df_polar.head(2))
                 fig.add_trace(
                     go.Scatterpolar(
-                        r = df_polar['ws'],
-                        theta = df_polar['wd'],
-                        # size = df_polar[pollutant],
+                        r = df_subplot[pollutant],
+                        theta = df_subplot.index,
+                        # size = df_subplot[pollutant],
                         # opacity = 0.4,
-                        # color = df_polar[pollutant],
+                        # color = df_subplot[pollutant],
                         # color_continuous_scale = [(0,"green"), (0.5,"yellow"), (0.75,"red"), (1,"purple")],
                         # range_color = limit[pollutant],
                         # hover_name = df.index,
@@ -97,7 +106,14 @@ class Polar(GraphFrame):
                     col = i + 1,
                 )
 
-            # # add another column which is hour converted to degrees
+            fig.update_polars(
+                angularaxis = {
+                    "direction": "clockwise",
+                }
+            )
+            fig.update_traces(fill='toself')
+
+            # add another column which is hour converted to degrees
             # fig.update_layout(
             #     polar={
             #         "angularaxis": {
@@ -107,6 +123,7 @@ class Polar(GraphFrame):
             #         }
             #     }
             # )
+
             # fig.layout.annotations =[dict(showarrow=False,
             #                     text='Wind Speed (m/s)',
             #                     xanchor='left',

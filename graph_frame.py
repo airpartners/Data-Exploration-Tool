@@ -71,7 +71,7 @@ class GraphFrame():
         "max-height": "200%",
     }
 
-    dropdown_style_header = dropdown_style_2 | {"font-size": "20px", "font-weight": "bold", "overflow-y": "hidden"}
+    dropdown_style_header = dropdown_style_2 | {"font-size": "20px", "font-weight": "bold", "overflow-y": "visible"}
     # dropdown_style_header["font-size"] = "20px"
     # dropdown_style_header["font-weight"] = "bold"
 
