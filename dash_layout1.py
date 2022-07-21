@@ -4,8 +4,8 @@ from graph_frame import GraphFrame
 from time_series import TimeSeries
 from bar_chart_graph import BarChartGraph
 from data_importer import DataImporter
-from Polar import Polar
-# from polar_plot_v2 import Polar
+# from Polar import Polar
+from polar_plot_v2 import Polar
 from Scatterplot_final import Scatter
 from calendar_plot import CalendarPlot
 from get_sensor_map import get_sensor_map
@@ -163,7 +163,7 @@ class Page():
                 html.Div(
                     [
                         html.H2("COVID Pandemic Dates Selection"),
-                        presets.layout, 
+                        presets.layout,
                         html.Hr(),
                         html.H2("Sensor Locations"),
                         get_sensor_map(),

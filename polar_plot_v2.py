@@ -36,9 +36,9 @@ class Polar(GraphFrame):
                     [
                         "At",
                         self.sensor_picker(),
-                        ", what were the concentrations of ",
+                        ", what was the median concentration of",
                         self.pollutant_picker(multi = False, show_flights = False),
-                        " on the date range of ",
+                        "associated with wind blowing from a specific direction, over the date range of ",
                         self.date_picker(),
                         "?"
                     ],
@@ -62,7 +62,7 @@ class Polar(GraphFrame):
             df = self.filter_by_date(df, start_date, end_date)
             df = df.round(2)
 
-            wind_speed_labels = ["Calm", "Moderate", "Strong"]
+            wind_speed_labels = ["Calm Wind", "Moderate Wind", "Strong Wind"]
             wind_direction_labels = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"]
 
             n_angles = len(wind_direction_labels)
@@ -72,11 +72,24 @@ class Polar(GraphFrame):
 
             df["ws_category"] = pd.cut(df["ws"], bins = [0, 1.5, 7.9, 100], labels = wind_speed_labels)
             df["wd_category"] = pd.cut(df["wd"] % 360, bins = angles, labels = wind_direction_labels)
-            df_polar = df.groupby(["ws_category", "wd_category"]).mean()
+            # df_polar = df.groupby(["ws_category", "wd_category"]).mean()
+            df_polar = df.groupby(["ws_category", "wd_category"]).agg(
+                    # q05 = (pollutant, lambda df: df.quantile(0.05)),
+                    q25 = (pollutant, lambda df: df.quantile(0.25)),
+                    q50 = (pollutant, lambda df: df.quantile(0.50)),
+                    q75 = (pollutant, lambda df: df.quantile(0.75)),
+                    # q95 = (pollutant, lambda df: df.quantile(0.95)),
+            )
+
+            # quantiles = ["q05", "q25", "q50", "q75", "q95"][::-1]
+            # colors = ["#FEF001", "#FFCE03", "#FD9A01", "#FD6104", "#F00505"][::-1]
+            quantiles = ["q25", "q50", "q75"][::-1]
+            colors = ["#FEF001", "#FD9A01", "#F00505"][::-1]
+
 
             # print("Filtering by pollutant: ", pollutant)
 
-            limit={
+            limit = {
                 'co.ML': [0,9000],
                 'correctedNO': [0,71000],
                 'no2.ML': [0,71000],
@@ -89,22 +102,25 @@ class Polar(GraphFrame):
             fig = make_subplots(rows = 1, cols = 3, subplot_titles = wind_speed_labels, specs = [[{"type": "polar"}]*3])
             for i, label in enumerate(wind_speed_labels):
                 df_subplot = df_polar.loc[label]
-                # print(df_polar.head(2))
-                fig.add_trace(
-                    go.Scatterpolar(
-                        r = df_subplot[pollutant],
-                        theta = df_subplot.index,
-                        # size = df_subplot[pollutant],
-                        # opacity = 0.4,
-                        # color = df_subplot[pollutant],
-                        # color_continuous_scale = [(0,"green"), (0.5,"yellow"), (0.75,"red"), (1,"purple")],
-                        # range_color = limit[pollutant],
-                        # hover_name = df.index,
-                        # template = "plotly_dark",
-                    ),
-                    row = 1,
-                    col = i + 1,
-                )
+                for j, quantile in enumerate(quantiles):
+
+                    # print(df_polar.head(2))
+                    fig.add_trace(
+                        go.Scatterpolar(
+                            r = df_subplot[quantile],
+                            theta = df_subplot.index,
+                            marker_color = colors[j],
+                            # size = df_subplot[pollutant],
+                            # opacity = 0.4,
+                            # color = df_subplot[pollutant],
+                            # color_continuous_scale = [(0,"green"), (0.5,"yellow"), (0.75,"red"), (1,"purple")],
+                            # range_color = limit[pollutant],
+                            # hover_name = df.index,
+                            # template = "plotly_dark",
+                        ),
+                        row = 1,
+                        col = i + 1,
+                    )
 
             fig.update_polars(
                 angularaxis = {
@@ -112,6 +128,7 @@ class Polar(GraphFrame):
                 }
             )
             fig.update_traces(fill='toself')
+            fig.update_layout(showlegend=False)
 
             # add another column which is hour converted to degrees
             # fig.update_layout(
