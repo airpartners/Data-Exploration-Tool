@@ -1,9 +1,31 @@
-from statistics import correlation
 from dash import Dash, html, dcc
 from dash.dependencies import Input, Output, State
 import datetime
 
+
+from time_series import TimeSeries
+from bar_chart_graph import BarChartGraph
+from Polar import Polar
+from Scatterplot_final import Scatter
+from calendar_plot import CalendarPlot
+
+chart_classes = {
+    0: CalendarPlot,
+    1: TimeSeries,
+    2: Scatter,
+    3: Polar,
+    4: BarChartGraph,
+}
+
 class Presets():
+    pandemic_chart_type = {
+        'all': 0,
+        'pre-pandemic': 0,
+        'during pandemic': 0,
+        'post-pandemic': 0,
+        'example-1': 4,
+    }
+
     pandemic_start_date = {
         'all': datetime.date(2019, 9, 8),
         'pre-pandemic': datetime.date(2019, 9, 8),
@@ -66,6 +88,12 @@ class Presets():
         return id_str + "-" + str(id_num)
 
     def add_callbacks(self):
+        type_update = [0, 1, 2, 3, 4]
+        type_outputs = []
+        for id in type_update:
+            type_outputs.append(Output(self.get_id('new-chart-dropdown', id), 'value'))
+
+
         dates_update = [12, 18, 24]
         dates_outputs = []
         for id in dates_update:
@@ -78,36 +106,39 @@ class Presets():
             sensor_outputs.append(Output(self.get_id('which-sensor', id), 'value'))
 
         
-        pollutants_update = [0, 6, 18]
-        pollutants_outputs = []
-        for id in pollutants_update:
-            pollutants_outputs.append(Output(self.get_id('pollutant-dropdown', id), 'value'))
+        # pollutants_update = [0, 6, 18]
+        # pollutants_outputs = []
+        # for id in pollutants_update:
+        #     pollutants_outputs.append(Output(self.get_id('pollutant-dropdown', id), 'value'))
 
-        correlation_update = [12]
-        correlation_outputs = []
-        for id in correlation_update:
-            correlation_outputs.append(Output(self.get_id('x-axis', id), 'value'))
-            correlation_outputs.append(Output(self.get_id('y-axis', id), 'value'))
+        # correlation_update = [12]
+        # correlation_outputs = []
+        # for id in correlation_update:
+        #     correlation_outputs.append(Output(self.get_id('x-axis', id), 'value'))
+        #     correlation_outputs.append(Output(self.get_id('y-axis', id), 'value'))
 
 
         @self.app.callback(
+            *type_outputs,
             *dates_outputs,
             *sensor_outputs,
-            *pollutants_outputs,
-            *correlation_outputs,
+            # *pollutants_outputs,
+            # *correlation_outputs,
             Input('pandemic-radioitems', 'value'),
         )
         def update_sensors_dates(pandemic_period):
             return [
+                *[self.pandemic_chart_type[pandemic_period]],
                 *[
                     self.pandemic_start_date[pandemic_period], 
                     self.pandemic_end_date[pandemic_period]
                 ]*len(dates_update), *[
                     self.pandemic_sensor_selection[pandemic_period]
-                ]*len(sensor_update), *[
-                    self.pandemic_pollutant_selection[pandemic_period]
-                ]*len(pollutants_update), *[
-                    self.correlation_xaxis[pandemic_period],
-                    self.correlation_yaxis[pandemic_period]
-                ]*len(correlation_update), 
+                ]*len(sensor_update)
+            #   , *[
+            #         self.pandemic_pollutant_selection[pandemic_period]
+            #     ]*len(pollutants_update), *[
+            #         self.correlation_xaxis[pandemic_period],
+            #         self.correlation_yaxis[pandemic_period]
+            #     ]*len(correlation_update), 
             ]
