@@ -128,6 +128,28 @@ class GraphFrame():
 
                 style = (self.dropdown_style_2 | {"width": "800px"}) if multi else (self.dropdown_style | {"width": "300px"})
             )
+    def correlation_xvar(self, id = 'x-axis'):
+        return \
+            dcc.Dropdown(
+                options = self.all_vars,
+                value='rh_manifold',
+
+                id=self.get_id(id),
+                style = self.dropdown_style | {"width": "340px"}
+            )
+
+    def correlation_yvar(self, id = 'y-axis'):
+        return \
+            dcc.Dropdown(
+                options = self.all_vars,
+                value='o3.ML',
+                multi = True,
+
+                id=self.get_id(id),
+                style = self.dropdown_style | {"width": "340px"}
+            )
+
+
 
     def normalize_switch(self, id = 'normalize-height'):
         return \
