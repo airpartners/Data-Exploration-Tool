@@ -85,7 +85,7 @@ class CalendarPlot(GraphFrame):
                     # data=df[pollutant]
                     years_title=True,
                     colorscale=[(0,"white"),(0.000000000001,"green"),(0.5,"yellow"),(0.8,"red"),(1,"purple")],
-                    # colorbar=True
+                    showscale=True
             )
 
             return fig
