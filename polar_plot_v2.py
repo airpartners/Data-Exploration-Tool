@@ -23,7 +23,8 @@ class Polar(GraphFrame):
             html.P([
             "The directions shown on the polar plot represent the direction the wind was blowing ", html.B("from"), ". ",
             "This type of graph can help with locating pollution sources, particularly if a large number of pollutants are ",
-            "blowing in from a certain direction."
+            "blowing in from a certain direction.",
+            "The three graphs represent when the wind was blowing at different speeds. Generally, calm wind is associated with higher pollutant concentrations."
             ]),
         ]
 
