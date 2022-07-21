@@ -31,20 +31,9 @@ class Scatter(GraphFrame):
                         "At",
                         self.sensor_picker(),
                         ", what was the correlation between",
-                        dcc.Dropdown(
-                            id=self.get_id('x-axis'),
-                            options = self.all_vars,
-                            value='temp_manifold',
-                            style = self.dropdown_style | {"width": "340px"}
-                        ),
+                        self.correlation_xvar(),
                         " and",
-                        dcc.Dropdown(
-                            id=self.get_id('y-axis'),
-                            options = self.all_vars,
-                            multi = True,
-                            value='pm25.ML',
-                            style = self.dropdown_style | {"width": "340px"}
-                        ),
+                        self.correlation_yvar(),
                         " for dates in the range of ",
                         self.date_picker('date-picker-range'),
                         "?"
