@@ -1,5 +1,6 @@
 from dash import Dash, html, dcc
 from dash.dependencies import Input, Output, State
+from dash.exceptions import PreventUpdate
 import datetime
 
 
@@ -80,10 +81,57 @@ class Presets():
         "start_date": ["date-picker-range", "start_date"],
         "end_date": ["date-picker-range", "end_date"],
         "sensor_location": ["which-sensor", "value"],
+        "pollutant": ["pollutant-dropdown", "value"],
+        "x_axis": ["x-axis", "value"],
+        "y_axis": ["y-axis", "value"],
     }
 
     preset_scenarios = {
-        "pre-post-pandemic": [
+        "Reset Graphs": [
+            (
+                0,
+                {
+                    "sensor_location": 0,
+                    "pollutant": "PM1.ML",
+                }
+            ),
+            (
+                1,
+                {
+                    "sensor_location": 0,
+                    "pollutant": "PM10.ML",
+                }
+            ),
+            (
+                2,
+                {
+                    "sensor_location": 0,
+                    'x_axis': "temp_manifold",
+                    'y_axis': "PM25.ML",
+                    "start_date": datetime.date(2019, 12, 1),
+                    "end_date": datetime.date(2019, 12, 31),
+                }
+            ),
+            (
+                3,
+                {
+                    "sensor_location": 0,
+                    "pollutant": "PM1.ML",
+                    "start_date": datetime.date(2019, 12, 1),
+                    "end_date": datetime.date(2019, 12, 31),
+                }
+            ),
+            (
+                4,
+                {
+                    "sensor_location": 0,
+                    "start_date": datetime.date(2019, 12, 1),
+                    "end_date": datetime.date(2019, 12, 31),
+                }
+            ),
+
+        ],
+        "Pre-vs. Post-Pandemic": [
             (
                 4,
                 {
@@ -115,7 +163,8 @@ class Presets():
     def __init__(self, app):
         self.app = app
         self.layout = self.get_html()
-        self.add_callbacks()
+        for scenario_name, scenario in self.preset_scenarios.items():
+            self.add_callbacks(scenario_name, scenario)
 
     def get_html(self):
         pandemic_radioitem = dcc.RadioItems(
@@ -132,9 +181,9 @@ class Presets():
     def get_id_num_from_chart_num(self, chart_num, chart_type):
         return chart_num * 5 + chart_type
 
-    def add_callbacks(self):
+    def add_callbacks(self, scenario_name, scenario):
         outputs = []
-        for chart_num, (chart_type, graph_dict) in enumerate(self.preset_scenarios["pre-post-pandemic"]):
+        for chart_num, (chart_type, graph_dict) in enumerate(scenario):
             print("chart_num:", chart_num)
             print("chart_type:", chart_type)
             print("graph_dict:", graph_dict)
@@ -145,20 +194,27 @@ class Presets():
                     self.keys_to_ids[key][1])
                 )
 
+        # outputs = list(dict.fromkeys(outputs)) # remove duplicates, preserving order
+
         # generate callback based on outputs
         @self.app.callback(
             *outputs,
             Input('preset-radioitems', 'value'),
             prevent_initial_call = True
         )
-        def execute_presets(scenario_id):
+        def execute_presets(radio_scenario_name):
+            if radio_scenario_name != scenario_name:
+                raise PreventUpdate
             return_list = []
-            for (chart_type, graph_dict) in self.preset_scenarios[scenario_id]:
+            # for (chart_type, graph_dict) in self.preset_scenarios[scenario_id]:
+            for (chart_type, graph_dict) in scenario:
                 print("returning chart type:", chart_type)
                 print("returning graph_dict:", graph_dict)
                 return_list.append(chart_type)
                 for val in graph_dict.values():
                     return_list.append(val)
+
+            # return_list = list(dict.fromkeys(return_list)) # remove duplicates, preserving order
 
             return tuple(return_list)
 

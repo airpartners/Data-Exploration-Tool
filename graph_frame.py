@@ -128,6 +128,7 @@ class GraphFrame():
 
                 style = (self.dropdown_style_2 | {"width": "800px"}) if multi else (self.dropdown_style | {"width": "300px"})
             )
+
     def correlation_xvar(self, id = 'x-axis'):
         return \
             dcc.Dropdown(

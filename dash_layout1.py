@@ -11,6 +11,8 @@ from calendar_plot import CalendarPlot
 from get_sensor_map import get_sensor_map
 from presets import Presets
 
+from dash_extensions.enrich import DashProxy, MultiplexerTransform
+
 class Page():
 
     chart_names = {
@@ -219,10 +221,12 @@ class Page():
         return id_str + "-" + str(id_num)
 
 if __name__ == '__main__':
-    app = Dash(__name__) # initialize the app
+    # app = Dash(__name__) # initialize the app
+    app = DashProxy(transforms=[MultiplexerTransform()])
 
     p = Page(app, n_charts = 6)
     # app.layout = html.Div(p.layout)
     app.layout = html.Div(p.outer_layout)
+
 
     app.run_server(debug=True)
