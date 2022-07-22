@@ -27,6 +27,14 @@ class Presets():
         "data_end": datetime.date(2021, 3, 5),
     }
 
+    chart_type_ids = {
+        "calendar_plot": 0,
+        "timeseries": 1,
+        "correlation_plot": 2,
+        "polar_plot": 3,
+        "bar_chart": 4,
+    }
+
     keys_to_ids = {
         "start_date": ["date-picker-range", "start_date"],
         "end_date": ["date-picker-range", "end_date"],
@@ -41,7 +49,7 @@ class Presets():
     preset_scenarios = {
         "Reset Graphs": [
             (
-                0,
+                chart_type_ids["calendar_plot"],
                 {
                     "sensor_location": 0,
                     "pollutant": "pm1.ML",
@@ -49,7 +57,7 @@ class Presets():
                 }
             ),
             (
-                1,
+                chart_type_ids["timeseries"],
                 {
                     "sensor_location": 0,
                     "pollutant": "pm10.ML",
@@ -58,7 +66,7 @@ class Presets():
                 }
             ),
             (
-                2,
+                chart_type_ids["correlation_plot"],
                 {
                     "sensor_location": 0,
                     'x_axis': "temp_manifold",
@@ -69,7 +77,7 @@ class Presets():
                 }
             ),
             (
-                3,
+                chart_type_ids["polar_plot"],
                 {
                     "sensor_location": 0,
                     "pollutant": "pm1.ML",
@@ -79,7 +87,7 @@ class Presets():
                 }
             ),
             (
-                4,
+                chart_type_ids["bar_chart"],
                 {
                     "sensor_location": 0,
                     "start_date": datetime.date(2019, 12, 1),
@@ -92,7 +100,7 @@ class Presets():
         ],
         "Pre-vs. Post-Pandemic": [
             (
-                4,
+                chart_type_ids["bar_chart"],
                 {
                     "sensor_location": 0,
                     "start_date": pandemic_date_ranges["data_start"],
@@ -102,7 +110,7 @@ class Presets():
                 }
             ),
             (
-                4,
+                chart_type_ids["bar_chart"],
                 {
                     "sensor_location": 0,
                     "start_date": pandemic_date_ranges["pandemic_start"],
@@ -112,7 +120,7 @@ class Presets():
                 },
             ),
             (
-                4,
+                chart_type_ids["bar_chart"],
                 {
                     "sensor_location": 0,
                     "start_date": pandemic_date_ranges["pandemic_end"],
@@ -121,6 +129,62 @@ class Presets():
                     "ignore_units": True,
                 },
             ),
+        ],
+        "Source Direction": [
+            (
+                chart_type_ids["polar_plot"],
+                {
+                    "sensor_location": 0,
+                    "start_date": pandemic_date_ranges["data_start"],
+                    "end_date": pandemic_date_ranges["data_end"],
+                    "show_details": True,
+                }
+            ),
+            (
+                chart_type_ids["polar_plot"],
+                {
+                    "sensor_location": 1,
+                    "start_date": pandemic_date_ranges["data_start"],
+                    "end_date": pandemic_date_ranges["data_end"],
+                    "show_details": False,
+                }
+            ),
+            (
+                chart_type_ids["polar_plot"],
+                {
+                    "sensor_location": 2,
+                    "start_date": pandemic_date_ranges["data_start"],
+                    "end_date": pandemic_date_ranges["data_end"],
+                    "show_details": False,
+                }
+            ),
+            (
+                chart_type_ids["polar_plot"],
+                {
+                    "sensor_location": 3,
+                    "start_date": pandemic_date_ranges["data_start"],
+                    "end_date": pandemic_date_ranges["data_end"],
+                    "show_details": False,
+                }
+            ),
+            (
+                chart_type_ids["polar_plot"],
+                {
+                    "sensor_location": 4,
+                    "start_date": pandemic_date_ranges["data_start"],
+                    "end_date": pandemic_date_ranges["data_end"],
+                    "show_details": False,
+                }
+            ),
+            # (
+            #     chart_type_ids["polar_plot"],
+            #     {
+            #         "sensor_location": 5,
+            #         "start_date": pandemic_date_ranges["data_start"],
+            #         "end_date": pandemic_date_ranges["data_end"],
+            #         "show_details": False,
+            #     }
+            # ),
         ]
     }
 
