@@ -200,7 +200,8 @@ class Presets():
             options = list(self.preset_scenarios.keys()),
             value = None,
             inline = False,
-            id = 'preset-radioitems'
+            style = {'display': 'block'},
+            id = 'preset-radioitems',
         )
         return pandemic_radioitem
 
@@ -231,7 +232,7 @@ class Presets():
         )
         def execute_presets(radio_scenario_name):
             if radio_scenario_name != scenario_name:
-                raise PreventUpdate
+                raise PreventUpdate # https://community.plotly.com/t/how-to-leave-callback-output-unchanged/7276/13
 
             return_list = []
             # for (chart_type, graph_dict) in self.preset_scenarios[scenario_id]:

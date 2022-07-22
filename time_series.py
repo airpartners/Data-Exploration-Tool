@@ -160,7 +160,7 @@ class TimeSeries(GraphFrame):
                     ),
                     type="date"
                 ),
-                
+
             )
 
             if normalize_height:
@@ -175,5 +175,7 @@ class TimeSeries(GraphFrame):
                 customdata=df[pollutant],
                 hovertemplate='<br><b>%{text}</b><br>%{customdata}'
             ))
+
+            fig.update_layout(uirevision = "Static Literal String")
 
             return fig
