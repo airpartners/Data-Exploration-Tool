@@ -92,14 +92,14 @@ class Presets():
                 0,
                 {
                     "sensor_location": 0,
-                    "pollutant": "PM1.ML",
+                    "pollutant": "pm1.ML",
                 }
             ),
             (
                 1,
                 {
                     "sensor_location": 0,
-                    "pollutant": "PM10.ML",
+                    "pollutant": "pm10.ML",
                 }
             ),
             (
@@ -107,7 +107,7 @@ class Presets():
                 {
                     "sensor_location": 0,
                     'x_axis': "temp_manifold",
-                    'y_axis': "PM25.ML",
+                    'y_axis': "pm25.ML",
                     "start_date": datetime.date(2019, 12, 1),
                     "end_date": datetime.date(2019, 12, 31),
                 }
@@ -116,7 +116,7 @@ class Presets():
                 3,
                 {
                     "sensor_location": 0,
-                    "pollutant": "PM1.ML",
+                    "pollutant": "pm1.ML",
                     "start_date": datetime.date(2019, 12, 1),
                     "end_date": datetime.date(2019, 12, 31),
                 }
@@ -196,6 +196,10 @@ class Presets():
 
         # outputs = list(dict.fromkeys(outputs)) # remove duplicates, preserving order
 
+        print(scenario_name)
+        if scenario_name == "Pre-vs. Post-Pandemic":
+            print("Scenario is", "Pre-vs. Post-Pandemic")
+
         # generate callback based on outputs
         @self.app.callback(
             *outputs,
@@ -205,6 +209,7 @@ class Presets():
         def execute_presets(radio_scenario_name):
             if radio_scenario_name != scenario_name:
                 raise PreventUpdate
+
             return_list = []
             # for (chart_type, graph_dict) in self.preset_scenarios[scenario_id]:
             for (chart_type, graph_dict) in scenario:
