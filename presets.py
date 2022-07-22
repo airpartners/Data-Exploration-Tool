@@ -84,6 +84,7 @@ class Presets():
         "pollutant": ["pollutant-dropdown", "value"],
         "x_axis": ["x-axis", "value"],
         "y_axis": ["y-axis", "value"],
+        "show_details": ["explanation", "open"],
     }
 
     preset_scenarios = {
@@ -93,6 +94,7 @@ class Presets():
                 {
                     "sensor_location": 0,
                     "pollutant": "pm1.ML",
+                    "show_details": True,
                 }
             ),
             (
@@ -100,6 +102,7 @@ class Presets():
                 {
                     "sensor_location": 0,
                     "pollutant": "pm10.ML",
+                    "show_details": True,
                 }
             ),
             (
@@ -110,6 +113,7 @@ class Presets():
                     'y_axis': "pm25.ML",
                     "start_date": datetime.date(2019, 12, 1),
                     "end_date": datetime.date(2019, 12, 31),
+                    "show_details": True,
                 }
             ),
             (
@@ -119,6 +123,7 @@ class Presets():
                     "pollutant": "pm1.ML",
                     "start_date": datetime.date(2019, 12, 1),
                     "end_date": datetime.date(2019, 12, 31),
+                    "show_details": True,
                 }
             ),
             (
@@ -127,6 +132,7 @@ class Presets():
                     "sensor_location": 0,
                     "start_date": datetime.date(2019, 12, 1),
                     "end_date": datetime.date(2019, 12, 31),
+                    "show_details": True,
                 }
             ),
 
@@ -135,25 +141,28 @@ class Presets():
             (
                 4,
                 {
+                    "sensor_location": 0,
                     "start_date": pandemic_date_ranges["data_start"],
                     "end_date": pandemic_date_ranges["pandemic_start"],
-                    "sensor_location": 0
+                    "show_details": False,
                 }
             ),
             (
                 4,
                 {
+                    "sensor_location": 0,
                     "start_date": pandemic_date_ranges["pandemic_start"],
                     "end_date": pandemic_date_ranges["pandemic_end"],
-                    "sensor_location": 0
+                    "show_details": False,
                 },
             ),
             (
                 4,
                 {
+                    "sensor_location": 0,
                     "start_date": pandemic_date_ranges["pandemic_end"],
                     "end_date": pandemic_date_ranges["data_end"],
-                    "sensor_location": 0
+                    "show_details": False,
                 },
             ),
         ]
