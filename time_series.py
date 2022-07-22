@@ -123,9 +123,9 @@ class TimeSeries(GraphFrame):
                 # title='PM2.5',
                 # hovermode = "x", # where the magic happens
                 margin = {'t': 0}, # removes the awkward whitespace where the title used to be
-                xaxis=dict(
-                    rangeselector=dict(
-                        buttons=list([
+                xaxis = dict(
+                    rangeselector = dict(
+                        buttons = list([
                             dict(count=1,
                                 label="1d",
                                 step="day",
@@ -153,13 +153,17 @@ class TimeSeries(GraphFrame):
                             dict(step="all")
                         ])
                     ),
-                    rangeslider=dict(
-                        autorange=True,
-                        range=[start_date, end_date],
-                        visible=True,
+                    rangeslider = dict(
+                        autorange = True,
+                        range = [start_date, end_date],
+                        visible = True,
                     ),
                     type="date"
                 ),
+                yaxis = dict(
+                    autorange = True,
+                    fixedrange = False
+                )
 
             )
 
@@ -177,5 +181,17 @@ class TimeSeries(GraphFrame):
             ))
 
             fig.update_layout(uirevision = "Static Literal String")
+            fig.update_layout(
+                modebar_add=[
+                    'zoom',
+                    # 'drawline',
+                    # 'drawopenpath',
+                    # 'drawclosedpath',
+                    # 'drawcircle',
+                    # 'drawrect',
+                    # 'eraseshape'
+                ]
+            )
+
 
             return fig
