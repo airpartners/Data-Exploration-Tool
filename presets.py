@@ -159,12 +159,6 @@ class Presets():
                     self.keys_to_ids[key][1])
                 )
 
-        # outputs = list(dict.fromkeys(outputs)) # remove duplicates, preserving order
-
-        print(scenario_name)
-        if scenario_name == "Pre-vs. Post-Pandemic":
-            print("Scenario is", "Pre-vs. Post-Pandemic")
-
         # generate callback based on outputs
         @self.app.callback(
             *outputs,
@@ -184,19 +178,4 @@ class Presets():
                 for val in graph_dict.values():
                     return_list.append(val)
 
-            # return_list = list(dict.fromkeys(return_list)) # remove duplicates, preserving order
-
             return tuple(return_list)
-
-
-            # return [
-            #     *[ self.pandemic_chart_type[pandemic_period] ] * len(type_update),
-            #     *[ self.pandemic_start_date[pandemic_period], self.pandemic_end_date[pandemic_period] ] * len(dates_update),
-            #     *[ self.pandemic_sensor_selection[pandemic_period] ]*len(sensor_update)
-            # #   , *[
-            # #         self.pandemic_pollutant_selection[pandemic_period]
-            # #     ]*len(pollutants_update), *[
-            # #         self.correlation_xaxis[pandemic_period],
-            # #         self.correlation_yaxis[pandemic_period]
-            # #     ]*len(correlation_update),
-            # ]
