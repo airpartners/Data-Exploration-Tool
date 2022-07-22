@@ -69,6 +69,48 @@ class Presets():
         'example-1': 'no2.ML'
     }
 
+    pandemic_date_ranges = {
+        "data_start": datetime.date(2019, 9, 8),
+        "pandemic_start": datetime.date(2020, 3, 20),
+        "pandemic_end": datetime.date(2020, 6, 30),
+        "data_end": datetime.date(2021, 3, 5),
+    }
+
+    keys_to_ids = {
+        "start_date": ["date-picker-range", "start_date"],
+        "end_date": ["date-picker-range", "end_date"],
+        "sensor_location": ["which-sensor", "value"],
+    }
+
+    preset_scenarios = {
+        "pre-post-pandemic": [
+            (
+                4,
+                {
+                    "start_date": pandemic_date_ranges["data_start"],
+                    "end_date": pandemic_date_ranges["pandemic_start"],
+                    "sensor_location": 0
+                }
+            ),
+            (
+                4,
+                {
+                    "start_date": pandemic_date_ranges["pandemic_start"],
+                    "end_date": pandemic_date_ranges["pandemic_end"],
+                    "sensor_location": 0
+                },
+            ),
+            (
+                4,
+                {
+                    "start_date": pandemic_date_ranges["pandemic_end"],
+                    "end_date": pandemic_date_ranges["data_end"],
+                    "sensor_location": 0
+                },
+            ),
+        ]
+    }
+
 
     def __init__(self, app):
         self.app = app
@@ -77,68 +119,58 @@ class Presets():
 
     def get_html(self):
         pandemic_radioitem = dcc.RadioItems(
-            options = ['all','pre-pandemic','during pandemic','post-pandemic','example-1'],
-            value = 'all', 
-            inline=True, 
-            id='pandemic-radioitems'
+            options = list(self.preset_scenarios.keys()),
+            value = None,
+            inline = False,
+            id = 'preset-radioitems'
         )
         return pandemic_radioitem
 
     def get_id(self, id_str, id_num):
         return id_str + "-" + str(id_num)
 
+    def get_id_num_from_chart_num(self, chart_num, chart_type):
+        return chart_num * 5 + chart_type
+
     def add_callbacks(self):
-        type_update = [0, 1, 2, 3, 4]
-        type_outputs = []
-        for id in type_update:
-            type_outputs.append(Output(self.get_id('new-chart-dropdown', id), 'value'))
+        outputs = []
+        for chart_num, (chart_type, graph_dict) in enumerate(self.preset_scenarios["pre-post-pandemic"]):
+            print("chart_num:", chart_num)
+            print("chart_type:", chart_type)
+            print("graph_dict:", graph_dict)
+            outputs.append(Output(self.get_id('new-chart-dropdown', chart_num), 'value'))
+            for key in graph_dict.keys():
+                outputs.append(Output(
+                    self.get_id(self.keys_to_ids[key][0], self.get_id_num_from_chart_num(chart_num, chart_type)),
+                    self.keys_to_ids[key][1])
+                )
 
-
-        dates_update = [12, 18, 24]
-        dates_outputs = []
-        for id in dates_update:
-            dates_outputs.append(Output(self.get_id('date-picker-range', id), 'start_date'))
-            dates_outputs.append(Output(self.get_id('date-picker-range', id), 'end_date'))
-
-        sensor_update = [0, 6, 12, 18, 24]
-        sensor_outputs = []
-        for id in sensor_update:
-            sensor_outputs.append(Output(self.get_id('which-sensor', id), 'value'))
-
-        
-        # pollutants_update = [0, 6, 18]
-        # pollutants_outputs = []
-        # for id in pollutants_update:
-        #     pollutants_outputs.append(Output(self.get_id('pollutant-dropdown', id), 'value'))
-
-        # correlation_update = [12]
-        # correlation_outputs = []
-        # for id in correlation_update:
-        #     correlation_outputs.append(Output(self.get_id('x-axis', id), 'value'))
-        #     correlation_outputs.append(Output(self.get_id('y-axis', id), 'value'))
-
-
+        # generate callback based on outputs
         @self.app.callback(
-            *type_outputs,
-            *dates_outputs,
-            *sensor_outputs,
-            # *pollutants_outputs,
-            # *correlation_outputs,
-            Input('pandemic-radioitems', 'value'),
+            *outputs,
+            Input('preset-radioitems', 'value'),
+            prevent_initial_call = True
         )
-        def update_sensors_dates(pandemic_period):
-            return [
-                *[self.pandemic_chart_type[pandemic_period]],
-                *[
-                    self.pandemic_start_date[pandemic_period], 
-                    self.pandemic_end_date[pandemic_period]
-                ]*len(dates_update), *[
-                    self.pandemic_sensor_selection[pandemic_period]
-                ]*len(sensor_update)
-            #   , *[
-            #         self.pandemic_pollutant_selection[pandemic_period]
-            #     ]*len(pollutants_update), *[
-            #         self.correlation_xaxis[pandemic_period],
-            #         self.correlation_yaxis[pandemic_period]
-            #     ]*len(correlation_update), 
-            ]
+        def execute_presets(scenario_id):
+            return_list = []
+            for (chart_type, graph_dict) in self.preset_scenarios[scenario_id]:
+                print("returning chart type:", chart_type)
+                print("returning graph_dict:", graph_dict)
+                return_list.append(chart_type)
+                for val in graph_dict.values():
+                    return_list.append(val)
+
+            return tuple(return_list)
+
+
+            # return [
+            #     *[ self.pandemic_chart_type[pandemic_period] ] * len(type_update),
+            #     *[ self.pandemic_start_date[pandemic_period], self.pandemic_end_date[pandemic_period] ] * len(dates_update),
+            #     *[ self.pandemic_sensor_selection[pandemic_period] ]*len(sensor_update)
+            # #   , *[
+            # #         self.pandemic_pollutant_selection[pandemic_period]
+            # #     ]*len(pollutants_update), *[
+            # #         self.correlation_xaxis[pandemic_period],
+            # #         self.correlation_yaxis[pandemic_period]
+            # #     ]*len(correlation_update),
+            # ]
