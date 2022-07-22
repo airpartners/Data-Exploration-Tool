@@ -19,56 +19,6 @@ chart_classes = {
 }
 
 class Presets():
-    pandemic_chart_type = {
-        'all': 0,
-        'pre-pandemic': 0,
-        'during pandemic': 0,
-        'post-pandemic': 0,
-        'example-1': 4,
-    }
-
-    pandemic_start_date = {
-        'all': datetime.date(2019, 9, 8),
-        'pre-pandemic': datetime.date(2019, 9, 8),
-        'during pandemic': datetime.date(2020, 3, 21),
-        'post-pandemic': datetime.date(2020, 7, 1),
-        'example-1': datetime.date(2020, 8, 6)
-    }
-    pandemic_end_date = {
-        'all': datetime.date(2021, 3, 5),
-        'pre-pandemic': datetime.date(2020, 3, 20),
-        'during pandemic': datetime.date(2020, 6, 30),
-        'post-pandemic': datetime.date(2021, 3, 5),
-        'example-1': datetime.date(2020, 8, 25)
-    }
-    pandemic_sensor_selection = {
-        'all': 0,
-        'pre-pandemic': 0,
-        'during pandemic': 0,
-        'post-pandemic': 0,
-        'example-1': 2
-    }
-    pandemic_pollutant_selection = {
-        'all': 'pm25.ML',
-        'pre-pandemic': 'pm25.ML',
-        'during pandemic': 'pm25.ML',
-        'post-pandemic': 'pm25.ML',
-        'example-1': 'no2.ML'
-    }
-    correlation_xaxis = {
-        'all': 'temp_manifold',
-        'pre-pandemic': 'temp_manifold',
-        'during pandemic': 'temp_manifold',
-        'post-pandemic': 'temp_manifold',
-        'example-1': 'rh_manifold'
-    }
-    correlation_yaxis = {
-        'all': 'pm25.ML',
-        'pre-pandemic': 'pm25.ML',
-        'during pandemic': 'pm25.ML',
-        'post-pandemic': 'pm25.ML',
-        'example-1': 'no2.ML'
-    }
 
     pandemic_date_ranges = {
         "data_start": datetime.date(2019, 9, 8),
@@ -85,6 +35,7 @@ class Presets():
         "x_axis": ["x-axis", "value"],
         "y_axis": ["y-axis", "value"],
         "show_details": ["explanation", "open"],
+        "ignore_units": ["normalize-height", "on"],
     }
 
     preset_scenarios = {
@@ -103,6 +54,7 @@ class Presets():
                     "sensor_location": 0,
                     "pollutant": "pm10.ML",
                     "show_details": True,
+                    "ignore_units": False,
                 }
             ),
             (
@@ -133,6 +85,7 @@ class Presets():
                     "start_date": datetime.date(2019, 12, 1),
                     "end_date": datetime.date(2019, 12, 31),
                     "show_details": True,
+                    "ignore_units": False,
                 }
             ),
 
@@ -145,6 +98,7 @@ class Presets():
                     "start_date": pandemic_date_ranges["data_start"],
                     "end_date": pandemic_date_ranges["pandemic_start"],
                     "show_details": False,
+                    "ignore_units": True,
                 }
             ),
             (
@@ -154,6 +108,7 @@ class Presets():
                     "start_date": pandemic_date_ranges["pandemic_start"],
                     "end_date": pandemic_date_ranges["pandemic_end"],
                     "show_details": False,
+                    "ignore_units": True,
                 },
             ),
             (
@@ -163,6 +118,7 @@ class Presets():
                     "start_date": pandemic_date_ranges["pandemic_end"],
                     "end_date": pandemic_date_ranges["data_end"],
                     "show_details": False,
+                    "ignore_units": True,
                 },
             ),
         ]

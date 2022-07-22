@@ -224,7 +224,7 @@ if __name__ == '__main__':
     # app = Dash(__name__) # initialize the app
     app = DashProxy(transforms=[MultiplexerTransform()])
 
-    p = Page(app, n_charts = 6)
+    p = Page(app, n_charts = 10)
     # app.layout = html.Div(p.layout)
     app.layout = html.Div(p.outer_layout)
 
