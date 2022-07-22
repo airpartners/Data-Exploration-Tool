@@ -10,11 +10,11 @@ from graph_frame import GraphFrame
 class CalendarPlot(GraphFrame):
     def get_explanation(self):
         return [
-            # html.P("Text some text some text some text."),
-            # html.P("Text some text some text some text."),
-            # html.P("Text some text some text some text."),
-            # html.P("Text some text some text some text."),
-            # html.P("Text some text some text some text."),
+            html.P([html.B("Calendar Plot:"), " Shows the pollution levels at a certain sensor over the entire data collection period. ",
+            "Select a sensor location and a pollutant to show. ",
+            "Each horizontal strip represents 365 days of data. Each square represents the average concentration levels for one day. ",
+            "Each column represents one week (the top row is all Mondays, etc.)"]
+            )
         ]
 
 
@@ -28,7 +28,7 @@ class CalendarPlot(GraphFrame):
                         self.sensor_picker(),
                         ", what was the level of ",
                         self.pollutant_picker(multi = False, show_flights = True),
-                        "?",
+                        " over the entire date range for that sensor?",
                     ],
                     style = self.text_style
                 ),
