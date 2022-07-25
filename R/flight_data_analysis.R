@@ -8,21 +8,26 @@ df_1 <- read_parquet("C:/Users/zxiong/Desktop/Olin/Air Partners/downsampled/sn45
     time = as.POSIXct(timestamp_local, format="%m/%d/%Y %H:%M", tz="UTC"),
   )
 
+
 df_2 <- 
   df_1 %>%
   # head(500) %>%
-  filter(wind_direction_cardinal %in% c("W", "NW"), 
-         adverse_flight_count > 10) %>%
+  filter(
+    wind_direction_cardinal %in% c("W", "NW"), 
+    adverse_flight_count > 10
+  ) %>% 
   mutate(
-    doublepm = pm25.ML*2
-  )
+    x_var = adverse_flight_count, 
+    y_var = correctedNO
+  ) %>% 
+  select(x_var, y_var)
 #
 df_2 %>%
   ggplot(mapping = aes(
-    x = adverse_flight_count, 
-    y = no2.ML, 
-    color = no2.ML,
-    size = no2.ML
+    x = x_var, 
+    y = y_var, 
+    color = y_var,
+    size = y_var
   )) +
   geom_point() +
   # geom_col()
@@ -32,13 +37,13 @@ df_2 %>%
   labs(
     x = "adverse flights",
     y = "no2",
-    title = "no2 versus adverse flights",
-    size = "no2",
-    color = "no2"
+    title = "no versus adverse flights",
+    size = "no",
+    color = "no"
   )
 #
 mylm <- df_2 %>%
-  lm(adverse_flight_count ~ time, .)
+  lm(y_var ~ x_var, .)
 print(mylm)
 inter <- mylm[[1]]
 slope <- mylm[[2]]
