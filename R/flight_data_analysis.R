@@ -24,8 +24,8 @@ df_2 <-
   df_1 %>%
   # head(500) %>%
   filter(
-    wind_direction_cardinal %in% c("NW", "SE"),
-    # wind_direction_cardinal %in% c("S", "SW", "SE"),
+    # wind_direction_cardinal %in% c("NW", "SE"),
+    wd_cardinal %in% c("S", "SW", "SE"),
     # adverse_flight_count > 5,
     ws > 6,
     temp_manifold > 10,
