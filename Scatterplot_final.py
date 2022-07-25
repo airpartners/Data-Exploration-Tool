@@ -33,7 +33,8 @@ class Scatter(GraphFrame):
                         ", what was the correlation between",
                         self.correlation_xvar(),
                         " and",
-                        self.correlation_yvar(),
+                        # self.correlation_yvar(),
+                        self.pollutant_picker(my_id = 'pollutant-dropdown', multi = True, show_flights = True),
                         " for dates in the range of ",
                         self.date_picker('date-picker-range'),
                         "?"
@@ -52,7 +53,7 @@ class Scatter(GraphFrame):
             Input(self.get_id('date-picker-range'), 'start_date'),
             Input(self.get_id('date-picker-range'), 'end_date'),
             Input(self.get_id('x-axis'), 'value'),
-            Input(self.get_id('y-axis'), 'value'),
+            Input(self.get_id('pollutant-dropdown'), 'value'),
             )
 
         def update_figure(which_sensor, start_date, end_date, xaxis_column_name, yaxis_column_name):
