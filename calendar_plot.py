@@ -70,6 +70,21 @@ class CalendarPlot(GraphFrame):
             # pollution_level = np.array(df[pollutant])
             # pollution_level = list(np.average(pollution_level.reshape(-1, 24), axis=1))
 
+            df = df.rename(columns={
+                "pm10.ML": "PM10 (μg/m^3)", 
+                "pm25.ML": "PM2.5 (μg/m^3)",
+                "pm1.ML": "PM1 (μg/m^3)",
+                "co,ML": "CO (ppb)",
+                "correctedNO": "NO (ppb)",
+                "no2.ML": "NO2 (ppb)",
+                "o3.ML": "O3 (ppb)",
+                "temp_manifold": "Temperature (°C)",
+                "rh_manifold": "Humidity (%)",
+                "ws": "Wind Speed (m/s)",
+                "adverse_flight_count": "Adverse Takeoffs/Landings",
+                "count": "Total Takeoffs/Landings",
+            })
+
 
             start_date = df.index[0]
             end_date = df.index[-1]

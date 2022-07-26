@@ -6,6 +6,7 @@ import plotly.graph_objs as go
 import plotly.express as px
 import numpy as np
 import datetime
+import pandas as pd
 from filter_graph import FilterGraph # import from supporting file (contained in this repo)
 
 from graph_frame import GraphFrame
@@ -77,7 +78,23 @@ class TimeSeries(GraphFrame):
 
             # create the figure. It consists of a Figure frame and three lines created with go.Scatter()
 
-            fig = px.line(df, df.index, y = pollutant, render_mode='webg1')
+            df = df.round(2)
+            df = df.rename(columns={
+                "pm10.ML": "PM10 (μg/m^3)", 
+                "pm25.ML": "PM2.5 (μg/m^3)",
+                "pm1.ML": "PM1 (μg/m^3)",
+                "co.ML": "CO (ppb)",
+                "correctedNO": "NO (ppb)",
+                "no2.ML": "NO2 (ppb)",
+                "o3.ML": "O3 (ppb)",
+                "temp_manifold": "Temperature (°C)",
+                "rh_manifold": "Humidity (%)",
+                "ws": "Wind Speed (m/s)",
+                "adverse_flight_count": "Adverse Takeoffs/Landings",
+                "count": "Total Takeoffs/Landings",
+            })
+
+            fig = px.line(df, x=df.index, y = pollutant, render_mode='webg1')
 
             # fig = go.Figure([
             #     go.Line(
@@ -113,7 +130,7 @@ class TimeSeries(GraphFrame):
             start_date = df.index[0]
             end_date = df.index[-1]
             if len(pollutant) == 1:
-                y_label = self.all_vars[pollutant[0]]
+                y_label = pollutant[0]
             else:
                 y_label = 'Pollutant (refer to legend)'
 
@@ -173,12 +190,11 @@ class TimeSeries(GraphFrame):
             # for idx, poll in enumerate(pollutant):
             #     fig.data[idx].name = self.all_vars[poll]
             #     fig.data[idx].hovertemplate = self.all_vars[poll]
-
-            fig.update_traces(go.Scatter(
-                text=pollutant*len(df.index),
-                customdata=df[pollutant],
-                hovertemplate='<br><b>%{text}</b><br>%{customdata}'
-            ))
+            
+            
+            fig.update_traces(
+                hovertemplate='%{y}'
+            )
 
             fig.update_layout(uirevision = "Static Literal String")
             fig.update_layout(
@@ -190,7 +206,9 @@ class TimeSeries(GraphFrame):
                     # 'drawcircle',
                     # 'drawrect',
                     # 'eraseshape'
-                ]
+                ],
+                # hovermode = 'x unified'
+                hovermode = 'x'
             )
 
 

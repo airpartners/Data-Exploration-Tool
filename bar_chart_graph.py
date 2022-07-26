@@ -84,9 +84,38 @@ class BarChartGraph(GraphFrame):
 
             df_stats = self.data_importer.df_stats
             sensor_name = self.data_importer.get_all_sensor_names()[which_sensor]
+            df_stats = df_stats.rename(index={
+                "pm10.ML": "PM10 (μg/m^3)", 
+                "pm25.ML": "PM2.5 (μg/m^3)",
+                "pm1.ML": "PM1 (μg/m^3)",
+                "co.ML": "CO (ppb)",
+                "correctedNO": "NO (ppb)",
+                "no2.ML": "NO2 (ppb)",
+                "o3.ML": "O3 (ppb)",
+                "temp_manifold": "Temperature (°C)",
+                "rh_manifold": "Humidity (%)",
+                "ws": "Wind Speed (m/s)",
+                "adverse_flight_count": "Adverse Takeoffs/Landings",
+                "count": "Total Takeoffs/Landings",
+            })
 
 
             df = self.filter_by_date(df, start_date, end_date) # filter by timestamp and wind direction
+
+            df = df.rename(columns={
+                "pm10.ML": "PM10 (μg/m^3)", 
+                "pm25.ML": "PM2.5 (μg/m^3)",
+                "pm1.ML": "PM1 (μg/m^3)",
+                "co.ML": "CO (ppb)",
+                "correctedNO": "NO (ppb)",
+                "no2.ML": "NO2 (ppb)",
+                "o3.ML": "O3 (ppb)",
+                "temp_manifold": "Temperature (°C)",
+                "rh_manifold": "Humidity (%)",
+                "ws": "Wind Speed (m/s)",
+                "adverse_flight_count": "Adverse Takeoffs/Landings",
+                "count": "Total Takeoffs/Landings",
+            })
 
             if stat_type == "mean":
                 filtered_stat = df.mean(axis = 0)
@@ -99,10 +128,10 @@ class BarChartGraph(GraphFrame):
 
             # if normalize_height is unchecked, undo the division by df_stats
             if normalize_height:
-                normalized_text = normalized_stat[self.gas_vars.keys()].apply(self.as_percent)
+                normalized_text = normalized_stat[self.gas_vars].apply(self.as_percent)
             else:
                 normalized_stat = filtered_stat
-                normalized_text = normalized_stat[self.gas_vars.keys()].apply(self.as_float)
+                # normalized_text = normalized_stat[self.gas_vars].apply(self.as_float)
 
             # remove infinite values
             # filtered_stat.replace([np.inf, -np.inf], np.nan, inplace=True)
@@ -114,14 +143,14 @@ class BarChartGraph(GraphFrame):
 
             def add_sub_barchart(vars, col, color):
                 if normalize_height:
-                    normalized_text = normalized_stat[vars.keys()].apply(self.as_percent)
+                    normalized_text = normalized_stat[vars].apply(self.as_percent)
                 else:
-                    normalized_text = normalized_stat[vars.keys()].apply(self.as_float)
+                    normalized_text = normalized_stat[vars].apply(self.as_float)
 
                 fig.add_trace(
                     go.Bar(
-                        x = list(vars.values()),
-                        y = normalized_stat[vars.keys()],
+                        x = list(vars),
+                        y = normalized_stat[vars],
                         text = normalized_text,
                         marker_color = px.colors.qualitative.T10[color],
                         # customdata = data_mean[1:5] if data_stats == 'Mean' else data_median[1:5],
@@ -142,7 +171,7 @@ class BarChartGraph(GraphFrame):
                     col = col
                 )
 
-            add_sub_barchart(self.meteorology_vars | self.flight_vars, 1, color = 0)
+            add_sub_barchart(self.meteorology_vars + self.flight_vars, 1, color = 0)
             add_sub_barchart(self.gas_vars, 2, color = 2)
             add_sub_barchart(self.particles_vars, 3, color = 5)
 

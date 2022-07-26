@@ -62,6 +62,20 @@ class Polar(GraphFrame):
             df = self.data_importer.get_data_by_sensor(which_sensor)
             df = self.filter_by_date(df, start_date, end_date)
             df = df.round(2)
+            df = df.rename(columns={
+                "pm10.ML": "PM10 (μg/m^3)", 
+                "pm25.ML": "PM2.5 (μg/m^3)",
+                "pm1.ML": "PM1 (μg/m^3)",
+                "co.ML": "CO (ppb)",
+                "correctedNO": "NO (ppb)",
+                "no2.ML": "NO2 (ppb)",
+                "o3.ML": "O3 (ppb)",
+                "temp_manifold": "Temperature (°C)",
+                "rh_manifold": "Humidity (%)",
+                "ws": "Wind Speed (m/s)",
+                "adverse_flight_count": "Adverse Takeoffs/Landings",
+                "count": "Total Takeoffs/Landings",
+            })
 
             wind_speed_labels = ["Calm Wind", "Moderate Wind", "Strong Wind"]
             wind_direction_labels = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"]
@@ -71,7 +85,7 @@ class Polar(GraphFrame):
             angles.extend(range(int(360 / n_angles / 2), int(360 - 360 / n_angles / 2), int(360 / (n_angles - 1))))
             angles.append(361)
 
-            df["ws_category"] = pd.cut(df["ws"], bins = [0, 1.5, 7.9, 100], labels = wind_speed_labels)
+            df["ws_category"] = pd.cut(df["Wind Speed (m/s)"], bins = [0, 1.5, 7.9, 100], labels = wind_speed_labels)
             df["wd_category"] = pd.cut(df["wd"] % 360, bins = angles, labels = wind_direction_labels)
             # df_polar = df.groupby(["ws_category", "wd_category"]).mean()
             df_polar = df.groupby(["ws_category", "wd_category"]).agg(
