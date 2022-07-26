@@ -2,6 +2,7 @@ from dash import Dash, html, dcc
 from dash.dependencies import Input, Output, State
 import dash_daq as daq
 import dash_bootstrap_components as dbc
+from dash.exceptions import PreventUpdate
 import pandas as pd
 import math
 import numpy as np
@@ -40,6 +41,8 @@ class GraphFrame():
         "font-family": "Times New Roman, Serif",
         "background-color": "#F2F2F2"
     }
+
+    filter_picker_style = text_style | {"display": "inline"}
 
     # text_style_bold = text_style_explanation |
 
@@ -139,19 +142,6 @@ class GraphFrame():
                 style = self.dropdown_style | {"width": "340px"}
             )
 
-    def correlation_yvar(self, id = 'y-axis'):
-        return \
-            dcc.Dropdown(
-                options = self.all_vars,
-                value='o3.ML',
-                multi = True,
-
-                id=self.get_id(id),
-                style = self.dropdown_style | {"width": "340px"}
-            )
-
-
-
     def normalize_switch(self, id = 'normalize-height'):
         return \
             daq.BooleanSwitch(
@@ -161,6 +151,126 @@ class GraphFrame():
                 label = "Ignore units",
                 labelPosition = "top"
             )
+
+    def filter_picker(self, my_id = 'filter-set'):
+        vars = self.meteorology_vars | self.flight_vars
+
+
+        filter_sliders = []
+        graph_inputs = []
+        graph_inputs_state = []
+        dropdown_targets = []
+        sensor_picker_callback_targets = []
+
+        for var, var_name in vars.items():
+
+            filter_id = self.get_id('filter-by-' + var)
+            filter_display_id = self.get_id('show-filter-by-' + var)
+
+            filter_sliders.append(
+                html.Div(
+                    children = [
+                        var_name + ":",
+                        html.Div(
+                            dcc.RangeSlider(
+                                min = 0,
+                                max = 100,
+                                step = 1,
+                                marks = None,
+                                value = [0, 100],
+                                id = filter_id,
+                                tooltip = {"placement": "bottom", "always_visible": True},
+                            ),
+                            style = {'display': 'inline', 'width': '50%'},
+                        )
+                    ],
+                    style = self.filter_picker_style,
+                    id = filter_display_id
+                )
+            )
+
+            graph_inputs.append(Input(filter_id, "value"))
+            graph_inputs_state.append(State(filter_id, "value"))
+
+            dropdown_targets.append(Output(filter_display_id, "style"))
+            dropdown_targets.append(Output(filter_id, "value"))
+
+            sensor_picker_callback_targets.append(Output(filter_id, "value"))
+            sensor_picker_callback_targets.append(Output(filter_id, "min"))
+            sensor_picker_callback_targets.append(Output(filter_id, "max"))
+
+        return_var = \
+            html.Div(
+                children = [
+                    dcc.Store(
+                        data = {},
+                        id = self.get_id('filter-callback-data')
+                    ), # used for storing data; not displayed
+                    dcc.Dropdown(
+                        options = [{'label': var_name, 'value': var} for var, var_name in vars.items()],
+                        value = 'blankenship',
+
+                        multi = True,
+                        id = self.get_id(my_id),
+
+                        style = (self.dropdown_style_2 | {"width": "100%"})
+                    ),
+                    *filter_sliders,
+                ]
+            )
+
+
+        # generate callback based on outputs
+        @self.app.callback(
+            *sensor_picker_callback_targets,
+            # Input(self.get_id(my_id), 'value'),
+            Input(self.get_id('which-sensor'), 'value'),
+            # prevent_initial_call = True
+        )
+        def sensor_callback(sensor):
+
+            ranges_list = []
+            for var in vars:
+                var_min = int(self.data_importer.df_stats[self.sensor_names[sensor]]["min"][var])
+                var_max = int(self.data_importer.df_stats[self.sensor_names[sensor]]["max"][var])
+                ranges_list.append([var_min, var_max])
+                ranges_list.append(var_min)
+                ranges_list.append(var_max)
+
+            return tuple(ranges_list)
+
+        @self.app.callback(
+            *dropdown_targets,
+            Input(self.get_id(my_id), 'value'),
+            Input(self.get_id('which-sensor'), 'value'),
+            *graph_inputs_state,
+            # prevent_initial_call = True
+        )
+        def dropdown_callback(vars_to_show, sensor, *var_ranges):
+            if vars_to_show is None:
+                vars_to_show = []
+            outputs_list = []
+            for var, current_range in zip(vars, var_ranges):
+                if var in vars_to_show:
+                    outputs_list.append(self.filter_picker_style | {'display': 'inline'})
+                    var_min = int(self.data_importer.df_stats[self.sensor_names[sensor]]["min"][var])
+                    var_max = int(self.data_importer.df_stats[self.sensor_names[sensor]]["max"][var])
+                    outputs_list.append([var_min, var_max])
+                else:
+                    outputs_list.append(self.filter_picker_style | {'display': 'none'})
+                    outputs_list.append(current_range)
+
+            return tuple(outputs_list)
+
+        @self.app.callback(
+            Output(self.get_id('filter-callback-data'), "data"),
+            *graph_inputs,
+            # prevent_initial_call = True
+        )
+        def slider_callback(*var_ranges):
+            return {var: range for var, range in zip(vars.keys(), var_ranges)}
+
+        return return_var
 
 ## /////////////////////////////////////////////////// ##
 ## Variables
@@ -294,6 +404,18 @@ class GraphFrame():
                     (df.index.date <= pd.Timestamp(end_date).date()  )
                     # (df["timestamp_local"].dt.date >= pd.Timestamp(start_date).date()) &
                     # (df["timestamp_local"].dt.date <= pd.Timestamp(end_date).date()  )
+                ]
+        # else:
+        return df
+
+    def filter_by_var(self, df, var, var_min, var_max):
+        if not var in df.columns:
+            raise ValueError(f"Variable {var} is not in the dataframe. Try one of {df.columns} instead.")
+        if var_min is not None and var_max is not None:
+            return \
+                df[
+                    (df[var] >= var_min) &
+                    (df[var] <= var_max)
                 ]
         # else:
         return df
