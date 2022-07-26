@@ -116,6 +116,25 @@ class GraphFrame():
                 style = self.dropdown_style | {"width": "350px"}
             )
 
+    def wind_direction_picker(self, my_id = 'wind-direction-picker'):
+        return \
+            dcc.Dropdown(
+                options = [
+                    {'label': 'North',     'value': 'N'},
+                    {'label': 'Northeast', 'value': 'NE'},
+                    {'label': 'East',      'value': 'E'},
+                    {'label': 'Southeast', 'value': 'SE'},
+                    {'label': 'South',     'value': 'S'},
+                    {'label': 'Southwest', 'value': 'SW'},
+                    {'label': 'West',      'value': 'W'},
+                    {'label': 'Northwest', 'value': 'NW'},
+                ],
+                clearable = True,
+                value = None,
+                multi = True,
+                id = self.get_id(my_id),
+                style = self.dropdown_style
+            )
 
     def pollutant_picker(self, my_id = 'pollutant-dropdown', multi = True, show_flights = True):
         vars = list(self.particles_vars.items()) + list(self.gas_vars.items())
@@ -185,7 +204,7 @@ class GraphFrame():
                             style = {'display': 'inline', 'width': '50%'},
                         )
                     ],
-                    style = self.filter_picker_style,
+                    style = self.filter_picker_style | {'display': 'none'},
                     id = filter_display_id
                 )
             )
@@ -226,7 +245,7 @@ class GraphFrame():
             *dropdown_targets,
             Input(self.get_id(my_id), 'value'),
             Input(self.get_id('which-sensor'), 'value'),
-            # prevent_initial_call = True
+            prevent_initial_call = True
         )
         def dropdown_callback(vars_to_show, sensor):
             if not vars_to_show:
@@ -251,7 +270,7 @@ class GraphFrame():
         @self.app.callback(
             Output(self.get_id('filter-callback-data'), "data"),
             *graph_inputs,
-            # prevent_initial_call = True
+            prevent_initial_call = True
         )
         def slider_callback(*var_ranges):
             return {var: range for var, range in zip(vars.keys(), var_ranges)}
@@ -407,11 +426,11 @@ class GraphFrame():
         return df
 
     def filter_by_wind_direction(self, df, wind_direction):
-        if wind_direction is not None:
-            return df[ df["wind_direction_cardinal"] == wind_direction ]
-            # return df[ df["wind_direction_cardinal", "my_mode"] == wind_direction ]
-        # else:
-        return df
+        if wind_direction is None or wind_direction == []:
+            return df
+        if not isinstance(wind_direction, list):
+            wind_direction = [wind_direction]
+        return df[ df["wind_direction_cardinal"].isin(wind_direction) ]
 
     def normalize_height(self, df, max_val = 1, do_it = True):
         if not do_it:

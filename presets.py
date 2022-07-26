@@ -41,9 +41,15 @@ class Presets():
         "sensor_location": ["which-sensor", "value"],
         "pollutant": ["pollutant-dropdown", "value"],
         "x_axis": ["x-axis", "value"],
-        "y_axis": ["y-axis", "value"],
+        # "y_axis": ["y-axis", "value"],
         "show_details": ["explanation", "open"],
         "ignore_units": ["normalize-height", "on"],
+        "filter_selector": ["filter-set:", "value"],
+        "hum_filter": ["filter-by-", "value"], # "value" is a list of [min, max]
+        "temp_filter": ["filter-by-", "value"], # "value" is a list of [min, max]
+        "wind_speed_filter": ["filter-by-", "value"], # "value" is a list of [min, max]
+        "total_flight_filter": ["filter-by-", "value"], # "value" is a list of [min, max]
+        "adverse_flight_filter": ["filter-by-", "value"], # "value" is a list of [min, max]
     }
 
     preset_scenarios = {
@@ -70,7 +76,8 @@ class Presets():
                 {
                     "sensor_location": 0,
                     'x_axis': "temp_manifold",
-                    'y_axis': "pm25.ML",
+                    'pollutant': "pm25.ML",
+                    # 'y_axis': "pm25.ML",
                     "start_date": datetime.date(2019, 12, 1),
                     "end_date": datetime.date(2019, 12, 31),
                     "show_details": True,
@@ -214,9 +221,6 @@ class Presets():
     def add_callbacks(self, scenario_name, scenario):
         outputs = []
         for chart_num, (chart_type, graph_dict) in enumerate(scenario):
-            print("chart_num:", chart_num)
-            print("chart_type:", chart_type)
-            print("graph_dict:", graph_dict)
             outputs.append(Output(self.get_id('new-chart-dropdown', chart_num), 'value'))
             for key in graph_dict.keys():
                 outputs.append(Output(
