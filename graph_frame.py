@@ -222,53 +222,29 @@ class GraphFrame():
                 ]
             )
 
-
-        # # generate callback based on outputs
-        # @self.app.callback(
-        #     *sensor_picker_callback_targets,
-        #     Input(self.get_id('which-sensor'), 'value'),
-        #     # prevent_initial_call = True
-        # )
-        # def sensor_callback(sensor):
-
-        #     ranges_list = []
-        #     for var in vars:
-        #         var_min = int(self.data_importer.df_stats[self.sensor_names[sensor]]["min"][var])
-        #         var_max = int(self.data_importer.df_stats[self.sensor_names[sensor]]["max"][var])
-        #         ranges_list.append([var_min, var_max])
-        #         ranges_list.append(var_min)
-        #         ranges_list.append(var_max)
-
-        #     return tuple(ranges_list)
-
         @self.app.callback(
             *dropdown_targets,
             Input(self.get_id(my_id), 'value'),
             Input(self.get_id('which-sensor'), 'value'),
-            # *graph_inputs_state,
             # prevent_initial_call = True
         )
-        # def dropdown_callback(vars_to_show, sensor, *var_ranges):
         def dropdown_callback(vars_to_show, sensor):
-            # print("vars with ranges :", var_ranges)
             if not vars_to_show:
                 vars_to_show = []
+
             outputs_list = []
-            # for var, current_range in zip(vars, var_ranges):
             for var in vars:
                 var_min = int(self.data_importer.df_stats[self.sensor_names[sensor]]["min"][var])
                 var_max = int(self.data_importer.df_stats[self.sensor_names[sensor]]["max"][var])
                 if var in vars_to_show:
                     outputs_list.append(self.filter_picker_style | {'display': 'inline'})
-                    outputs_list.append([var_min, var_max])
+                    outputs_list.append(no_update)
                 else:
                     outputs_list.append(self.filter_picker_style | {'display': 'none'})
-                    outputs_list.append(no_update)
+                    outputs_list.append([var_min, var_max])
                 # also:
                 outputs_list.append(var_min)
                 outputs_list.append(var_max)
-
-                    # outputs_list.append(current_range)
 
             return tuple(outputs_list)
 
