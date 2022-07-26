@@ -99,8 +99,8 @@ class GraphFrame():
                 display_format = 'MM/DD/Y',
                 min_date_allowed = datetime.date(2019, 9, 8),
                 max_date_allowed = datetime.date(2021, 3, 5),
-                start_date = datetime.date(2019, 12, 1), # default value
-                end_date = datetime.date(2019, 12, 31), # default value
+                start_date = datetime.date(2019, 9, 8), # default value
+                end_date = datetime.date(2021, 3, 5), # default value
                 id = self.get_id(id),
             )
 
