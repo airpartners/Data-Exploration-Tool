@@ -56,7 +56,7 @@ class Scatter(GraphFrame):
             Input(self.get_id('x-axis'), 'value'),
             Input(self.get_id('pollutant-dropdown'), 'value'),
             Input(self.get_id('filter-callback-data'), 'data'),
-            )
+        )
 
         def update_figure(which_sensor, start_date, end_date, xaxis_column_name, yaxis_column_name, var_ranges):
             df = self.data_importer.get_data_by_sensor(which_sensor)
