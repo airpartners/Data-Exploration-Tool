@@ -62,25 +62,3 @@ inter <- mylm[[1]]
 slope <- mylm[[2]]
 r2 <- summary(mylm)$r.squared
 print(r2)
-
-
-df_1 %>% 
-  filter(
-    # wind_direction_cardinal %in% c("NW", "SE"), 
-    wind_direction_cardinal %in% c("S", "SW"), 
-    # adverse_flight_count > 5,
-    ws > 6,
-    # temp_manifold > 10,
-    # ws < 12
-  ) %>% 
-  ggplot(
-    mapping = aes(
-      x = no2.ML, 
-      y = co.ML, 
-      color = adverse_flight_count, 
-      size = adverse_flight_count
-    )
-  ) + 
-  geom_point() + 
-  scale_color_viridis(option = "viridis") # "viridis", "magma", "plasma", "inferno", "cividis", "mako", "rocket", "turbo"
-
