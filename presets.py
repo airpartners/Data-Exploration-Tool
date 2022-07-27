@@ -41,7 +41,7 @@ class Presets():
         "sensor_location": ["which-sensor", "value"],
         "pollutant": ["pollutant-dropdown", "value"],
         "x_axis": ["x-axis", "value"],
-        "y_axis": ["y-axis", "value"],
+        # "y_axis": ["y-axis", "value"],
         "show_details": ["explanation", "open"],
         "ignore_units": ["normalize-height", "on"],
     }
@@ -70,7 +70,8 @@ class Presets():
                 {
                     "sensor_location": 0,
                     'x_axis': "temp_manifold",
-                    'y_axis': "pm25.ML",
+                    # 'y_axis': "pm25.ML",
+                    'pollutant': "pm25.ML",
                     "start_date": datetime.date(2019, 12, 1),
                     "end_date": datetime.date(2019, 12, 31),
                     "show_details": True,
