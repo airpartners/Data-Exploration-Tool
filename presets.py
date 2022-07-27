@@ -50,6 +50,7 @@ class Presets():
         "wind_speed_filter": ["filter-by-ws", "value"], # "value" is a list of [min, max]
         "total_flight_filter": ["filter-by-count", "value"], # "value" is a list of [min, max]
         "adverse_flight_filter": ["filter-by-adverse_flight_count", "value"], # "value" is a list of [min, max]
+        "wind_selector": ["wind-direction-picker", "value"], # "value" is a list of wind directions, e.g. ["NW", "SE"]
     }
 
     preset_scenarios = {
@@ -203,10 +204,11 @@ class Presets():
                     "start_date": preset_date_ranges["data_start"],
                     "end_date": preset_date_ranges["data_end"],
                     "show_details": True,
+                    "wind_selector": ["S", "SW", "SE"],
                     "filter_selector": ["ws", "temp_manifold", "rh_manifold"],
-                    "wind_speed_filter": [6, 15],
-                    "temp_filter": [10, 20],
-                    "hum_filter": [40, 60],
+                    "wind_speed_filter": [6, 100],
+                    "temp_filter": [10, 100],
+                    "hum_filter": [20, 100],
                 }
             )
         ]
