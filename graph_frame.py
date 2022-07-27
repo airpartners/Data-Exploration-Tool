@@ -114,14 +114,14 @@ class GraphFrame():
 
 
     def pollutant_picker(self, my_id = 'pollutant-dropdown', multi = True, show_flights = True):
-        vars = list(self.particles_vars.items()) + list(self.gas_vars.items())
+        vars = self.particles_vars + self.gas_vars
         if show_flights:
-            vars.extend(list(self.flight_vars.items()))
+            vars.extend(self.flight_vars)
 
         return \
             dcc.Dropdown(
-                options = [{'label': var_name, 'value': var} for var, var_name in vars],
-                value='pm25.ML',
+                options = vars,
+                value="PM2.5 (μg/m^3)",
 
                 multi = multi,
                 id = self.get_id(my_id),
@@ -133,7 +133,7 @@ class GraphFrame():
         return \
             dcc.Dropdown(
                 options = self.all_vars,
-                value='rh_manifold',
+                value='Humidity (%)',
 
                 id=self.get_id(id),
                 style = self.dropdown_style | {"width": "340px"}
@@ -162,37 +162,145 @@ class GraphFrame():
                 labelPosition = "top"
             )
 
+<<<<<<< Updated upstream
+=======
+    def filter_picker(self, my_id = 'filter-set'):
+        vars = self.meteorology_vars + self.flight_vars
+
+
+        filter_sliders = []
+        graph_inputs = []
+        graph_inputs_state = []
+        dropdown_targets = []
+        sensor_picker_callback_targets = []
+
+        for var in vars:
+
+            filter_id = self.get_id('filter-by-' + var)
+            filter_display_id = self.get_id('show-filter-by-' + var)
+
+            filter_sliders.append(
+                html.Div(
+                    children = [
+                        var + ":",
+                        html.Div(
+                            dcc.RangeSlider(
+                                min = 0,
+                                max = 100,
+                                step = 1,
+                                marks = None,
+                                value = [0, 100],
+                                id = filter_id,
+                                tooltip = {"placement": "bottom", "always_visible": True},
+                            ),
+                            style = {'display': 'inline', 'width': '50%'},
+                        )
+                    ],
+                    style = self.filter_picker_style,
+                    id = filter_display_id
+                )
+            )
+
+            graph_inputs.append(Input(filter_id, "value"))
+            graph_inputs_state.append(State(filter_id, "value"))
+
+            dropdown_targets.append(Output(filter_display_id, "style"))
+            dropdown_targets.append(Output(filter_id, "value"))
+            dropdown_targets.append(Output(filter_id, "min"))
+            dropdown_targets.append(Output(filter_id, "max"))
+
+            sensor_picker_callback_targets.append(Output(filter_id, "value"))
+            sensor_picker_callback_targets.append(Output(filter_id, "min"))
+            sensor_picker_callback_targets.append(Output(filter_id, "max"))
+
+        return_var = \
+            html.Div(
+                children = [
+                    dcc.Store(
+                        data = {},
+                        id = self.get_id('filter-callback-data')
+                    ), # used for storing data; not displayed
+                    dcc.Dropdown(
+                        options = vars,
+                        value = 'blankenship',
+
+                        multi = True,
+                        id = self.get_id(my_id),
+
+                        style = (self.dropdown_style_2 | {"width": "100%"})
+                    ),
+                    *filter_sliders,
+                ]
+            )
+
+        @self.app.callback(
+            *dropdown_targets,
+            Input(self.get_id(my_id), 'value'),
+            Input(self.get_id('which-sensor'), 'value'),
+            # prevent_initial_call = True
+        )
+        def dropdown_callback(vars_to_show, sensor):
+            if not vars_to_show:
+                vars_to_show = []
+
+            outputs_list = []
+            for var in vars:
+                var_min = int(self.data_importer.df_stats[self.sensor_names[sensor]]["min"][var])
+                var_max = int(self.data_importer.df_stats[self.sensor_names[sensor]]["max"][var])
+                if var in vars_to_show:
+                    outputs_list.append(self.filter_picker_style | {'display': 'inline'})
+                    outputs_list.append(no_update)
+                else:
+                    outputs_list.append(self.filter_picker_style | {'display': 'none'})
+                    outputs_list.append([var_min, var_max])
+                # also:
+                outputs_list.append(var_min)
+                outputs_list.append(var_max)
+
+            return tuple(outputs_list)
+
+        @self.app.callback(
+            Output(self.get_id('filter-callback-data'), "data"),
+            *graph_inputs,
+            # prevent_initial_call = True
+        )
+        def slider_callback(*var_ranges):
+            return {var: range for var, range in zip(vars, var_ranges)}
+
+        return return_var
+
+>>>>>>> Stashed changes
 ## /////////////////////////////////////////////////// ##
 ## Variables
 
-    meteorology_vars = {
-        "temp_manifold": "Temperature (°C)",
-        "rh_manifold": "Humidity (%)",
+    meteorology_vars = [
+        "Temperature (°C)",
+        "Humidity (%)",
         # "pressure": "Pressure (Pa)",
         # "noise": "Noise (dB)",
-        "ws": "Wind Speed (m/s)",
+        "Wind Speed (m/s)",
         # 'South-West': "Takeoffs/Landings per hour (SouthWest Operation)",
         # 'North-West': "Takeoffs/Landings per hour (NorthWest Operation)",
         # 'North-East': "Takeoffs/Landings per hour (NorthEast Operation)",
-    }
-    gas_vars = {
-        "co.ML": "CO (ppb)",
-        "correctedNO": "NO (ppb)",
-        "no2.ML": "NO2 (ppb)",
-        "o3.ML": "O3 (ppb)",
-    }
-    particles_vars = {
+    ]
+    gas_vars = [
+        "CO (ppb)",
+        "NO (ppb)",
+        "NO2 (ppb)",
+        "O3 (ppb)",
+    ]
+    particles_vars = [
         # "bin0": "0.3-0.5μm particles (bin 0)",
         # "bin1": "0.5-0.7μm particles (bin 1)",
         # "bin2": "0.7-1.0μm particles (bin 2)",
         # "bin3": "1.0-2.5μm particles (bin 3)",
         # "bin4": "2.5-10μm particles (bin 4)",
         # "bin5": "10+ μm particles (bin 5)",
-        "pm1.ML": "PM1 (μg/m^3)",
-        "pm25.ML": "PM2.5 (μg/m^3)",
-        "pm10.ML": "PM10 (μg/m^3)",
-    }
-    flight_vars = {
+        "PM1 (μg/m^3)",
+        "PM2.5 (μg/m^3)",
+        "PM10 (μg/m^3)",
+    ]
+    flight_vars = [
         # 'Opr': "Arrival/Departure",
         # 'RW_group': "Runway Operation",
         # 'count': "Flights",
@@ -203,12 +311,11 @@ class GraphFrame():
         # 'North-West': "Takeoffs/Landings per hour (NorthWest Operation)",
         # 'North-East': "Takeoffs/Landings per hour (NorthEast Operation)",
         # # #
-        'adverse_flight_count': "Adverse Takeoffs/Landings",
-        'count': "Total Takeoffs/Landings",
-    }
+        "Adverse Takeoffs/Landings",
+        "Total Takeoffs/Landings",
+    ]
 
-    # | is the python syntax for adding or "merging" two dictionaries
-    all_vars = meteorology_vars | gas_vars | particles_vars | flight_vars
+    all_vars = meteorology_vars + gas_vars + particles_vars + flight_vars
 
 ## //////////////////////////////////////////////////////// ##
 ##  Sensor locations and names
