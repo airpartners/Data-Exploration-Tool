@@ -212,7 +212,7 @@ class DataImporter():
 
             df_raw = pd.read_csv(raw_file)
             df_raw["timestamp_local"] = pd.to_datetime(df_raw["timestamp_local"], format = "%Y-%m-%dT%H:%M:%SZ")
-            df_raw = self.flight_loader.add_flight_data_to(df_raw)
+            df_raw = self.flight_loader.add_flight_data_to(df_raw, sensor_name)
 
             df_stats[sensor_name, "mean"] = df_raw[self.numeric_columns_to_keep].mean(axis = 0)
             df_stats[sensor_name, "median"] = df_raw[self.numeric_columns_to_keep].median(axis = 0)

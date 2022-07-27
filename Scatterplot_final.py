@@ -68,6 +68,7 @@ class Scatter(GraphFrame):
 
             for var, var_range in var_ranges.items():
                 # print("var:", var, ", var_range =", var_range)
+                print("filtering by", var, "; number of flights:", sum(df["adverse_flight_count"]))
                 df = self.filter_by_var(df, var, var_range[0], var_range[1])
 
             df = self.filter_by_wind_direction(df, wind_direction)

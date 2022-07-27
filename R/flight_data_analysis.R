@@ -24,16 +24,17 @@ df_2 <-
   df_1 %>%
   # head(500) %>%
   filter(
-    # wind_direction_cardinal %in% c("NW", "SE"),
-    wd_cardinal %in% c("S", "SW", "SE"),
+    wind_direction_cardinal %in% c("NW", "SE"),
+    # wd_cardinal %in% c("S", "SW", "SE"),
     # adverse_flight_count > 5,
     ws > 6,
     temp_manifold > 10,
-    rh_manifold > 70,
+    # rh_manifold > 70,
     # ws < 12
   ) %>%
   mutate(
-    x_var = adverse_flight_count, 
+    # x_var = adverse_flight_count,
+    x_var = count,
     y_var = co.ML
   )
   # select(x_var, y_var)
@@ -62,3 +63,4 @@ inter <- mylm[[1]]
 slope <- mylm[[2]]
 r2 <- summary(mylm)$r.squared
 print(r2)
+

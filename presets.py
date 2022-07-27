@@ -199,16 +199,15 @@ class Presets():
                 chart_type_ids["correlation_plot"],
                 {
                     "sensor_location": 0,
-                    'x_axis': "count",
+                    'x_axis': "adverse_flight_count",
                     'pollutant': "co.ML",
                     "start_date": preset_date_ranges["data_start"],
                     "end_date": preset_date_ranges["data_end"],
                     "show_details": True,
-                    "wind_selector": ["S", "SW", "SE"],
-                    "filter_selector": ["ws", "temp_manifold", "rh_manifold"],
+                    "wind_selector": ["NW", "SE"],
+                    "filter_selector": ["ws", "temp_manifold"],
                     "wind_speed_filter": [6, 100],
                     "temp_filter": [10, 100],
-                    "hum_filter": [20, 100],
                 }
             )
         ]
