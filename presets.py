@@ -20,7 +20,7 @@ chart_classes = {
 
 class Presets():
 
-    pandemic_date_ranges = {
+    preset_date_ranges = {
         "data_start": datetime.date(2019, 9, 8),
         "pandemic_start": datetime.date(2020, 3, 20),
         "pandemic_end": datetime.date(2020, 6, 30),
@@ -45,11 +45,11 @@ class Presets():
         "show_details": ["explanation", "open"],
         "ignore_units": ["normalize-height", "on"],
         "filter_selector": ["filter-set:", "value"],
-        "hum_filter": ["filter-by-", "value"], # "value" is a list of [min, max]
-        "temp_filter": ["filter-by-", "value"], # "value" is a list of [min, max]
-        "wind_speed_filter": ["filter-by-", "value"], # "value" is a list of [min, max]
-        "total_flight_filter": ["filter-by-", "value"], # "value" is a list of [min, max]
-        "adverse_flight_filter": ["filter-by-", "value"], # "value" is a list of [min, max]
+        "hum_filter": ["filter-by-rh_manifold", "value"], # "value" is a list of [min, max]
+        "temp_filter": ["filter-by-temp_manifold", "value"], # "value" is a list of [min, max]
+        "wind_speed_filter": ["filter-by-ws", "value"], # "value" is a list of [min, max]
+        "total_flight_filter": ["filter-by-count", "value"], # "value" is a list of [min, max]
+        "adverse_flight_filter": ["filter-by-adverse_flight_count", "value"], # "value" is a list of [min, max]
     }
 
     preset_scenarios = {
@@ -110,8 +110,8 @@ class Presets():
                 chart_type_ids["bar_chart"],
                 {
                     "sensor_location": 0,
-                    "start_date": pandemic_date_ranges["data_start"],
-                    "end_date": pandemic_date_ranges["pandemic_start"],
+                    "start_date": preset_date_ranges["data_start"],
+                    "end_date": preset_date_ranges["pandemic_start"],
                     "show_details": False,
                     "ignore_units": True,
                 }
@@ -120,8 +120,8 @@ class Presets():
                 chart_type_ids["bar_chart"],
                 {
                     "sensor_location": 0,
-                    "start_date": pandemic_date_ranges["pandemic_start"],
-                    "end_date": pandemic_date_ranges["pandemic_end"],
+                    "start_date": preset_date_ranges["pandemic_start"],
+                    "end_date": preset_date_ranges["pandemic_end"],
                     "show_details": False,
                     "ignore_units": True,
                 },
@@ -130,8 +130,8 @@ class Presets():
                 chart_type_ids["bar_chart"],
                 {
                     "sensor_location": 0,
-                    "start_date": pandemic_date_ranges["pandemic_end"],
-                    "end_date": pandemic_date_ranges["data_end"],
+                    "start_date": preset_date_ranges["pandemic_end"],
+                    "end_date": preset_date_ranges["data_end"],
                     "show_details": False,
                     "ignore_units": True,
                 },
@@ -142,8 +142,8 @@ class Presets():
                 chart_type_ids["polar_plot"],
                 {
                     "sensor_location": 0,
-                    "start_date": pandemic_date_ranges["data_start"],
-                    "end_date": pandemic_date_ranges["data_end"],
+                    "start_date": preset_date_ranges["data_start"],
+                    "end_date": preset_date_ranges["data_end"],
                     "show_details": True,
                 }
             ),
@@ -151,8 +151,8 @@ class Presets():
                 chart_type_ids["polar_plot"],
                 {
                     "sensor_location": 1,
-                    "start_date": pandemic_date_ranges["data_start"],
-                    "end_date": pandemic_date_ranges["data_end"],
+                    "start_date": preset_date_ranges["data_start"],
+                    "end_date": preset_date_ranges["data_end"],
                     "show_details": False,
                 }
             ),
@@ -160,8 +160,8 @@ class Presets():
                 chart_type_ids["polar_plot"],
                 {
                     "sensor_location": 2,
-                    "start_date": pandemic_date_ranges["data_start"],
-                    "end_date": pandemic_date_ranges["data_end"],
+                    "start_date": preset_date_ranges["data_start"],
+                    "end_date": preset_date_ranges["data_end"],
                     "show_details": False,
                 }
             ),
@@ -169,8 +169,8 @@ class Presets():
                 chart_type_ids["polar_plot"],
                 {
                     "sensor_location": 3,
-                    "start_date": pandemic_date_ranges["data_start"],
-                    "end_date": pandemic_date_ranges["data_end"],
+                    "start_date": preset_date_ranges["data_start"],
+                    "end_date": preset_date_ranges["data_end"],
                     "show_details": False,
                 }
             ),
@@ -178,8 +178,8 @@ class Presets():
                 chart_type_ids["polar_plot"],
                 {
                     "sensor_location": 4,
-                    "start_date": pandemic_date_ranges["data_start"],
-                    "end_date": pandemic_date_ranges["data_end"],
+                    "start_date": preset_date_ranges["data_start"],
+                    "end_date": preset_date_ranges["data_end"],
                     "show_details": False,
                 }
             ),
@@ -187,11 +187,27 @@ class Presets():
             #     chart_type_ids["polar_plot"],
             #     {
             #         "sensor_location": 5,
-            #         "start_date": pandemic_date_ranges["data_start"],
-            #         "end_date": pandemic_date_ranges["data_end"],
+            #         "start_date": preset_date_ranges["data_start"],
+            #         "end_date": preset_date_ranges["data_end"],
             #         "show_details": False,
             #     }
             # ),
+        ],
+        "Pollutant/Flights Correlation": [
+            (
+                chart_type_ids["correlation_plot"],
+                {
+                    "sensor_location": 0,
+                    'x_axis': "count",
+                    'pollutant': "co.ML",
+                    "start_date": preset_date_ranges["data_start"],
+                    "end_date": preset_date_ranges["data_end"],
+                    "show_details": True,
+                    # "wind_speed_filter": [6, 10],
+                    # "temp_filter": [10, 20],
+                    "hum_filter": [40, 60],
+                }
+            )
         ]
     }
 
