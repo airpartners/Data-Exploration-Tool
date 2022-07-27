@@ -44,7 +44,7 @@ class Presets():
         # "y_axis": ["y-axis", "value"],
         "show_details": ["explanation", "open"],
         "ignore_units": ["normalize-height", "on"],
-        "filter_selector": ["filter-set:", "value"],
+        "filter_selector": ["filter-set", "value"],
         "hum_filter": ["filter-by-rh_manifold", "value"], # "value" is a list of [min, max]
         "temp_filter": ["filter-by-temp_manifold", "value"], # "value" is a list of [min, max]
         "wind_speed_filter": ["filter-by-ws", "value"], # "value" is a list of [min, max]
@@ -203,8 +203,9 @@ class Presets():
                     "start_date": preset_date_ranges["data_start"],
                     "end_date": preset_date_ranges["data_end"],
                     "show_details": True,
-                    # "wind_speed_filter": [6, 10],
-                    # "temp_filter": [10, 20],
+                    "filter_selector": ["ws", "temp_manifold", "rh_manifold"],
+                    "wind_speed_filter": [6, 15],
+                    "temp_filter": [10, 20],
                     "hum_filter": [40, 60],
                 }
             )
