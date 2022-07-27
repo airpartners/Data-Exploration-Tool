@@ -60,6 +60,21 @@ class Scatter(GraphFrame):
             df = self.data_importer.get_data_by_sensor(which_sensor)
             df = self.filter_by_date(df, start_date, end_date)
 
+            df = df.round(2)
+            df = df.rename(columns={
+                "pm10.ML": "PM10 (μg/m^3)",
+                "pm25.ML": "PM2.5 (μg/m^3)",
+                "pm1.ML": "PM1 (μg/m^3)",
+                "co.ML": "CO (ppb)",
+                "correctedNO": "NO (ppb)",
+                "no2.ML": "NO2 (ppb)",
+                "o3.ML": "O3 (ppb)",
+                "temp_manifold": "Temperature (°C)",
+                "rh_manifold": "Humidity (%)",
+                "ws": "Wind Speed (m/s)",
+                "adverse_flight_count": "Adverse Takeoffs/Landings",
+                "count": "Total Takeoffs/Landings",
+            })
 
             fig = px.scatter(df, x=xaxis_column_name, y=yaxis_column_name,
                     trendline="ols",
