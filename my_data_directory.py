@@ -1,9 +1,13 @@
 def my_data_directory():
     """
-    After reading this document and following the instructions, there is one line you need to edit at the very end of the file.
+    ACTION ITEMS:
+    * After reading this document and following the instructions, there is one line you need to edit at the very end of the file.
+    * There is also a command that we highly recommend you run to avoid overwriting this file in the GitHub repo:
+      (in your command prompt/terminal, navigate to the directory for this repo, then type):
+      git update-index --skip-worktree my_data_directory.py
 
     Before you start, choose a location on your computer to store your raw and processed data, and create a file system that
-    looks like this:
+    looks like this (you just need to create 9 folders on your computer, with this structure):
 
         📦data
         ┣ 📂east_boston
@@ -108,14 +112,15 @@ def my_data_directory():
     add more data; in this case you will need to delete all the files inside of 📂processed, 📂final, and 📂stats and re-run
     `dash_layout1.py` to regenerate the processed files.
 
-    One more thing:
-    The file you are currently editing is included in the .gitignore in this GitHub repo. So you can modify this file and still
-    commit your changes to other parts of the code base; you will not mess up anyone else's data loading process by modifying
-    this file to match your personal data directory.
+    IMPORTANT:
+    If you edit this file right now and then commit your changes to the repo, you will potentially mess up someone else's version
+    by making their system look in a different place for their files. To avoid committing your changes to this file, use the
+    following git command (in your command prompt/terminal, navigate to the directory for this repo, then type):
+    git update-index --skip-worktree my_data_directory.py
 
     Good luck, and have fun!
     """
 
     # set the following line to return the topmost data directory
     # remember to use forward slashes (/) instead of backslashes (\) even if on a Windows system
-    return "C:/.../data/"
+    return "C:/.../data"
