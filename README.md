@@ -107,7 +107,17 @@ This function is used to define the `id`s of pretty much every element defined i
 
 This is the file that loads all the East Boston data and makes it available as a Pandas dataframe for making graphs. A single `DataImporter` object is created at the start of `dash_layout1.py`, and it is passed to each `GraphFrame` as one of the `__init__()` arguments. This avoids having to repeat the expensive data loading process for each graph.
 
-TODO
+When it is initialized, `DataImporter` looks for files specified in the file `csv_file_paths.py`. (If you look in that file, you will see that it imports from `my_data_directory.py`, which is the file you modified to specify the root path for the data directories).
+
+The way `DataImporter` works is it looks first for files in the `processed/` directories. If those files do not exist, it will instead read from the raw csv files, perform some processing on them, and then save them as [parquet](https://www.upsolver.com/blog/apache-parquet-why-use) files in the proper location. The reason we use parquet files is that they take less storage space and are faster to read than CSV files; they also preserve column structure which is important for storing dataframes with nested columns, which is useful for storing multiple types of summary data (mean, median, min, max) for multiple different sensors.
+
+The processing steps are mainly:
+* Converting the data from a csv or parquet file into a Pandas dataframe
+* Combining multiple dataframes into one (for example, the flight data comes in a separate file for each month; these are all concatenated together)
+* Merging dataframes containing different sets of data (combining sensor data and flight data) on the same date ranges
+* Calculating summary data (min, 1st quartile, median, 3rd quartile, max, and mean) for each sensor and variable over the entire date range and storing these statistics in their own file
+
+After `DataImporter` loads and processes the data, the data can be accessed using the `get_data_by_sensor()` method, where you pass it a sensor number from 0 to 5. It also has methods `get_all_sensor_names()` and `get_stats()`.
 
 ## read_flight_data.py
 

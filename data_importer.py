@@ -221,3 +221,6 @@ class DataImporter():
 
         df_stats.to_parquet(stats_file)
         return df_stats
+
+    def get_stats(self):
+        return self.df_stats
