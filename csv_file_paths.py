@@ -1,81 +1,30 @@
 import os
-user_profile = os.path.basename(os.path.normpath(os.environ['USERPROFILE']))
+from my_data_directory import my_data_directory
 
-if user_profile == "ieykamp":
-    raw_csv_paths = [
-        "C:/dev/Air Partners/Data Analysis/data/east_boston/raw/sn45-final-w-ML-PM.csv",
-        "C:/dev/Air Partners/Data Analysis/data/east_boston/raw/sn46-final-w-ML-PM.csv",
-        "C:/dev/Air Partners/Data Analysis/data/east_boston/raw/sn49-final-w-ML-PM.csv",
-        "C:/dev/Air Partners/Data Analysis/data/east_boston/raw/sn62-final-w-ML-PM.csv",
-        "C:/dev/Air Partners/Data Analysis/data/east_boston/raw/sn67-final-w-ML-PM.csv",
-        "C:/dev/Air Partners/Data Analysis/data/east_boston/raw/sn72-final-w-ML-PM.csv",
-    ]
+root = my_data_directory()
 
-    processed_csv_paths = [
-        "C:/dev/Air Partners/Data Analysis/data/east_boston/processed/sn45-final-w-ML-PM.parquet",
-        "C:/dev/Air Partners/Data Analysis/data/east_boston/processed/sn46-final-w-ML-PM.parquet",
-        "C:/dev/Air Partners/Data Analysis/data/east_boston/processed/sn49-final-w-ML-PM.parquet",
-        "C:/dev/Air Partners/Data Analysis/data/east_boston/processed/sn62-final-w-ML-PM.parquet",
-        "C:/dev/Air Partners/Data Analysis/data/east_boston/processed/sn67-final-w-ML-PM.parquet",
-        "C:/dev/Air Partners/Data Analysis/data/east_boston/processed/sn72-final-w-ML-PM.parquet",
-    ]
+raw_csv_paths = [
+    os.path.join(root, "east_boston/raw/sn45-final-w-ML-PM.csv"),
+    os.path.join(root, "east_boston/raw/sn46-final-w-ML-PM.csv"),
+    os.path.join(root, "east_boston/raw/sn49-final-w-ML-PM.csv"),
+    os.path.join(root, "east_boston/raw/sn62-final-w-ML-PM.csv"),
+    os.path.join(root, "east_boston/raw/sn67-final-w-ML-PM.csv"),
+    os.path.join(root, "east_boston/raw/sn72-final-w-ML-PM.csv"),
+]
 
-    stats_file = "C:/dev/Air Partners/Data Analysis/data/east_boston/stats/east_boston_summary_stats.parquet"
+processed_csv_paths = [
+    os.path.join(root, "east_boston/processed/sn45-final-w-ML-PM.parquet"),
+    os.path.join(root, "east_boston/processed/sn46-final-w-ML-PM.parquet"),
+    os.path.join(root, "east_boston/processed/sn49-final-w-ML-PM.parquet"),
+    os.path.join(root, "east_boston/processed/sn62-final-w-ML-PM.parquet"),
+    os.path.join(root, "east_boston/processed/sn67-final-w-ML-PM.parquet"),
+    os.path.join(root, "east_boston/processed/sn72-final-w-ML-PM.parquet"),
+]
 
-    flight_csv_dir = "C:/dev/Air Partners/Data Analysis/data/flights/raw/"
+stats_file = os.path.join(root, "east_boston/stats/east_boston_summary_stats.parquet")
 
-    processed_flight_dir = "C:/dev/Air Partners/Data Analysis/data/flights/processed/"
+flight_csv_dir = os.path.join(root, "flights/raw/")
 
-    final_flights = "C:/dev/Air Partners/Data Analysis/data/flights/final/combined_flights.parquet"
+processed_flight_dir = os.path.join(root, "flights/processed/")
 
-elif user_profile == "zxiong":
-    raw_csv_paths = [
-        'C:/Users/zxiong/Desktop/Olin/Air Partners/Code/sn45-final-w-ML-PM.csv',
-        'C:/Users/zxiong/Desktop/Olin/Air Partners/Code/sn46-final-w-ML-PM.csv',
-        'C:/Users/zxiong/Desktop/Olin/Air Partners/Code/sn49-final-w-ML-PM.csv',
-        'C:/Users/zxiong/Desktop/Olin/Air Partners/Code/sn62-final-w-ML-PM.csv',
-        'C:/Users/zxiong/Desktop/Olin/Air Partners/Code/sn67-final-w-ML-PM.csv',
-        'C:/Users/zxiong/Desktop/Olin/Air Partners/Code/sn72-final-w-ML-PM.csv'
-    ]
-
-    processed_csv_paths = [
-        "C:/Users/zxiong/Desktop/Olin/Air Partners/downsampled/sn45-final-w-ML-PM.parquet",
-        "C:/Users/zxiong/Desktop/Olin/Air Partners/downsampled/sn46-final-w-ML-PM.parquet",
-        "C:/Users/zxiong/Desktop/Olin/Air Partners/downsampled/sn49-final-w-ML-PM.parquet",
-        "C:/Users/zxiong/Desktop/Olin/Air Partners/downsampled/sn62-final-w-ML-PM.parquet",
-        "C:/Users/zxiong/Desktop/Olin/Air Partners/downsampled/sn67-final-w-ML-PM.parquet",
-        "C:/Users/zxiong/Desktop/Olin/Air Partners/downsampled/sn72-final-w-ML-PM.parquet",
-    ]
-
-    stats_file = "C:/Users/zxiong/Desktop/Olin/Air Partners/Code/stats.parquet"
-
-    flight_csv_dir = "C:/Users/zxiong/Desktop/Olin/Air Partners/flight data/raw"
-
-    processed_flight_dir = "C:/Users/zxiong/Desktop/Olin/Air Partners/flight data/intermediate files"
-
-    final_flights = "C:/Users/zxiong/Desktop/Olin/Air Partners/flight data/final files/final_flights.parquet"
-
-else: # if not Ian or Lauren, feel free to make a copy of this and change the file names below:
-    raw_csv_paths = [
-        "unknown_path/sn45-final-w-ML-PM.csv",
-        "unknown_path/sn46-final-w-ML-PM.csv",
-        "unknown_path/sn49-final-w-ML-PM.csv",
-        "unknown_path/sn62-final-w-ML-PM.csv",
-        "unknown_path/sn67-final-w-ML-PM.csv",
-        "unknown_path/sn72-final-w-ML-PM.csv",
-    ]
-
-    processed_csv_paths = [
-        "./data/east boston/processed/sn45-final-w-ML-PM.parquet",
-        "./data/east boston/processed/sn46-final-w-ML-PM.parquet",
-        "./data/east boston/processed/sn49-final-w-ML-PM.parquet",
-        "./data/east boston/processed/sn62-final-w-ML-PM.parquet",
-        "./data/east boston/processed/sn67-final-w-ML-PM.parquet",
-        "./data/east boston/processed/sn72-final-w-ML-PM.parquet",
-    ]
-
-    flight_csv_dir = "./data/flights/raw/"
-
-    processed_flight_dir = "./flights/processed/"
-
-    final_flights = "./data/flights/final/combined_flights.parquet"
+final_flights = os.path.join(root, "flights/final/combined_flights.parquet")

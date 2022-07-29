@@ -102,3 +102,17 @@ def get_id(self, id_str):
 ```
 
 This function is used to define the `id`s of pretty much every element defined inside of `GraphFrame` or one of its subclasses. The reason is that every element in the app *must* have a unique `id`, and there are close to 50 `GraphFrame` objects (most of them invisible) in the layout at once. This is solved by giving each `GraphFrame` object a unique `id_num`, which is appended to the end of every element `id` using the function `self.get_id()`.
+
+### data_importer.py
+
+This is the file that loads all the East Boston data and makes it available as a Pandas dataframe for making graphs. A single `DataImporter` object is created at the start of `dash_layout1.py`, and it is passed to each `GraphFrame` as one of the `__init__()` arguments. This avoids having to repeat the expensive data loading process for each graph.
+
+TODO
+
+### read_flight_data.py
+
+TODO
+
+### presets.py
+
+TODO
