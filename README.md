@@ -1,6 +1,6 @@
 # Data-Exploration-Tool
 
-Welcome to the Data Exploration Tool repo! This project was started in Summer 2022.
+Welcome to the Data Exploration Tool repo! This project was started in Summer 2022. This project and this repo will be handed off to another group of students on the Fall 2022 semester ADE team. Hence, this README is designed to give future students an insight into the structure of the code so they can continue working on it without having met with the original developers.
 
 ## Plotly / Dash
 
