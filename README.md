@@ -84,13 +84,15 @@ This function populates the contents of the page in `self.inner_layout` by modif
 
 This file defines the `GraphFrame` class, which is the parent class to all of the graphs that make up the tool. It is called a `GraphFrame` because it contains not only the graph in question, but also any filters, dropdown menus, and text that surround the graph and let you interact with the data.
 
-For example, each `GraphFrame` subclass must define a function `def get_explanation()` function, which returns a chunk of `dash.html` code to display above the graph; `def get_html`, which returns `dash.html` code containing the layout of the supporting elements (text, dropdowns, etc.); and `def add_graph_callback`, which defines the callbacks for those elements and imbues them with the power to update the graph in question.
+For example, each `GraphFrame` subclass must define a function `def get_explanation()` function, which returns a chunk of `dash.html` code to display above the graph; `def get_html()`, which returns `dash.html` code containing the layout of the supporting elements (text, dropdowns, etc.); and `def add_graph_callback()`, which defines the callbacks for those elements and imbues them with the power to update the graph in question.
+
+`GraphFrame` is a parent class for `TimeSeries` (defined in `time_series.py`), `Scatter` (`Scatterplot_final.py`), BarChartGraph (`bar_chart_graph.py`), `Polar` (two different versions are defined in `Polar.py` and `polar_plot_v2.py`; check which one is being used based on which of those two files is imported at the top of `dash_layout1.py`), and `CalendarPlot` (`calendar_plot.py`).
 
 #### Other notes on graph_frame.py
 
 The first 200 lines or so of `graph_frame.py` define styling and chunks of `dash.html` that will be used repeatedly by `GraphFrame` subclasses.
 
-The `__init__()` function is quite small, and just calls the  `self.get_explanation()`, `self.get_html`, and `self.add_graph_callback()` functions on its subclasses, wrapping the resulting `dash.html` code in a Div with a special `id` so that `dash_layout1.py` knows how to turn its visibility on and off.
+The `__init__()` function is quite small, and just calls the  `self.get_explanation()`, `self.get_html()`, and `self.add_graph_callback()` functions on its subclasses, wrapping the resulting `dash.html` code in a Div with a special `id` so that `dash_layout1.py` knows how to turn its visibility on and off.
 
 Arguably the most important function in this entire class is the `self.get_id()` function, which is, verbatim:
 
