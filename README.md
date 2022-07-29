@@ -79,3 +79,24 @@ This line creates a `DataImporter` object, which is defined in the file `data_im
 ```
 
 This function populates the contents of the page in `self.inner_layout` by modifying its `children` attribute. Basically, it creates all the graphs that will ever be displayed and then sets all of them to invisible except for the ones that appear on the starting screen. Then there are buttons (defined in `def create_dropdown()`) that will toggle the visibility of certain graphs.
+
+### graph_frame.py
+
+This file defines the `GraphFrame` class, which is the parent class to all of the graphs that make up the tool. It is called a `GraphFrame` because it contains not only the graph in question, but also any filters, dropdown menus, and text that surround the graph and let you interact with the data.
+
+For example, each `GraphFrame` subclass must define a function `def get_explanation()` function, which returns a chunk of `dash.html` code to display above the graph; `def get_html`, which returns `dash.html` code containing the layout of the supporting elements (text, dropdowns, etc.); and `def add_graph_callback`, which defines the callbacks for those elements and imbues them with the power to update the graph in question.
+
+#### Other notes on graph_frame.py
+
+The first 200 lines or so of `graph_frame.py` define styling and chunks of `dash.html` that will be used repeatedly by `GraphFrame` subclasses.
+
+The `__init__()` function is quite small, and just calls the  `self.get_explanation()`, `self.get_html`, and `self.add_graph_callback()` functions on its subclasses, wrapping the resulting `dash.html` code in a Div with a special `id` so that `dash_layout1.py` knows how to turn its visibility on and off.
+
+Arguably the most important function in this entire class is the `self.get_id()` function, which is, verbatim:
+
+```
+def get_id(self, id_str):
+    return id_str + "-" + str(self.id_num)
+```
+
+This function is used to define the `id`s of pretty much every element defined inside of `GraphFrame` or one of its subclasses. The reason is that every element in the app *must* have a unique `id`, and there are close to 50 `GraphFrame` objects (most of them invisible) in the layout at once. This is solved by giving each `GraphFrame` object a unique `id_num`, which is appended to the end of every element `id` using the function `self.get_id()`.
