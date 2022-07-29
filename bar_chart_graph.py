@@ -7,11 +7,8 @@ import plotly.graph_objects as go
 import plotly.express as px
 import numpy as np
 from sigfig import round
-
-
 from filter_graph import FilterGraph # import from supporting file (contained in this repo)
 from graph_frame import GraphFrame
-from barchart_class import BarChart
 
 class BarChartGraph(GraphFrame):
     def get_explanation(self):
@@ -137,28 +134,32 @@ class BarChartGraph(GraphFrame):
             # filtered_stat.replace([np.inf, -np.inf], np.nan, inplace=True)
             normalized_stat.replace([np.inf, -np.inf], np.nan, inplace=True)
 
+            normalized_stat = normalized_stat.round(2)
+
             #create subplots
             fig = go.Figure()
-            fig = make_subplots(rows = 1, cols = 3, subplot_titles = ('Meteorology Data', 'Gas Pollutants', 'Particle Pollutants'))
+            titles = ['Meteorology Data', 'Gas Pollutants', 'Particle Pollutants']
+            fig = make_subplots(rows = 1, cols = 3, subplot_titles = titles)
 
             def add_sub_barchart(vars, col, color):
+                var_name = ["PM10", "PM2.5","PM1","CO","NO","NO2","O3","Temperature","Humidity",
+                "Wind Speed","Adverse Takeoffs/Landings","Adverse Takeoffs/Landings"]
+
                 if normalize_height:
                     normalized_text = normalized_stat[vars].apply(self.as_percent)
+                    normalized_xaxis = var_name
                 else:
                     normalized_text = normalized_stat[vars].apply(self.as_float)
+                    normalized_xaxis = list(vars)
 
                 fig.add_trace(
                     go.Bar(
-                        x = list(vars),
+                        x = normalized_xaxis,
                         y = normalized_stat[vars],
                         text = normalized_text,
                         marker_color = px.colors.qualitative.T10[color],
-                        # customdata = data_mean[1:5] if data_stats == 'Mean' else data_median[1:5],
-                        # hovertext = sn45_mean[1:5] if data_stats == 'Mean' else sn45_median[1:5],
-                        # hovertemplate = '<br><b>%{x}</b><br>Filtered data mean:%{customdata}<br>Entire data set median:%{hovertext}<br>Quotient of mean:%{y}'
-                        # if data_stats == 'Mean' else
-                        # '<br><b>%{x}</b><br>Filtered data median:%{customdata}<br>Entire data set median:%{hovertext}<br>Quotient of median:%{y}',
-                        # name = 'meteorology data',
+                        hovertemplate = '<b>%{x}</b> %{text}',
+                        name = titles[col-1] ,
                         showlegend = False,
                         # error_y =
                         #     dict(
