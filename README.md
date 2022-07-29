@@ -16,9 +16,9 @@ Start by cloning this repo. Then you will need to download some data files separ
 
 Next, you should be able to open up the file `dash_layout1.py`, then run it. It will take a little while (~1-2 minutes) to process the data (it will be faster the next time you run it). By default, the dash interface will be running on your computer's local IP address [`127.0.0.1:8050`](http://127.0.0.1:8050/). Type this IP into your browser to view the interface.
 
-## Structure of this Repo
+# Structure of this Repo
 
-### dash_layout1.py
+## dash_layout1.py
 
 The main script that will run the data exploration tool is titled `dash_layout1.py`. This initializes the main page, loads the data, and creates all the graph objects. Let's take a quick look at the `__init__()` function of `Page`, the main class defined in `dash_layout1.py`:
 
@@ -41,7 +41,7 @@ def __init__(self, app, n_charts = 10) -> None:
     self.create_layout()
 ```
 
-#### Breakdown of `__init__()`
+### Breakdown of `__init__()`
 
 ```
 def __init__(self, app, n_charts = 10) -> None:
@@ -80,7 +80,7 @@ This line creates a `DataImporter` object, which is defined in the file `data_im
 
 This function populates the contents of the page in `self.inner_layout` by modifying its `children` attribute. Basically, it creates all the graphs that will ever be displayed and then sets all of them to invisible except for the ones that appear on the starting screen. Then there are buttons (defined in `def create_dropdown()`) that will toggle the visibility of certain graphs.
 
-### graph_frame.py
+## graph_frame.py
 
 This file defines the `GraphFrame` class, which is the parent class to all of the graphs that make up the tool. It is called a `GraphFrame` because it contains not only the graph in question, but also any filters, dropdown menus, and text that surround the graph and let you interact with the data.
 
@@ -88,7 +88,7 @@ For example, each `GraphFrame` subclass must define a function `def get_explanat
 
 `GraphFrame` is a parent class for `TimeSeries` (defined in `time_series.py`), `Scatter` (`Scatterplot_final.py`), BarChartGraph (`bar_chart_graph.py`), `CalendarPlot` (`calendar_plot.py`), and `Polar` (two different versions are defined in `Polar.py` and `polar_plot_v2.py`; check which one is being used based on which of those two files is imported at the top of `dash_layout1.py`).
 
-#### Other notes on graph_frame.py
+### Other notes on graph_frame.py
 
 The first 200 lines or so of `graph_frame.py` define styling and chunks of `dash.html` that will be used repeatedly by `GraphFrame` subclasses.
 
@@ -103,16 +103,16 @@ def get_id(self, id_str):
 
 This function is used to define the `id`s of pretty much every element defined inside of `GraphFrame` or one of its subclasses. The reason is that every element in the app *must* have a unique `id`, and there are close to 50 `GraphFrame` objects (most of them invisible) in the layout at once. This is solved by giving each `GraphFrame` object a unique `id_num`, which is appended to the end of every element `id` using the function `self.get_id()`.
 
-### data_importer.py
+## data_importer.py
 
 This is the file that loads all the East Boston data and makes it available as a Pandas dataframe for making graphs. A single `DataImporter` object is created at the start of `dash_layout1.py`, and it is passed to each `GraphFrame` as one of the `__init__()` arguments. This avoids having to repeat the expensive data loading process for each graph.
 
 TODO
 
-### read_flight_data.py
+## read_flight_data.py
 
 TODO
 
-### presets.py
+## presets.py
 
 TODO
