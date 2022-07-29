@@ -1,7 +1,7 @@
 def my_data_directory():
     """
-    ACTION ITEMS:
-    * After reading this document and following the instructions, there is one line you need to edit at the very end of the file.
+    Action items to look out for as you follow these instructions:
+    * There is one line you need to edit at the very end of the file.
     * There is also a command that we highly recommend you run to avoid overwriting this file in the GitHub repo:
       (in your command prompt/terminal, navigate to the directory for this repo, then type):
       git update-index --skip-worktree my_data_directory.py
@@ -21,7 +21,12 @@ def my_data_directory():
 
     IMPORTANT: Set the last line in this file to return the file location of the topmost data directory.
 
-    Now download the raw data from _____.
+    Now download the raw data from the following sources:
+    * East Boston sensor data: https://www.dropbox.com/sh/g2ius57olxnv47y/AADGkZNQtheD_qxbR17fsHPca?dl=0
+    * Flight data set #1: https://drive.google.com/file/d/1Dpxr71i97ktTbSn2OxsrzduH2EAr5HeF/view
+    * Flight data set #2: https://docs.google.com/spreadsheets/d/1WVQCzpq_QVtPJT4BSEq30PJzRrDLvqC5/edit#gid=1925802693
+        (Yes, you will have to download each month separately)
+
     Move the raw CSV files you downloaded into the respective `raw` folders for raw East Boston data and raw flight data.
     Your new file system should look like this:
 
