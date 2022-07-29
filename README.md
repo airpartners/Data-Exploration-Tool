@@ -50,6 +50,8 @@ def __init__(self, app, n_charts = 10) -> None:
 
 Much like if you've ever used Flask, `app` is the object that Plotly uses to display your code into a web browser. The `app` object is used to create callbacks, which cause the page to update when certain buttons are clicked.
 
+---
+
 ```
     self.outer_layout = html.Div(
         children = [self.inner_layout, self.create_sidebar()],
@@ -62,11 +64,15 @@ This is the structure used to generate HTML elements using `dash.html` python ob
 
 In this case, the Div holds `self.inner_layout`, which is a container for the main contents of the page, and a sidebar element which is displayed side by side with the contents.
 
+---
+
 ```
 self.data_importer = DataImporter()
 ```
 
 This line creates a `DataImporter` object, which is defined in the file `data_importer.py`. When initialized, it loads East Boston data from a set of CSV files and performs a bit of processing. Once this object is created, it will be passed to all the graph-making functions so that the data-loading step does not need to be redone each time a graph is created.
+
+---
 
 ```
     self.create_layout()
