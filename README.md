@@ -18,6 +18,8 @@ Plotly comes with a 'hot-reload' feature, meaning whenever you save the file you
 
 ## Structure of this Repo
 
+### dash_layout1.py
+
 The main script that will run the data exploration tool is titled `dash_layout1.py`. This initializes the main page, loads the data, and creates all the graph objects. Let's take a quick look at the `__init__()` function of `Page`, the main class defined in `dash_layout1.py`:
 
 ```
@@ -39,4 +41,35 @@ def __init__(self, app, n_charts = 10) -> None:
     self.create_layout()
 ```
 
+#### Breakdown of `__init__()`
 
+```
+def __init__(self, app, n_charts = 10) -> None:
+    self.app = app
+```
+
+Much like if you've ever used Flask, `app` is the object that Plotly uses to display your code into a web browser. The `app` object is used to create callbacks, which cause the page to update when certain buttons are clicked.
+
+```
+    self.outer_layout = html.Div(
+        children = [self.inner_layout, self.create_sidebar()],
+        id = 'outer_main',
+        style = self.outer_layout_style,
+    )
+```
+
+This is the structure used to generate HTML elements using `dash.html` python objects. Here, a `Div` object is created. The `children` argument is the contents of the `Div`, the `style` is a dictionary of html styling properties, and the `id` is a unique string that identifies the element so it can be used in callbacks (similar to how javascript uses `getElementById()` to refer to HTML elements).
+
+In this case, the Div holds `self.inner_layout`, which is a container for the main contents of the page, and a sidebar element which is displayed side by side with the contents.
+
+```
+self.data_importer = DataImporter()
+```
+
+This line creates a `DataImporter` object, which is defined in the file `data_importer.py`. When initialized, it loads East Boston data from a set of CSV files and performs a bit of processing. Once this object is created, it will be passed to all the graph-making functions so that the data-loading step does not need to be redone each time a graph is created.
+
+```
+    self.create_layout()
+```
+
+This function populates the contents of the page in `self.inner_layout` by modifying its `children` attribute. Basically, it creates all the graphs that will ever be displayed and then sets all of them to invisible except for the ones that appear on the starting screen. Then there are buttons (defined in `def create_dropdown()`) that will toggle the visibility of certain graphs.
