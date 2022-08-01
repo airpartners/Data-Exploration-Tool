@@ -1,9 +1,6 @@
 from dash import html, dcc, Input, Output
 from plotly_calplot import calplot # pip install plotly-calplot
 import pandas as pd
-import numpy as np
-import plotly.graph_objects as go
-import plotly.express as px
 from graph_frame import GraphFrame
 
 
@@ -22,10 +19,10 @@ class CalendarPlot(GraphFrame):
         """
         Defines the structure of barchart in html
 
-        The filter message and dropdown menus are defined as html.Div() arguments, and the graph will be updated in the add_graph_callback(): update_figure() function below
+        The filter message and dropdown menus are defined as html.Div() arguments, and the graph will be updated in the 
+        add_graph_callback(): update_figure() function below
 
         """
-        # children = ...
         return \
             [
                 html.Div(
@@ -54,7 +51,7 @@ class CalendarPlot(GraphFrame):
         """
 
         @self.app.callback(
-            # the 
+            # the id of the graph lines up with the id argument in dcc.Graph defined in get_html() function
             Output(self.get_id('calendar-plot'),'figure'),
 
             # the values of the two inputs below are called from the filter message dropdowns above in get_html() function
@@ -63,6 +60,12 @@ class CalendarPlot(GraphFrame):
             )
 
         def update_figure(which_sensor, pollutant):
+            """
+            Main plotting function: 
+            - selects and processes the dataset
+            - then makes the plot
+            
+            """
 
             # select which sensor data to draw from
             df = self.data_importer.get_data_by_sensor(which_sensor)
@@ -111,7 +114,6 @@ class CalendarPlot(GraphFrame):
             fig = calplot(dummy_df,
                     x='ds',
                     y='value',
-                    # data=df[pollutant]
                     years_title=True,
                     colorscale=color_scale[pollutant],
                     month_lines_color="black",
