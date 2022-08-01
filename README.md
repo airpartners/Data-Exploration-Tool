@@ -178,7 +178,7 @@ def add_callbacks(self, scenario_name, scenario):
     )
     def execute_presets(radio_scenario_name):
         if radio_scenario_name != scenario_name:
-            raise PreventUpdate # https://community.plotly.com/t/how-to-leave-callback-output-unchanged/7276/13
+            raise PreventUpdate
 
         return_list = []
         # for (chart_type, graph_dict) in self.preset_scenarios[scenario_id]:
@@ -249,11 +249,12 @@ This syntax initializes the callbacks. The outputs are defined in the for loop a
 
 ```
         if radio_scenario_name != scenario_name:
-            raise PreventUpdate # https://community.plotly.com/t/how-to-leave-callback-output-unchanged/7276/13
-
+            raise PreventUpdate
 ```
 
-Since there are multiple separate callbacks being created, this line terminates all callbacks that are not relevant to the current preset being selected. I think this structure of creating multiple separate callbacks on the same input was necessary to avoid repeating the same output more than once in a single callback (for example, if two presets both want to assign the first chart to be a bar chart).
+Since there are multiple separate callbacks being created, this line terminates all callbacks that are not relevant to the current preset being selected. [Raising an exception in this way is the accepted way of terminating a callback](https://community.plotly.com/t/how-to-leave-callback-output-unchanged/7276/13).
+
+I think this structure of creating multiple separate callbacks on the same input was necessary to avoid repeating the same output more than once in a single callback (for example, if two presets both want to assign the first chart to be a bar chart).
 
 ---
 
