@@ -155,7 +155,7 @@ To add another preset, just add another entry into `preset_scenarios`.
 
 ### How the presets work
 
-The presets work by parsing all the entries in `preset_scenarios` and creating callbacks on all the elements specified. When the preset radio button is called back, it updates the values of those elements, thus triggering *their* callbacks and updating the graphs.
+The presets work by parsing all the entries in `preset_scenarios` and creating callbacks on all the elements specified (usually the dropdown menus surrounding certain graphs). When the preset radio button is called back, it updates the values of those elements, thus triggering *their* callbacks and updating the graphs.
 
 Let's take a look at the `def add_callbacks()` function inside of `presets.py`:
 
