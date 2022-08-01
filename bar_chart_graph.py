@@ -7,7 +7,6 @@ import plotly.graph_objects as go
 import plotly.express as px
 import numpy as np
 from sigfig import round
-from filter_graph import FilterGraph # import from supporting file (contained in this repo)
 from graph_frame import GraphFrame
 
 class BarChartGraph(GraphFrame):

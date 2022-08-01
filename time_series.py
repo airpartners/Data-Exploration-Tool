@@ -7,7 +7,6 @@ import plotly.express as px
 import numpy as np
 import datetime
 import pandas as pd
-from filter_graph import FilterGraph # import from supporting file (contained in this repo)
 
 from graph_frame import GraphFrame
 

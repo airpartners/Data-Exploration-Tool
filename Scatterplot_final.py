@@ -6,9 +6,6 @@ import datetime
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
-
-
-from filter_graph import FilterGraph # import from supporting file (contained in this repo)
 from graph_frame import GraphFrame
 
 class Scatter(GraphFrame):

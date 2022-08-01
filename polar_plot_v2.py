@@ -8,8 +8,6 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-
-from filter_graph import FilterGraph # import from supporting file (contained in this repo)
 from graph_frame import GraphFrame
 
 

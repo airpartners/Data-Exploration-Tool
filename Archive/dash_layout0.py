@@ -2,7 +2,7 @@ from dash import Dash, html, dcc
 from dash.dependencies import Input, Output
 import datetime
 
-from filter_graph import FilterGraph # import from supporting file (contained in this repo)
+from Archive.filter_graph import FilterGraph # import from supporting file (contained in this repo)
 
 # define HTML styles for text and dropdown menus. Use this to change font size, alignment, etc.
 text_style = {
