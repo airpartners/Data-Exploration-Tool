@@ -135,13 +135,13 @@ preset_scenarios = {
         (
             chart_1_type,
             {
-                setting_names: setting_values
+                callback_element_id: callback_values
             }
         ),
         (
             chart_2_type,
             {
-                setting_names: setting_values
+                callback_element_id: callback_values
             }
         ),
         ...
@@ -153,3 +153,121 @@ preset_scenarios = {
 
 To add another preset, just add another entry into `preset_scenarios`.
 
+### How the presets work
+
+The presets work by parsing all the entries in `preset_scenarios` and creating callbacks on all the elements specified. When the preset radio button is called back, it updates the values of those elements, thus triggering *their* callbacks and updating the graphs.
+
+Let's take a look at the `def add_callbacks()` function inside of `presets.py`:
+
+```
+def add_callbacks(self, scenario_name, scenario):
+    outputs = []
+    for chart_num, (chart_type, graph_dict) in enumerate(scenario):
+        outputs.append(Output(self.get_id('new-chart-dropdown', chart_num), 'value'))
+        for key in graph_dict.keys():
+            outputs.append(Output(
+                self.get_id(self.keys_to_ids[key][0], self.get_id_num_from_chart_num(chart_num, chart_type)),
+                self.keys_to_ids[key][1])
+            )
+
+    # generate callback based on outputs
+    @self.app.callback(
+        *outputs,
+        Input('preset-radioitems', 'value'),
+        prevent_initial_call = True
+    )
+    def execute_presets(radio_scenario_name):
+        if radio_scenario_name != scenario_name:
+            raise PreventUpdate # https://community.plotly.com/t/how-to-leave-callback-output-unchanged/7276/13
+
+        return_list = []
+        # for (chart_type, graph_dict) in self.preset_scenarios[scenario_id]:
+        for (chart_type, graph_dict) in scenario:
+            print("returning chart type:", chart_type)
+            print("returning graph_dict:", graph_dict)
+            return_list.append(chart_type)
+            for val in graph_dict.values():
+                return_list.append(val)
+
+        return tuple(return_list)
+```
+
+---
+
+```
+def add_callbacks(self, scenario_name, scenario):
+```
+
+In the `__init__()` function, `self.add_callbacks()` is called in a for loop on the highest level of `preset_scenarios`:
+
+```
+def __init__(self, app):
+    ...
+    for scenario_name, scenario in self.preset_scenarios.items():
+        self.add_callbacks(scenario_name, scenario)
+```
+
+This creates a separate callback for each individual preset. The contents of each preset will be unpacked from `preset_scenarios` next.
+
+---
+
+```
+    outputs = []
+    for chart_num, (chart_type, graph_dict) in enumerate(scenario):
+        outputs.append(Output(self.get_id('new-chart-dropdown', chart_num), 'value'))
+        for key in graph_dict.keys():
+            outputs.append(Output(
+                self.get_id(self.keys_to_ids[key][0], self.get_id_num_from_chart_num(chart_num, chart_type)),
+                self.keys_to_ids[key][1])
+            )
+```
+
+This block generates the outputs for the callback by unpacking the contents of the specific preset from `preset_scenarios`. The line
+
+```
+outputs.append(Output(self.get_id('new-chart-dropdown', chart_num), 'value'))
+```
+
+changes the graph type based on the first element in the tuple, whereas the inner for loop unpacks the callback element ids to set as outputs.
+
+---
+
+```
+    # generate callback based on outputs
+    @self.app.callback(
+        *outputs,
+        Input('preset-radioitems', 'value'),
+        prevent_initial_call = True
+    )
+    def execute_presets(radio_scenario_name):
+        ...
+```
+
+This syntax initializes the callbacks. The outputs are defined in the for loop above, and the inputs are the preset radio buttons themselves.
+
+---
+
+```
+        if radio_scenario_name != scenario_name:
+            raise PreventUpdate # https://community.plotly.com/t/how-to-leave-callback-output-unchanged/7276/13
+
+```
+
+Since there are multiple separate callbacks being created, this line terminates all callbacks that are not relevant to the current preset being selected. I think this structure of creating multiple separate callbacks on the same input was necessary to avoid repeating the same output more than once in a single callback (for example, if two presets both want to assign the first chart to be a bar chart).
+
+---
+
+```
+        return_list = []
+        # for (chart_type, graph_dict) in self.preset_scenarios[scenario_id]:
+        for (chart_type, graph_dict) in scenario:
+            print("returning chart type:", chart_type)
+            print("returning graph_dict:", graph_dict)
+            return_list.append(chart_type)
+            for val in graph_dict.values():
+                return_list.append(val)
+
+        return tuple(return_list)
+```
+
+Finally, the last chunk grabs the values for each of the elements in `preset_scenarios` and returns them in the same order as they were specified in `outputs` when the callback was initialized.
