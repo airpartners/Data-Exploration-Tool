@@ -174,14 +174,12 @@ class BarChartGraph(GraphFrame):
                 # define the text shown on each bar and the x-axis variable according to the normalizing data option
                 if normalize_height:
                     normalized_text = normalized_stat[vars].apply(self.as_percent)
-                    normalized_xaxis = var_name
                 else:
                     normalized_text = normalized_stat[vars].apply(self.as_float)
-                    normalized_xaxis = list(vars)
 
                 fig.add_trace(
                     go.Bar(
-                        x = normalized_xaxis,
+                        x = list(vars),
                         y = normalized_stat[vars],
                         text = normalized_text,
                         marker_color = px.colors.qualitative.T10[color],
