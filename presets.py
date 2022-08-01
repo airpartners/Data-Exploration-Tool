@@ -52,7 +52,7 @@ class Presets():
                 chart_type_ids["calendar_plot"],
                 {
                     "sensor_location": 0,
-                    "pollutant": "pm1.ML",
+                    "pollutant": "PM1 (μg/m^3)",
                     "show_details": True,
                 }
             ),
@@ -60,7 +60,7 @@ class Presets():
                 chart_type_ids["timeseries"],
                 {
                     "sensor_location": 0,
-                    "pollutant": "pm10.ML",
+                    "pollutant": "PM10 (μg/m^3)",
                     "show_details": True,
                     "ignore_units": False,
                 }
@@ -71,7 +71,7 @@ class Presets():
                     "sensor_location": 0,
                     'x_axis': "temp_manifold",
                     # 'y_axis': "pm25.ML",
-                    'pollutant': "pm25.ML",
+                    'pollutant': "PM2.5 (μg/m^3)",
                     "start_date": datetime.date(2019, 12, 1),
                     "end_date": datetime.date(2019, 12, 31),
                     "show_details": True,
@@ -81,7 +81,7 @@ class Presets():
                 chart_type_ids["polar_plot"],
                 {
                     "sensor_location": 0,
-                    "pollutant": "pm1.ML",
+                    "pollutant": "PM1 (μg/m^3)",
                     "start_date": datetime.date(2019, 12, 1),
                     "end_date": datetime.date(2019, 12, 31),
                     "show_details": True,

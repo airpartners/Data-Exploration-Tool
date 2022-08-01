@@ -65,7 +65,9 @@ class BarChartGraph(GraphFrame):
 
     def add_graph_callback(self):
         """
-        Returns 
+        Defines and returns all the text and graph features
+
+        This function consists of two sections: callback functions that defines the inputs and outputs of the graph and the main plotting function
         
         """
 

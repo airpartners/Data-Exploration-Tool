@@ -143,7 +143,7 @@ class GraphFrame():
         return \
             dcc.Dropdown(
                 options = self.all_vars,
-                value='o3.ML',
+                value='O3 (ppb)',
                 multi = True,
 
                 id=self.get_id(id),
