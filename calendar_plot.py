@@ -1,5 +1,5 @@
 from dash import html, dcc, Input, Output
-from plotly_calplot import calplot # $pip install plotly-calplot
+from plotly_calplot import calplot # pip install plotly-calplot
 import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
@@ -19,57 +19,58 @@ class CalendarPlot(GraphFrame):
 
 
     def get_html(self):
+        """
+        Defines the structure of barchart in html
+
+        The filter message and dropdown menus are defined as html.Div() arguments, and the graph will be updated in the add_graph_callback(): update_figure() function below
+
+        """
         # children = ...
         return \
             [
                 html.Div(
                     [
                         "At ",
-                        self.sensor_picker(),
+                        self.sensor_picker(), # calling the sensor dropdown menu defined in graph_frame.py
                         ", what was the level of ",
-                        self.pollutant_picker(multi = False, show_flights = True),
+                        self.pollutant_picker(multi = False, show_flights = True), # calling the pollutant dropdown menu defined in graph_frame.py
                         " over the entire date range for that sensor?",
                     ],
-                    style = self.text_style
+                    style = self.text_style # defining text styles
                 ),
-                # Placeholder for a graph to be created.
-                # This graph will be updated in the @app.callback: update_figure function below
-                # html.Div(
-                    # chilfwidren = [
-                dcc.Graph(id = self.get_id('calendar-plot')),
-                    # ],
-                    # style = {'display': 'flex'}
-                # ),
+                dcc.Graph(id = self.get_id('calendar-plot'))
             ]
 
 
     def add_graph_callback(self):
+        """
+        Defines and returns all the text and calendar plot features
+
+        This function consists of two sections: 
+        - @self.app.callback that contains all the input and output callback functions;
+        - the main plotting function update_figure() that takes sensor and pollutant selections from the filter message dropdowns(defined above
+         as html.Div() arguments in get_html() function) to choose the demanded dataset and/or select the demanded column of dataset to plot on the graph
+        
+        """
 
         @self.app.callback(
+            # the 
             Output(self.get_id('calendar-plot'),'figure'),
+
+            # the values of the two inputs below are called from the filter message dropdowns above in get_html() function
             Input(self.get_id('which-sensor'), 'value'),
             Input(self.get_id('pollutant-dropdown'), 'value')
             )
 
         def update_figure(which_sensor, pollutant):
 
-            if isinstance(pollutant, str):
-                pollutant = [pollutant]
-
             # select which sensor data to draw from
             df = self.data_importer.get_data_by_sensor(which_sensor)
 
-            # calculate daily average
+            # calculate daily average and save the results
             df=df.resample('D').mean()
 
-            # df.index = pd.date_range('01/01/2018',
-            #                         periods=8,
-            #                         freq='W')
-
-            # print(df.index)
-            # pollution_level = np.array(df[pollutant])
-            # pollution_level = list(np.average(pollution_level.reshape(-1, 24), axis=1))
-
+            # rename the columns in df_stats to something more understandable
             df = df.rename(columns={
                 "pm10.ML": "PM10 (μg/m^3)", 
                 "pm25.ML": "PM2.5 (μg/m^3)",
@@ -85,7 +86,7 @@ class CalendarPlot(GraphFrame):
                 "count": "Total Takeoffs/Landings",
             })
 
-
+            # define start date and end date of the calendar plot based on local_timestamp (the index) of datasets
             start_date = df.index[0]
             end_date = df.index[-1]
             dummy_df = pd.DataFrame({
@@ -93,13 +94,28 @@ class CalendarPlot(GraphFrame):
                 "value": df[pollutant].squeeze()
             })
 
+            # define colorscales based on EPA standards
+            color_scale = {
+                'PM2.5 (μg/m^3)': [(0,"white"),(0.00000000000001,"#F1FFEC"),(0.5,"yellow"),(1,"red")],
+                'PM10 (μg/m^3)': [(0,"white"),(0.00000000000001,"#F1FFEC"),(0.5,"yellow"),(1,"red")],
+                'PM1 (μg/m^3)': [(0,"white"),(0.00000000000001,"#F1FFEC"),(0.5,"yellow"),(1,"red")],
+                'NO (ppb)': [(0,"white"),(0.00000000000001,"#F1FFEC"),(0.9,"yellow"),(1,"red")],
+                'CO (ppb)': [(0,"white"),(0.00000000000001,"#F1FFEC"),(0.95,"yellow"),(1,"red")],
+                'NO2 (ppb)': [(0,"white"),(0.00000000000001,"#F1FFEC"),(0.9,"yellow"),(1,"red")],
+                'O3 (ppb)': [(0,"white"),(0.00000000000001,"#F1FFEC"),(0.9,"yellow"),(1,"red")],
+                'Adverse Takeoffs/Landings': [(0,"white"),(1,"red")],
+                'Total Takeoffs/Landings': [(0,"white"),(1,"red")]
+            }
+
             # creating the plot
             fig = calplot(dummy_df,
                     x='ds',
                     y='value',
                     # data=df[pollutant]
                     years_title=True,
-                    colorscale=[(0,"white"),(0.000000000001,"green"),(0.5,"yellow"),(0.8,"red"),(1,"purple")],
+                    colorscale=color_scale[pollutant],
+                    month_lines_color="black",
+                    month_lines_width=1,
                     showscale=True
             )
 
