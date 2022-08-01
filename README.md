@@ -119,10 +119,37 @@ The processing steps are mainly:
 
 After `DataImporter` loads and processes the data, the data can be accessed using the `get_data_by_sensor()` method, where you pass it a sensor number from 0 to 5. It also has methods `get_all_sensor_names()` and `get_stats()`.
 
-## read_flight_data.py
-
-TODO
-
 ## presets.py
 
-TODO
+This is one of the most important features of the data exploration tool, because it addresses a direct user need. This feature allows us (the developers) to pre-program several different sets of starting configurations, including which graph types to show and what the settings of all the dropdowns and filters should be. The pre-programmed ("preset") graphs are chosen to show specific insights about the data obtained through data science.
+
+This is similar to showing someone a PDF of a few graphs created from the dataset that illustrate a point, except that 1) it is still a fully interactive tool, so people can change the settings and play with it themselves; and 2) it shows people how to use the tool to create new graphs by manipulating the dropdowns and filters.
+
+### Defining new presets
+
+The presets are defined inside a giant nested dictionary called `preset_scenarios`. The keys of the dictionary are the names for the different scenarios, to be displayed on the radio buttons where the presets can be selected. The nested structure looks like this (it's a dictionary of lists of tuples of dictionaries).
+
+```
+preset_scenarios = {
+    "Preset 1": [
+        (
+            chart_1_type,
+            {
+                setting_names: setting_values
+            }
+        ),
+        (
+            chart_2_type,
+            {
+                setting_names: setting_values
+            }
+        ),
+        ...
+    ],
+    "Preset 2": [ ... ],
+    ...
+}
+```
+
+To add another preset, just add another entry into `preset_scenarios`.
+
