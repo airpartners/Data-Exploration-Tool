@@ -22,6 +22,11 @@ class BarChartGraph(GraphFrame):
         ]
 
     def get_html(self):
+        """
+        Defines the structure of barchart in html by calling the dropdown the functions in add_graph_callback()
+
+        """
+
         # children = ...
         return \
             [
@@ -59,6 +64,10 @@ class BarChartGraph(GraphFrame):
             ]
 
     def add_graph_callback(self):
+        """
+        Returns 
+        
+        """
 
         @self.app.callback(
             Output(self.get_id('select-time'), 'figure'),
@@ -72,15 +81,22 @@ class BarChartGraph(GraphFrame):
         )
         def update_figure(which_sensor, start_date, end_date, normalize_height = True, stat_type = "mean", percentage_error = False):
             '''
-            Main plotting function
+            Main plotting function,
             '''
             stat_type = stat_type.lower() # convert to lowercase characters
             # stat_type = "mean"
-
+            
+            # calling dataset from data_importer and make it a pandas dataframe
             df = self.data_importer.get_data_by_sensor(which_sensor, numeric_only = True)
 
+            # calling the statistic data that mainly includes the mean of the entire dataset
             df_stats = self.data_importer.df_stats
+
+            # extract sensor name from the function input which_sensor returned from the sensor dropdown menu
             sensor_name = self.data_importer.get_all_sensor_names()[which_sensor]
+            print(sensor_name)
+
+            # rename the columns in df_stats to something more understandable
             df_stats = df_stats.rename(index={
                 "pm10.ML": "PM10 (μg/m^3)", 
                 "pm25.ML": "PM2.5 (μg/m^3)",
@@ -96,9 +112,10 @@ class BarChartGraph(GraphFrame):
                 "count": "Total Takeoffs/Landings",
             })
 
+            # filter by timestamp and wind direction
+            df = self.filter_by_date(df, start_date, end_date)
 
-            df = self.filter_by_date(df, start_date, end_date) # filter by timestamp and wind direction
-
+            # rename the columns in the dataset of the selected sensor
             df = df.rename(columns={
                 "pm10.ML": "PM10 (μg/m^3)", 
                 "pm25.ML": "PM2.5 (μg/m^3)",
@@ -114,6 +131,7 @@ class BarChartGraph(GraphFrame):
                 "count": "Total Takeoffs/Landings",
             })
 
+            # extract the stats data based on the sensor name
             if stat_type == "mean":
                 filtered_stat = df.mean(axis = 0)
                 normalized_stat = filtered_stat / df_stats[sensor_name, "mean"]
@@ -123,7 +141,7 @@ class BarChartGraph(GraphFrame):
             else:
                 raise KeyError("Unsupported aggregation function. Try 'mean' or 'median' instead.")
 
-            # if normalize_height is unchecked, undo the division by df_stats
+            # if normalize_height(ignore units button on the html page) is unchecked, undo the division by df_stats
             if normalize_height:
                 normalized_text = normalized_stat[self.gas_vars].apply(self.as_percent)
             else:
@@ -134,6 +152,7 @@ class BarChartGraph(GraphFrame):
             # filtered_stat.replace([np.inf, -np.inf], np.nan, inplace=True)
             normalized_stat.replace([np.inf, -np.inf], np.nan, inplace=True)
 
+            # round the stats data to 2 decimal places
             normalized_stat = normalized_stat.round(2)
 
             #create subplots
@@ -142,9 +161,15 @@ class BarChartGraph(GraphFrame):
             fig = make_subplots(rows = 1, cols = 3, subplot_titles = titles)
 
             def add_sub_barchart(vars, col, color):
+                """
+                Defines and returns the filter text style and specific features of the barchart graph
+
+                """
+
                 var_name = ["PM10", "PM2.5","PM1","CO","NO","NO2","O3","Temperature","Humidity",
                 "Wind Speed","Adverse Takeoffs/Landings","Adverse Takeoffs/Landings"]
 
+                # define the text shown on each bar and the x-axis variable according to the normalizing data option
                 if normalize_height:
                     normalized_text = normalized_stat[vars].apply(self.as_percent)
                     normalized_xaxis = var_name
