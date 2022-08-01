@@ -69,7 +69,7 @@ class Presets():
                 chart_type_ids["correlation_plot"],
                 {
                     "sensor_location": 0,
-                    'x_axis': "temp_manifold",
+                    'x_axis': "Temperature (°C)",
                     # 'y_axis': "pm25.ML",
                     'pollutant': "PM2.5 (μg/m^3)",
                     "start_date": datetime.date(2019, 12, 1),
