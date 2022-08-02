@@ -52,7 +52,7 @@ class GraphFrame():
 
         # font size and color
         "font-size" : "16px",
-        "font-family": "Arial, Times New Roman, Serif",
+        "font-family": "Verdana, Open Sans, Arial",
         "color": css.color_scheme["explanation_text"],
         "background-color": css.color_scheme["explanation_background"],
     }
@@ -93,6 +93,8 @@ class GraphFrame():
         # "width": "200px", # not used or doesn't work
         # "height": "40px",
         "margin-left": "10px",
+        "font-size": "18px",
+        "vertical-align": "middle",
         # "font-family": "Arial", # not used or doesn't work
         # "line-height": "0%", # helps reduce the line spacing
     }
@@ -300,15 +302,21 @@ class GraphFrame():
 
 ## /////////////////////////////////////////////////// ##
 ## Graph Styling Functions
-    def update_background_colors(self, fig):
-        fig.update_layout(
-            paper_bgcolor="rgb(0,0,0,0)",
-            legend = dict(bgcolor = css.color_scheme["main_background"]),
-            plot_bgcolor = "#FFFFFF",
-        )
-        fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor='#E3E3E3')
-        fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='#E3E3E3')
-
+    def update_background_colors(self, fig, is_polar = False):
+        if not is_polar:
+            fig.update_layout(
+                paper_bgcolor="rgb(0,0,0,0)",
+                legend = dict(bgcolor = css.color_scheme["main_background"]),
+                plot_bgcolor = "#FFFFFF",
+            )
+            fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor='#E3E3E3')
+            fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='#E3E3E3')
+        else:
+            fig.update_polars(
+                bgcolor = "#FFFFFF",
+                angularaxis_gridcolor = "#E3E3E3",
+                radialaxis_gridcolor = "#E3E3E3",
+                )
 
 ## /////////////////////////////////////////////////// ##
 ## Variables

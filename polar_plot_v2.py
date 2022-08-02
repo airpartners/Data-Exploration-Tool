@@ -174,6 +174,6 @@ class Polar(GraphFrame):
             # margins = 200
             # fig.update_layout(margin = {'t': 0, 'l': margins, 'r': margins})
             fig.update_layout(margin = {'t': 20})
-            self.update_background_colors(fig)
+            self.update_background_colors(fig, is_polar = True)
 
             return fig
