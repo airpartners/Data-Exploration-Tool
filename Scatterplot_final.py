@@ -20,7 +20,13 @@ class Scatter(GraphFrame):
         ]
 
     def get_html(self):
-        # children = ...
+        """
+        Defines the structure of barchart in html
+
+        The filter message and dropdown menus are defined as html.Div() arguments, and the graph will be updated in the 
+        add_graph_callback(): update_figure() function below
+
+        """
         return \
             [
                 html.Div(
@@ -43,6 +49,16 @@ class Scatter(GraphFrame):
             ]
 
     def add_graph_callback(self):
+        """
+        Defines and returns all the text and calendar plot features
+
+        This function consists of two sections: 
+        - @self.app.callback that contains all the input and output callback functions;
+        - the main plotting function update_figure() that takes sensor and pollutant selections from the filter message dropdowns(defined above
+         as html.Div() arguments in get_html() function) to choose the demanded dataset and/or select the demanded column of dataset to plot on the graph
+        
+        """
+
 
         @self.app.callback(
             Output(self.get_id('scatterplot'),'figure'),

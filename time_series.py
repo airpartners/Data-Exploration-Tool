@@ -1,12 +1,7 @@
 from asyncore import poll
-from dash import Dash, html, dcc
+from dash import html, dcc
 from dash.dependencies import Input, Output
-import dash_daq as daq
-import plotly.graph_objs as go
 import plotly.express as px
-import numpy as np
-import datetime
-import pandas as pd
 
 from graph_frame import GraphFrame
 
@@ -22,7 +17,13 @@ class TimeSeries(GraphFrame):
         ]
 
     def get_html(self):
-        # children = ...
+        """
+        Defines the structure of barchart in html
+
+        The filter message and dropdown menus are defined as html.Div() arguments, and the graph will be updated in the 
+        add_graph_callback(): update_figure() function below
+
+        """
         return \
             [
                 html.Div(
@@ -49,12 +50,23 @@ class TimeSeries(GraphFrame):
             ]
 
     def add_graph_callback(self):
+        """
+        Defines and returns all the text and calendar plot features
+
+        This function consists of two sections: 
+        - @self.app.callback that contains all the input and output callback functions;
+        - the main plotting function update_figure() that takes sensor and pollutant selections from the filter message dropdowns(defined above
+         as html.Div() arguments in get_html() function) to choose the demanded dataset and/or select the demanded column of dataset to plot on the graph
+        
+        """
+
 
         @self.app.callback(
+            # the id of the graph lines up with the id argument in dcc.Graph defined in get_html() function
             Output(self.get_id('graph-to-update'), 'figure'),
+
+            # the values of the two inputs below are called from the filter message dropdowns above in get_html() function
             Input(self.get_id('which-sensor'), 'value'),
-            # Input(self.get_id('date-picker-range'), 'start_date'),
-            # Input(self.get_id('date-picker-range'), 'end_date'),
             Input(self.get_id('pollutant-dropdown'), 'value'),
             Input(self.get_id('normalize-height'), 'on'),
         )
@@ -62,21 +74,17 @@ class TimeSeries(GraphFrame):
         def update_figure(which_sensor, pollutant, normalize_height):
             print(f"Graph with id {self.id_num} being called back!")
 
+            # turn the input argument pollutamt into a list, since time series graph accepts multiple variables on the y-axis
             if isinstance(pollutant, str):
                 pollutant = [pollutant]
 
             # select which sensor data to draw from
             df = self.data_importer.get_data_by_sensor(which_sensor)
 
-            # # filter by timestamp and wind direction
-            # df = self.filter_by_date(df, start_date, end_date)
-            # df = self.filter_by_wind_direction(df, wind_direction)
-
             if normalize_height:
                 df = self.normalize_height(df)
 
-            # create the figure. It consists of a Figure frame and three lines created with go.Scatter()
-
+            # round the dataset to display 2 decimal places
             df = df.round(2)
             df = df.rename(columns={
                 "pm10.ML": "PM10 (μg/m^3)", 
@@ -93,6 +101,7 @@ class TimeSeries(GraphFrame):
                 "count": "Total Takeoffs/Landings",
             })
 
+            # plot line
             fig = px.line(df, x=df.index, y = pollutant, render_mode='webg1')
 
             # fig = go.Figure([
@@ -126,6 +135,7 @@ class TimeSeries(GraphFrame):
                 # )
             # ])
 
+            # set the time range to be the entire dataset
             start_date = df.index[0]
             end_date = df.index[-1]
             if len(pollutant) == 1:
@@ -133,11 +143,10 @@ class TimeSeries(GraphFrame):
             else:
                 y_label = 'Pollutant (refer to legend)'
 
+            # add time division tabs
             fig.update_layout(
                 xaxis_title = 'Timestamp',
                 yaxis_title = y_label,
-                # title='PM2.5',
-                # hovermode = "x", # where the magic happens
                 margin = {'t': 0}, # removes the awkward whitespace where the title used to be
                 xaxis = dict(
                     rangeselector = dict(
@@ -183,13 +192,9 @@ class TimeSeries(GraphFrame):
 
             )
 
+            # when y=100%, filtered mean equals entire dataset mean
             if normalize_height:
                 fig.layout.yaxis.tickformat = ',.0%'
-
-            # for idx, poll in enumerate(pollutant):
-            #     fig.data[idx].name = self.all_vars[poll]
-            #     fig.data[idx].hovertemplate = self.all_vars[poll]
-            
             
             fig.update_traces(
                 hovertemplate='%{y}'
@@ -206,7 +211,6 @@ class TimeSeries(GraphFrame):
                     # 'drawrect',
                     # 'eraseshape'
                 ],
-                # hovermode = 'x unified'
                 hovermode = 'x'
             )
 
