@@ -40,7 +40,11 @@ class Scatter(GraphFrame):
                         self.pollutant_picker(my_id = 'pollutant-dropdown', multi = True, show_flights = True),
                         " for dates in the range of ",
                         self.date_picker('date-picker-range'),
-                        "?"
+                        "when the wind was blowing from the ",
+                        self.wind_direction_picker(my_id = 'wind-direction-picker'),
+                        "?",
+                        " Filter by: ",
+                        self.filter_picker(),
                     ],
                 ),
                 # Placeholder for a graph to be created.
@@ -67,11 +71,21 @@ class Scatter(GraphFrame):
             Input(self.get_id('date-picker-range'), 'end_date'),
             Input(self.get_id('x-axis'), 'value'),
             Input(self.get_id('pollutant-dropdown'), 'value'),
-            )
+            Input(self.get_id('wind-direction-picker'), 'value'),
+            Input(self.get_id('filter-callback-data'), 'data'),
+        )
 
-        def update_figure(which_sensor, start_date, end_date, xaxis_column_name, yaxis_column_name):
+        def update_figure(which_sensor, start_date, end_date, xaxis_column_name, yaxis_column_name, wind_direction, var_ranges):
             df = self.data_importer.get_data_by_sensor(which_sensor)
             df = self.filter_by_date(df, start_date, end_date)
+
+
+            for var, var_range in var_ranges.items():
+                # print("var:", var, ", var_range =", var_range)
+                print("filtering by", var, "; number of flights:", sum(df["adverse_flight_count"]))
+                df = self.filter_by_var(df, var, var_range[0], var_range[1])
+
+            df = self.filter_by_wind_direction(df, wind_direction)
 
             df = df.round(2)
             df = df.rename(columns={

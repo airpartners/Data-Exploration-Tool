@@ -20,7 +20,7 @@ chart_classes = {
 
 class Presets():
 
-    pandemic_date_ranges = {
+    preset_date_ranges = {
         "data_start": datetime.date(2019, 9, 8),
         "pandemic_start": datetime.date(2020, 3, 20),
         "pandemic_end": datetime.date(2020, 6, 30),
@@ -44,6 +44,13 @@ class Presets():
         # "y_axis": ["y-axis", "value"],
         "show_details": ["explanation", "open"],
         "ignore_units": ["normalize-height", "on"],
+        "filter_selector": ["filter-set", "value"],
+        "hum_filter": ["filter-by-rh_manifold", "value"], # "value" is a list of [min, max]
+        "temp_filter": ["filter-by-temp_manifold", "value"], # "value" is a list of [min, max]
+        "wind_speed_filter": ["filter-by-ws", "value"], # "value" is a list of [min, max]
+        "total_flight_filter": ["filter-by-count", "value"], # "value" is a list of [min, max]
+        "adverse_flight_filter": ["filter-by-adverse_flight_count", "value"], # "value" is a list of [min, max]
+        "wind_selector": ["wind-direction-picker", "value"], # "value" is a list of wind directions, e.g. ["NW", "SE"]
     }
 
     preset_scenarios = {
@@ -104,8 +111,8 @@ class Presets():
                 chart_type_ids["bar_chart"],
                 {
                     "sensor_location": 0,
-                    "start_date": pandemic_date_ranges["data_start"],
-                    "end_date": pandemic_date_ranges["pandemic_start"],
+                    "start_date": preset_date_ranges["data_start"],
+                    "end_date": preset_date_ranges["pandemic_start"],
                     "show_details": False,
                     "ignore_units": True,
                 }
@@ -114,8 +121,8 @@ class Presets():
                 chart_type_ids["bar_chart"],
                 {
                     "sensor_location": 0,
-                    "start_date": pandemic_date_ranges["pandemic_start"],
-                    "end_date": pandemic_date_ranges["pandemic_end"],
+                    "start_date": preset_date_ranges["pandemic_start"],
+                    "end_date": preset_date_ranges["pandemic_end"],
                     "show_details": False,
                     "ignore_units": True,
                 },
@@ -124,8 +131,8 @@ class Presets():
                 chart_type_ids["bar_chart"],
                 {
                     "sensor_location": 0,
-                    "start_date": pandemic_date_ranges["pandemic_end"],
-                    "end_date": pandemic_date_ranges["data_end"],
+                    "start_date": preset_date_ranges["pandemic_end"],
+                    "end_date": preset_date_ranges["data_end"],
                     "show_details": False,
                     "ignore_units": True,
                 },
@@ -136,8 +143,8 @@ class Presets():
                 chart_type_ids["polar_plot"],
                 {
                     "sensor_location": 0,
-                    "start_date": pandemic_date_ranges["data_start"],
-                    "end_date": pandemic_date_ranges["data_end"],
+                    "start_date": preset_date_ranges["data_start"],
+                    "end_date": preset_date_ranges["data_end"],
                     "show_details": True,
                 }
             ),
@@ -145,8 +152,8 @@ class Presets():
                 chart_type_ids["polar_plot"],
                 {
                     "sensor_location": 1,
-                    "start_date": pandemic_date_ranges["data_start"],
-                    "end_date": pandemic_date_ranges["data_end"],
+                    "start_date": preset_date_ranges["data_start"],
+                    "end_date": preset_date_ranges["data_end"],
                     "show_details": False,
                 }
             ),
@@ -154,8 +161,8 @@ class Presets():
                 chart_type_ids["polar_plot"],
                 {
                     "sensor_location": 2,
-                    "start_date": pandemic_date_ranges["data_start"],
-                    "end_date": pandemic_date_ranges["data_end"],
+                    "start_date": preset_date_ranges["data_start"],
+                    "end_date": preset_date_ranges["data_end"],
                     "show_details": False,
                 }
             ),
@@ -163,8 +170,8 @@ class Presets():
                 chart_type_ids["polar_plot"],
                 {
                     "sensor_location": 3,
-                    "start_date": pandemic_date_ranges["data_start"],
-                    "end_date": pandemic_date_ranges["data_end"],
+                    "start_date": preset_date_ranges["data_start"],
+                    "end_date": preset_date_ranges["data_end"],
                     "show_details": False,
                 }
             ),
@@ -172,8 +179,8 @@ class Presets():
                 chart_type_ids["polar_plot"],
                 {
                     "sensor_location": 4,
-                    "start_date": pandemic_date_ranges["data_start"],
-                    "end_date": pandemic_date_ranges["data_end"],
+                    "start_date": preset_date_ranges["data_start"],
+                    "end_date": preset_date_ranges["data_end"],
                     "show_details": False,
                 }
             ),
@@ -181,11 +188,28 @@ class Presets():
             #     chart_type_ids["polar_plot"],
             #     {
             #         "sensor_location": 5,
-            #         "start_date": pandemic_date_ranges["data_start"],
-            #         "end_date": pandemic_date_ranges["data_end"],
+            #         "start_date": preset_date_ranges["data_start"],
+            #         "end_date": preset_date_ranges["data_end"],
             #         "show_details": False,
             #     }
             # ),
+        ],
+        "Pollutant/Flights Correlation": [
+            (
+                chart_type_ids["correlation_plot"],
+                {
+                    "sensor_location": 0,
+                    'x_axis': "adverse_flight_count",
+                    'pollutant': "co.ML",
+                    "start_date": preset_date_ranges["data_start"],
+                    "end_date": preset_date_ranges["data_end"],
+                    "show_details": True,
+                    "wind_selector": ["NW", "SE"],
+                    "filter_selector": ["ws", "temp_manifold"],
+                    "wind_speed_filter": [6, 100],
+                    "temp_filter": [10, 100],
+                }
+            )
         ]
     }
 
@@ -210,14 +234,11 @@ class Presets():
         return id_str + "-" + str(id_num)
 
     def get_id_num_from_chart_num(self, chart_num, chart_type):
-        return chart_num * 5 + chart_type
+        return chart_num * len(self.chart_type_ids) + chart_type
 
     def add_callbacks(self, scenario_name, scenario):
         outputs = []
         for chart_num, (chart_type, graph_dict) in enumerate(scenario):
-            print("chart_num:", chart_num)
-            print("chart_type:", chart_type)
-            print("graph_dict:", graph_dict)
             outputs.append(Output(self.get_id('new-chart-dropdown', chart_num), 'value'))
             for key in graph_dict.keys():
                 outputs.append(Output(

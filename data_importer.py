@@ -132,7 +132,7 @@ class DataImporter():
         wind_breaks = [0, 22.5, 67.5, 112.5, 157.5, 202.5, 247.5, 292.5, 337.5, 360]
 
 
-        df_processed["wind_direction_cardinal"] = pd.cut(df_processed["wind_dir"], wind_breaks, right = False, labels = wind_labels, ordered = False)
+        df_processed["wind_direction_cardinal"] = pd.cut(df_processed["wd"], wind_breaks, right = False, labels = wind_labels, ordered = False)
 
         # define functions which will be used in the resample().agg() call below
         def percentile5(df):
@@ -225,7 +225,7 @@ class DataImporter():
         if df_stats is not None: # then the processed file already exists, and we don't need to recalculate it
             return df_stats
 
-        iterables = [self.get_all_sensor_names(), ["mean", "median", "25_percent", "75_percent"]]
+        iterables = [self.get_all_sensor_names(), ["mean", "median", "25_percent", "75_percent", "min", "max"]]
         columns = pd.MultiIndex.from_product(iterables, names = ["sensor", "agg_func"])
         df_stats = pd.DataFrame(index = self.numeric_columns_to_keep, columns = columns)
 
@@ -235,12 +235,14 @@ class DataImporter():
 
             df_raw = pd.read_csv(raw_file)
             df_raw["timestamp_local"] = pd.to_datetime(df_raw["timestamp_local"], format = "%Y-%m-%dT%H:%M:%SZ")
-            df_raw = self.flight_loader.add_flight_data_to(df_raw)
+            df_raw = self.flight_loader.add_flight_data_to(df_raw, sensor_name)
 
             df_stats[sensor_name, "mean"] = df_raw[self.numeric_columns_to_keep].mean(axis = 0)
             df_stats[sensor_name, "median"] = df_raw[self.numeric_columns_to_keep].median(axis = 0)
             df_stats[sensor_name, "25_percent"] = df_raw[self.numeric_columns_to_keep].quantile(q = 0.25, axis = 0)
             df_stats[sensor_name, "25_percent"] = df_raw[self.numeric_columns_to_keep].quantile(q = 0.75, axis = 0)
+            df_stats[sensor_name, "min"] = df_raw[self.numeric_columns_to_keep].min(axis = 0)
+            df_stats[sensor_name, "max"] = df_raw[self.numeric_columns_to_keep].max(axis = 0)
 
         df_stats.to_parquet(stats_file)
         return df_stats

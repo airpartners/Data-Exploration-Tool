@@ -1,7 +1,9 @@
 from dash import Dash, html, dcc
 from dash.dependencies import Input, Output, State
+from dash.dash import no_update
 import dash_daq as daq
 import dash_bootstrap_components as dbc
+from dash.exceptions import PreventUpdate
 import pandas as pd
 import math
 import numpy as np
@@ -40,6 +42,8 @@ class GraphFrame():
         "font-family": "Times New Roman, Serif",
         "background-color": "#F2F2F2"
     }
+
+    filter_picker_style = text_style | {"display": "inline"}
 
     # text_style_bold = text_style_explanation |
 
@@ -95,8 +99,8 @@ class GraphFrame():
                 display_format = 'MM/DD/Y',
                 min_date_allowed = datetime.date(2019, 9, 8),
                 max_date_allowed = datetime.date(2021, 3, 5),
-                start_date = datetime.date(2019, 12, 1), # default value
-                end_date = datetime.date(2019, 12, 31), # default value
+                start_date = datetime.date(2019, 9, 8), # default value
+                end_date = datetime.date(2021, 3, 5), # default value
                 id = self.get_id(id),
             )
 
@@ -112,6 +116,25 @@ class GraphFrame():
                 style = self.dropdown_style | {"width": "350px"}
             )
 
+    def wind_direction_picker(self, my_id = 'wind-direction-picker'):
+        return \
+            dcc.Dropdown(
+                options = [
+                    {'label': 'North',     'value': 'N'},
+                    {'label': 'Northeast', 'value': 'NE'},
+                    {'label': 'East',      'value': 'E'},
+                    {'label': 'Southeast', 'value': 'SE'},
+                    {'label': 'South',     'value': 'S'},
+                    {'label': 'Southwest', 'value': 'SW'},
+                    {'label': 'West',      'value': 'W'},
+                    {'label': 'Northwest', 'value': 'NW'},
+                ],
+                clearable = True,
+                value = None,
+                multi = True,
+                id = self.get_id(my_id),
+                style = self.dropdown_style
+            )
 
     def pollutant_picker(self, my_id = 'pollutant-dropdown', multi = True, show_flights = True):
         vars = self.particles_vars + self.gas_vars
@@ -151,7 +174,6 @@ class GraphFrame():
             )
 
 
-
     def normalize_switch(self, id = 'normalize-height'):
         return \
             daq.BooleanSwitch(
@@ -161,6 +183,112 @@ class GraphFrame():
                 label = "Ignore units",
                 labelPosition = "top"
             )
+
+    def filter_picker(self, my_id = 'filter-set'):
+        vars = self.meteorology_vars | self.flight_vars
+
+
+        filter_sliders = []
+        graph_inputs = []
+        graph_inputs_state = []
+        dropdown_targets = []
+        sensor_picker_callback_targets = []
+
+        for var, var_name in vars.items():
+
+            filter_id = self.get_id('filter-by-' + var)
+            filter_display_id = self.get_id('show-filter-by-' + var)
+
+            filter_sliders.append(
+                html.Div(
+                    children = [
+                        var_name + ":",
+                        html.Div(
+                            dcc.RangeSlider(
+                                min = 0,
+                                max = 100,
+                                step = 1,
+                                marks = None,
+                                value = [0, 100],
+                                id = filter_id,
+                                tooltip = {"placement": "bottom", "always_visible": True},
+                            ),
+                            style = {'display': 'inline', 'width': '50%'},
+                        )
+                    ],
+                    style = self.filter_picker_style | {'display': 'none'},
+                    id = filter_display_id
+                )
+            )
+            print(f"I am a RangeSlider, and I have an id of {filter_id}")
+
+            graph_inputs.append(Input(filter_id, "value"))
+            graph_inputs_state.append(State(filter_id, "value"))
+
+            dropdown_targets.append(Output(filter_display_id, "style"))
+            dropdown_targets.append(Output(filter_id, "value"))
+            dropdown_targets.append(Output(filter_id, "min"))
+            dropdown_targets.append(Output(filter_id, "max"))
+
+            sensor_picker_callback_targets.append(Output(filter_id, "value"))
+            sensor_picker_callback_targets.append(Output(filter_id, "min"))
+            sensor_picker_callback_targets.append(Output(filter_id, "max"))
+
+        return_var = \
+            html.Div(
+                children = [
+                    dcc.Store(
+                        data = {},
+                        id = self.get_id('filter-callback-data')
+                    ), # used for storing data; not displayed
+                    dcc.Dropdown(
+                        options = [{'label': var_name, 'value': var} for var, var_name in vars.items()],
+                        value = 'blankenship',
+
+                        multi = True,
+                        id = self.get_id(my_id),
+
+                        style = (self.dropdown_style_2 | {"width": "100%"})
+                    ),
+                    *filter_sliders,
+                ]
+            )
+
+        @self.app.callback(
+            *dropdown_targets,
+            Input(self.get_id(my_id), 'value'),
+            Input(self.get_id('which-sensor'), 'value'),
+            prevent_initial_call = True
+        )
+        def dropdown_callback(vars_to_show, sensor):
+            if not vars_to_show:
+                vars_to_show = []
+
+            outputs_list = []
+            for var in vars:
+                var_min = int(self.data_importer.df_stats[self.sensor_names[sensor]]["min"][var])
+                var_max = int(self.data_importer.df_stats[self.sensor_names[sensor]]["max"][var])
+                if var in vars_to_show:
+                    outputs_list.append(self.filter_picker_style | {'display': 'inline'})
+                    outputs_list.append(no_update)
+                else:
+                    outputs_list.append(self.filter_picker_style | {'display': 'none'})
+                    outputs_list.append([var_min, var_max])
+                # also:
+                outputs_list.append(var_min)
+                outputs_list.append(var_max)
+
+            return tuple(outputs_list)
+
+        @self.app.callback(
+            Output(self.get_id('filter-callback-data'), "data"),
+            *graph_inputs,
+            prevent_initial_call = True
+        )
+        def slider_callback(*var_ranges):
+            return {var: range for var, range in zip(vars.keys(), var_ranges)}
+
+        return return_var
 
 ## /////////////////////////////////////////////////// ##
 ## Variables
@@ -297,12 +425,24 @@ class GraphFrame():
         # else:
         return df
 
-    def filter_by_wind_direction(self, df, wind_direction):
-        if wind_direction is not None:
-            return df[ df["wind_direction_cardinal"] == wind_direction ]
-            # return df[ df["wind_direction_cardinal", "my_mode"] == wind_direction ]
+    def filter_by_var(self, df, var, var_min, var_max):
+        if not var in df.columns:
+            raise ValueError(f"Variable {var} is not in the dataframe. Try one of {df.columns} instead.")
+        if var_min is not None and var_max is not None:
+            return \
+                df[
+                    (df[var] >= var_min) &
+                    (df[var] <= var_max)
+                ]
         # else:
         return df
+
+    def filter_by_wind_direction(self, df, wind_direction):
+        if wind_direction is None or wind_direction == []:
+            return df
+        if not isinstance(wind_direction, list):
+            wind_direction = [wind_direction]
+        return df[ df["wind_direction_cardinal"].isin(wind_direction) ]
 
     def normalize_height(self, df, max_val = 1, do_it = True):
         if not do_it:
