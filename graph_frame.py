@@ -11,6 +11,7 @@ from sigfig import round
 import datetime
 # from filter_graph import FilterGraph # import from supporting file (contained in this repo)
 from data_importer import DataImporter
+import css
 
 
 # Parent class for TimeSeries, BarChart, CorrelationPlot, and PolarPlot
@@ -51,8 +52,8 @@ class GraphFrame():
         # font size and color
         "font-size" : "16px",
         "font-family": "Arial, Times New Roman, Serif",
-        "color": "#f5f5f5",
-        "background-color": "#5D98E9",
+        "color": css.color_scheme["explanation_text"],
+        "background-color": css.color_scheme["explanation_background"],
     }
 
     filter_picker_style = text_style | {"display": "inline"}

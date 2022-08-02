@@ -10,6 +10,7 @@ from Scatterplot_final import Scatter
 from calendar_plot import CalendarPlot
 from get_sensor_map import get_sensor_map
 from presets import Presets
+import css
 
 from dash_extensions.enrich import DashProxy, MultiplexerTransform
 
@@ -41,12 +42,15 @@ class Page():
         "bottom": 0,
         "width": sidebar_width[0],
         "padding": "2rem 1rem",
-        "background-color": "#f8f9fa",
+        "background-color": css.color_scheme["sidebar_background"],
+        "border-style": "solid",
+        "border-width": "8px",
+        "border-color": css.color_scheme["sidebar_border"],
     }
 
     outer_layout_style = {
         'margin-right': sidebar_width[0],
-        "background-color": "#DBFBFF",
+        "background-color": css.color_scheme["main_background"],
     }
 
     n_starting_charts = 5
