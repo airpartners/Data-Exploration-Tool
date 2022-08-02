@@ -28,6 +28,7 @@ class GraphFrame():
         "margin-right": "10px", # adds a horizontal space between dropdowns menus and next chunk of text
         "font-size" : "18px",
         "font-family": "Arial",
+        "padding-right": "15px",
         # "line-height": "0%", # helps reduce the line spacing
     }
 

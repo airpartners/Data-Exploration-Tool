@@ -50,6 +50,7 @@ class Page():
 
     outer_layout_style = {
         'margin-right': sidebar_width[0],
+        'padding-right': "10px",
         "background-color": css.color_scheme["main_background"],
     }
 
