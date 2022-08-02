@@ -234,7 +234,7 @@ class Presets():
         return id_str + "-" + str(id_num)
 
     def get_id_num_from_chart_num(self, chart_num, chart_type):
-        return chart_num * 5 + chart_type
+        return chart_num * len(self.chart_type_ids) + chart_type
 
     def add_callbacks(self, scenario_name, scenario):
         outputs = []

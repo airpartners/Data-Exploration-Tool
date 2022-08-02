@@ -246,7 +246,7 @@ class GraphFrame():
             *dropdown_targets,
             Input(self.get_id(my_id), 'value'),
             Input(self.get_id('which-sensor'), 'value'),
-            # prevent_initial_call = True
+            prevent_initial_call = True
         )
         def dropdown_callback(vars_to_show, sensor):
             if not vars_to_show:
@@ -271,7 +271,7 @@ class GraphFrame():
         @self.app.callback(
             Output(self.get_id('filter-callback-data'), "data"),
             *graph_inputs,
-            # prevent_initial_call = True
+            prevent_initial_call = True
         )
         def slider_callback(*var_ranges):
             return {var: range for var, range in zip(vars.keys(), var_ranges)}
