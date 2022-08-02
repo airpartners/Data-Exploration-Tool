@@ -67,16 +67,16 @@ class GraphFrame():
         "display": "inline-block",
         "width": "50%",
         "height": "32px",
-        "margin-left": "5px",
-        "margin-right": "15px",
-        "font-size": "17px",
+        "margin-left": "8px",
+        "margin-right": "8px",
+        "font-size": "16px",
         "font-family": "Arial",
         "vertical-align": "middle",
         # "line-height": "0%", # helps reduce the line spacing
     }
 
     dropdown_style_2 = dropdown_style | {
-        "width": "50%",
+        "width": "300px",
         # "margin-right": "10px",
         # "margin-left": "10px",
         "overflow-y": "visible",
@@ -88,18 +88,11 @@ class GraphFrame():
         "font-weight": "bold",
         }
 
-    date_picker_style = {
-        # "display": "inline-block",
-        # "display": "flex",
+    date_picker_style = dropdown_style | {
         "display": "inline-block",
-        # "width": "200px", # not used or doesn't work
-        "height": "32px",
-        "margin-left": "10px",
-        "font-size": "18px",
-        "vertical-align": "middle",
-        "overflow-y": "visible",
-        # "font-family": "Arial", # not used or doesn't work
-        # "line-height": "0%", # helps reduce the line spacing
+        "width": "290px", # not used or doesn't work
+        "height": "80%",
+        "line-height": "0%", # helps reduce the line spacing
     }
 
 ## //////////////////////////////////////////////////////// ##
@@ -114,6 +107,7 @@ class GraphFrame():
                 start_date = datetime.date(2019, 9, 8), # default value
                 end_date = datetime.date(2021, 3, 5), # default value
                 id = self.get_id(id),
+                style = self.date_picker_style,
             )
 
     def sensor_picker(self, id = 'which-sensor'):
@@ -145,7 +139,7 @@ class GraphFrame():
                 value = None,
                 multi = True,
                 id = self.get_id(my_id),
-                style = self.dropdown_style_2
+                style = self.dropdown_style_2 | {"width": "300px", "margin-right": "10px"}
             )
 
     def pollutant_picker(self, my_id = 'pollutant-dropdown', multi = True, show_flights = True):
@@ -225,7 +219,7 @@ class GraphFrame():
                                 id = filter_id,
                                 tooltip = {"placement": "bottom", "always_visible": True},
                             ),
-                            style = {'display': 'inline', 'width': '50%'},
+                            style = {'display': 'inline', "line-height": "normal"},
                         )
                     ],
                     style = self.filter_picker_style | {'display': 'none'},
