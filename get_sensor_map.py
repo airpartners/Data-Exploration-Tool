@@ -28,7 +28,7 @@ def get_sensor_map():
         size_max=9,
         opacity=0.9,
         zoom=11.35,
-        height=450,
+        height=350,
         # customdata=sensor_name
         # hoverinfo="name",
     )
