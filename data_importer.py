@@ -1,8 +1,9 @@
 import pandas as pd
 import os
+from pathlib import Path
 # import paths to csv files from another file in this repo.
 # you should make a copy of csv_file_paths.py and change the path names to match the file locations on your computer.
-from csv_file_paths import raw_csv_paths, processed_csv_paths, stats_file, flight_csv_dir, processed_flight_dir, final_flights
+from csv_file_paths import stats_file, flight_csv_dir, processed_flight_dir, final_flights, raw_sensor_dir, processed_sensor_dir
 from read_flight_data import FlightLoader
 
 class DataImporter():
@@ -73,17 +74,21 @@ class DataImporter():
         print("done loading flights")
 
         # read and process all the sensor data
-        self.list_of_sensor_dataframes = []
-        for raw_file_path, processed_file_path in zip(raw_csv_paths, processed_csv_paths):
+        # self.list_of_sensor_dataframes = []
+        self.dict_of_sensor_dataframes = {}
+        for raw_file_path in self.files_in_directory(raw_sensor_dir):
+            processed_file_path = self.raw_path_to_processed_path(raw_file_path)
             # append the next sensor's worth of data to the list
             sensor_name = self.get_sensor_name_from_file(raw_file_path)
+
             df_sensor = self.prepare_data(raw_file_path, processed_file_path)
             # print("adding flight data to")
             # df_sensor = self.flight_loader.add_flight_data_to(df_sensor, sensor_name = sensor_name, date_time_column_name = "timestamp_local")
             # print("done adding flight data to")
             # if df_sensor.index.name != "timestamp_local":
             #     df_sensor = df_sensor.set_index("timestamp_local")
-            self.list_of_sensor_dataframes.append(df_sensor)
+            # self.list_of_sensor_dataframes.append(df_sensor)
+            self.dict_of_sensor_dataframes[sensor_name] = df_sensor
 
         # calculate and store mean and median of entire dataset
         self.df_stats = self.make_stats()
@@ -176,19 +181,37 @@ class DataImporter():
         return df_processed
 
     def get_data_by_sensor(self, sensor_id, numeric_only = False):
+        sensor_id_to_name = {
+            0: "sn45",
+            1: "sn46",
+            2: "sn49",
+            3: "sn62",
+            4: "sn67",
+            5: "sn72",
+        }
+
         if numeric_only:
-            return self.list_of_sensor_dataframes[sensor_id][self.numeric_columns_to_keep]
+            return self.dict_of_sensor_dataframes[sensor_id_to_name[sensor_id]][self.numeric_columns_to_keep]
         # else:
-        return self.list_of_sensor_dataframes[sensor_id]
+        return self.dict_of_sensor_dataframes[sensor_id_to_name[sensor_id]]
+
+    def raw_path_to_processed_path(self, raw_filename):
+        p = Path(raw_filename)
+        return Path(processed_sensor_dir) / p.with_suffix(".parquet").name
 
     def get_sensor_name_from_file(self, filename):
         return os.path.basename(filename).split('-')[0].lower()
 
     def get_all_sensor_names(self):
         sensor_names = []
-        for filename in raw_csv_paths:
+        for filename in self.files_in_directory(processed_sensor_dir):
             sensor_names.append(self.get_sensor_name_from_file(filename))
         return sensor_names
+
+    def files_in_directory(self, dirname):
+        for root, dirs, files in os.walk(dirname):
+            for filename in files:
+                yield os.path.join(root, filename)
 
     def make_stats(self):
         """Generates the mean and median for each pollutant for the entire dataset. Used for normalizing sensor readings
@@ -206,7 +229,7 @@ class DataImporter():
         columns = pd.MultiIndex.from_product(iterables, names = ["sensor", "agg_func"])
         df_stats = pd.DataFrame(index = self.numeric_columns_to_keep, columns = columns)
 
-        for i, raw_file in enumerate(raw_csv_paths):
+        for raw_file in self.files_in_directory(raw_sensor_dir):
             print(f"Generating stats from {raw_file}")
             sensor_name = self.get_sensor_name_from_file(raw_file)
 
@@ -223,3 +246,6 @@ class DataImporter():
 
         df_stats.to_parquet(stats_file)
         return df_stats
+
+    def get_stats(self):
+        return self.df_stats

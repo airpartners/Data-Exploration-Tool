@@ -6,9 +6,6 @@ import datetime
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
-
-
-from filter_graph import FilterGraph # import from supporting file (contained in this repo)
 from graph_frame import GraphFrame
 
 class Scatter(GraphFrame):
@@ -23,7 +20,13 @@ class Scatter(GraphFrame):
         ]
 
     def get_html(self):
-        # children = ...
+        """
+        Defines the structure of barchart in html
+
+        The filter message and dropdown menus are defined as html.Div() arguments, and the graph will be updated in the 
+        add_graph_callback(): update_figure() function below
+
+        """
         return \
             [
                 html.Div(
@@ -50,6 +53,16 @@ class Scatter(GraphFrame):
             ]
 
     def add_graph_callback(self):
+        """
+        Defines and returns all the text and calendar plot features
+
+        This function consists of two sections: 
+        - @self.app.callback that contains all the input and output callback functions;
+        - the main plotting function update_figure() that takes sensor and pollutant selections from the filter message dropdowns(defined above
+         as html.Div() arguments in get_html() function) to choose the demanded dataset and/or select the demanded column of dataset to plot on the graph
+        
+        """
+
 
         @self.app.callback(
             Output(self.get_id('scatterplot'),'figure'),
@@ -66,12 +79,29 @@ class Scatter(GraphFrame):
             df = self.data_importer.get_data_by_sensor(which_sensor)
             df = self.filter_by_date(df, start_date, end_date)
 
+
             for var, var_range in var_ranges.items():
                 # print("var:", var, ", var_range =", var_range)
                 print("filtering by", var, "; number of flights:", sum(df["adverse_flight_count"]))
                 df = self.filter_by_var(df, var, var_range[0], var_range[1])
 
             df = self.filter_by_wind_direction(df, wind_direction)
+
+            df = df.round(2)
+            df = df.rename(columns={
+                "pm10.ML": "PM10 (μg/m^3)",
+                "pm25.ML": "PM2.5 (μg/m^3)",
+                "pm1.ML": "PM1 (μg/m^3)",
+                "co.ML": "CO (ppb)",
+                "correctedNO": "NO (ppb)",
+                "no2.ML": "NO2 (ppb)",
+                "o3.ML": "O3 (ppb)",
+                "temp_manifold": "Temperature (°C)",
+                "rh_manifold": "Humidity (%)",
+                "ws": "Wind Speed (m/s)",
+                "adverse_flight_count": "Adverse Takeoffs/Landings",
+                "count": "Total Takeoffs/Landings",
+            })
 
             fig = px.scatter(df, x=xaxis_column_name, y=yaxis_column_name,
                     trendline="ols",

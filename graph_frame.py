@@ -137,14 +137,14 @@ class GraphFrame():
             )
 
     def pollutant_picker(self, my_id = 'pollutant-dropdown', multi = True, show_flights = True):
-        vars = list(self.particles_vars.items()) + list(self.gas_vars.items())
+        vars = self.particles_vars + self.gas_vars
         if show_flights:
-            vars.extend(list(self.flight_vars.items()))
+            vars.extend(self.flight_vars)
 
         return \
             dcc.Dropdown(
-                options = [{'label': var_name, 'value': var} for var, var_name in vars],
-                value='pm25.ML',
+                options = vars,
+                value="PM2.5 (μg/m^3)",
 
                 multi = multi,
                 id = self.get_id(my_id),
@@ -156,11 +156,23 @@ class GraphFrame():
         return \
             dcc.Dropdown(
                 options = self.all_vars,
-                value='rh_manifold',
+                value='Humidity (%)',
 
                 id=self.get_id(id),
                 style = self.dropdown_style | {"width": "340px"}
             )
+
+    def correlation_yvar(self, id = 'y-axis'):
+        return \
+            dcc.Dropdown(
+                options = self.all_vars,
+                value='O3 (ppb)',
+                multi = True,
+
+                id=self.get_id(id),
+                style = self.dropdown_style | {"width": "340px"}
+            )
+
 
     def normalize_switch(self, id = 'normalize-height'):
         return \
@@ -281,34 +293,34 @@ class GraphFrame():
 ## /////////////////////////////////////////////////// ##
 ## Variables
 
-    meteorology_vars = {
-        "temp_manifold": "Temperature (°C)",
-        "rh_manifold": "Humidity (%)",
+    meteorology_vars = [
+        "Temperature (°C)",
+        "Humidity (%)",
         # "pressure": "Pressure (Pa)",
         # "noise": "Noise (dB)",
-        "ws": "Wind Speed (m/s)",
+        "Wind Speed (m/s)",
         # 'South-West': "Takeoffs/Landings per hour (SouthWest Operation)",
         # 'North-West': "Takeoffs/Landings per hour (NorthWest Operation)",
         # 'North-East': "Takeoffs/Landings per hour (NorthEast Operation)",
-    }
-    gas_vars = {
-        "co.ML": "CO (ppb)",
-        "correctedNO": "NO (ppb)",
-        "no2.ML": "NO2 (ppb)",
-        "o3.ML": "O3 (ppb)",
-    }
-    particles_vars = {
+    ]
+    gas_vars = [
+        "CO (ppb)",
+        "NO (ppb)",
+        "NO2 (ppb)",
+        "O3 (ppb)",
+    ]
+    particles_vars = [
         # "bin0": "0.3-0.5μm particles (bin 0)",
         # "bin1": "0.5-0.7μm particles (bin 1)",
         # "bin2": "0.7-1.0μm particles (bin 2)",
         # "bin3": "1.0-2.5μm particles (bin 3)",
         # "bin4": "2.5-10μm particles (bin 4)",
         # "bin5": "10+ μm particles (bin 5)",
-        "pm1.ML": "PM1 (μg/m^3)",
-        "pm25.ML": "PM2.5 (μg/m^3)",
-        "pm10.ML": "PM10 (μg/m^3)",
-    }
-    flight_vars = {
+        "PM1 (μg/m^3)",
+        "PM2.5 (μg/m^3)",
+        "PM10 (μg/m^3)",
+    ]
+    flight_vars = [
         # 'Opr': "Arrival/Departure",
         # 'RW_group': "Runway Operation",
         # 'count': "Flights",
@@ -319,12 +331,11 @@ class GraphFrame():
         # 'North-West': "Takeoffs/Landings per hour (NorthWest Operation)",
         # 'North-East': "Takeoffs/Landings per hour (NorthEast Operation)",
         # # #
-        'adverse_flight_count': "Adverse Takeoffs/Landings",
-        'count': "Total Takeoffs/Landings",
-    }
+        "Adverse Takeoffs/Landings",
+        "Total Takeoffs/Landings",
+    ]
 
-    # | is the python syntax for adding or "merging" two dictionaries
-    all_vars = meteorology_vars | gas_vars | particles_vars | flight_vars
+    all_vars = meteorology_vars + gas_vars + particles_vars + flight_vars
 
 ## //////////////////////////////////////////////////////// ##
 ##  Sensor locations and names

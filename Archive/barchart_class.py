@@ -4,7 +4,7 @@ import plotly.graph_objects as go
 import numpy as np
 import math
 import plotly.express as px
-from filter_graph import FilterGraph
+from Archive.filter_graph import FilterGraph
 from graph_frame import GraphFrame
 from sigfig import round
 

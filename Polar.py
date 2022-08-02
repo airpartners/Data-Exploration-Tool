@@ -8,7 +8,7 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 
-from filter_graph import FilterGraph # import from supporting file (contained in this repo)
+from Archive.filter_graph import FilterGraph # import from supporting file (contained in this repo)
 from graph_frame import GraphFrame
 
 
