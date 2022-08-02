@@ -45,7 +45,8 @@ class Page():
     }
 
     outer_layout_style = {
-        'margin-right': sidebar_width[0]
+        'margin-right': sidebar_width[0],
+        "background-color": "#DBFBFF",
     }
 
     n_starting_charts = 5

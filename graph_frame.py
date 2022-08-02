@@ -25,7 +25,7 @@ class GraphFrame():
         # "position": "relative",
         "margin-left": "10px", # adds a horizontal space between dropdowns menus and next chunk of text
         "margin-right": "10px", # adds a horizontal space between dropdowns menus and next chunk of text
-        "font-size" : "24px",
+        "font-size" : "18px",
         "font-family": "Arial",
         # "line-height": "0%", # helps reduce the line spacing
     }
@@ -34,13 +34,25 @@ class GraphFrame():
         "display": "inline-block",
         # "transform": "translateY(0%)", # vertical alignment
         # "position": "relative",
+
+        # 'margin' affects the size of the bounding box
         "margin-left": "20px", # adds a horizontal space between dropdowns menus and next chunk of text
         "margin-right": "50px", # adds a horizontal space between dropdowns menus and next chunk of text
         "margin-top": "20px",
         "margin-bottom": "20px",
-        "font-size" : "18px",
-        "font-family": "Times New Roman, Serif",
-        "background-color": "#F2F2F2"
+        "border-radius": "20px", # rounded corners!
+
+        # 'padding' affects the positioning of the text withing the bounding box
+        "padding-left": "60px",
+        "padding-right": "60px",
+        "padding-top": "5px",
+        "padding-bottom": "5px",
+
+        # font size and color
+        "font-size" : "16px",
+        "font-family": "Arial, Times New Roman, Serif",
+        "color": "#f5f5f5",
+        "background-color": "#5D98E9",
     }
 
     filter_picker_style = text_style | {"display": "inline"}
@@ -48,29 +60,21 @@ class GraphFrame():
     # text_style_bold = text_style_explanation |
 
     dropdown_style = {
-        # "display": "inline-block",
-        # "display": "flex",
         "display": "inline-block",
         "width": "400px",
         # "height": "30px",
         "margin-left": "5px",
         "margin-right": "15px",
-        "font-size": "20px",
+        "font-size": "18px",
         "font-family": "Arial",
+        "vertical-align": "middle",
         # "line-height": "0%", # helps reduce the line spacing
     }
 
-    dropdown_style_2 = {
-        # "display": "block",
-        # "display": "flex",
-        "display": "inline-block",
+    dropdown_style_2 = dropdown_style | {
         "width": "350px",
-        # "height": "30px",
         # "margin-right": "10px",
         # "margin-left": "10px",
-        "font-size": "18px",
-        "font-family": "Arial",
-        # "line-height": "0%", # helps reduce the line spacing
         "overflow-y": "visible",
         "max-height": "200%",
     }
