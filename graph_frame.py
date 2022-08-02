@@ -78,12 +78,13 @@ class GraphFrame():
         # "margin-right": "10px",
         # "margin-left": "10px",
         "overflow-y": "visible",
-        "max-height": "200%",
+        # "max-height": "200%",
     }
 
-    dropdown_style_header = dropdown_style_2 | {"font-size": "20px", "font-weight": "bold", "overflow-y": "visible"}
-    # dropdown_style_header["font-size"] = "20px"
-    # dropdown_style_header["font-weight"] = "bold"
+    dropdown_style_header = dropdown_style_2 | {
+        "font-size": "20px",
+        "font-weight": "bold",
+        }
 
     date_picker_style = {
         # "display": "inline-block",

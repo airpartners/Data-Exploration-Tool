@@ -4,6 +4,7 @@ from dash.dependencies import Input, Output
 import plotly.express as px
 
 from graph_frame import GraphFrame
+import css
 
 class TimeSeries(GraphFrame):
 
@@ -20,7 +21,7 @@ class TimeSeries(GraphFrame):
         """
         Defines the structure of barchart in html
 
-        The filter message and dropdown menus are defined as html.Div() arguments, and the graph will be updated in the 
+        The filter message and dropdown menus are defined as html.Div() arguments, and the graph will be updated in the
         add_graph_callback(): update_figure() function below
 
         """
@@ -53,11 +54,11 @@ class TimeSeries(GraphFrame):
         """
         Defines and returns all the text and calendar plot features
 
-        This function consists of two sections: 
+        This function consists of two sections:
         - @self.app.callback that contains all the input and output callback functions;
         - the main plotting function update_figure() that takes sensor and pollutant selections from the filter message dropdowns(defined above
          as html.Div() arguments in get_html() function) to choose the demanded dataset and/or select the demanded column of dataset to plot on the graph
-        
+
         """
 
 
@@ -87,7 +88,7 @@ class TimeSeries(GraphFrame):
             # round the dataset to display 2 decimal places
             df = df.round(2)
             df = df.rename(columns={
-                "pm10.ML": "PM10 (μg/m^3)", 
+                "pm10.ML": "PM10 (μg/m^3)",
                 "pm25.ML": "PM2.5 (μg/m^3)",
                 "pm1.ML": "PM1 (μg/m^3)",
                 "co.ML": "CO (ppb)",
@@ -195,7 +196,7 @@ class TimeSeries(GraphFrame):
             # when y=100%, filtered mean equals entire dataset mean
             if normalize_height:
                 fig.layout.yaxis.tickformat = ',.0%'
-            
+
             fig.update_traces(
                 hovertemplate='%{y}'
             )
@@ -213,7 +214,12 @@ class TimeSeries(GraphFrame):
                 ],
                 hovermode = 'x'
             )
-            fig.update_layout(paper_bgcolor="rgb(0,0,0,0)")
-
+            fig.update_layout(
+                paper_bgcolor="rgb(0,0,0,0)",
+                legend = dict(bgcolor = css.color_scheme["main_background"]),
+                plot_bgcolor = "#FFFFFF",
+            )
+            fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor='#E3E3E3')
+            fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='#E3E3E3')
 
             return fig
