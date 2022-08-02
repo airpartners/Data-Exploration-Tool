@@ -98,13 +98,13 @@ class CalendarPlot(GraphFrame):
 
             # define colorscales based on EPA standards
             color_scale = {
-                'PM2.5 (μg/m^3)': [(0,"white"),(0.00000000000001,"#F1FFEC"),(0.5,"yellow"),(1,"red")],
-                'PM10 (μg/m^3)': [(0,"white"),(0.00000000000001,"#F1FFEC"),(0.5,"yellow"),(1,"red")],
-                'PM1 (μg/m^3)': [(0,"white"),(0.00000000000001,"#F1FFEC"),(0.5,"yellow"),(1,"red")],
-                'NO (ppb)': [(0,"white"),(0.00000000000001,"#F1FFEC"),(0.9,"yellow"),(1,"red")],
-                'CO (ppb)': [(0,"white"),(0.00000000000001,"#F1FFEC"),(0.95,"yellow"),(1,"red")],
-                'NO2 (ppb)': [(0,"white"),(0.00000000000001,"#F1FFEC"),(0.9,"yellow"),(1,"red")],
-                'O3 (ppb)': [(0,"white"),(0.00000000000001,"#F1FFEC"),(0.9,"yellow"),(1,"red")],
+                'PM2.5 (μg/m^3)': [(0,"#F0F0F0"),(0.00000000000001,"white"),(0.5,"yellow"),(1,"red")],
+                'PM10 (μg/m^3)': [(0,"#F0F0F0"),(0.00000000000001,"white"),(0.5,"yellow"),(1,"red")],
+                'PM1 (μg/m^3)': [(0,"#F0F0F0"),(0.00000000000001,"white"),(0.5,"yellow"),(1,"red")],
+                'NO (ppb)': [(0,"#F0F0F0"),(0.00000000000001,"white"),(0.9,"yellow"),(1,"red")],
+                'CO (ppb)': [(0,"#F0F0F0"),(0.00000000000001,"white"),(0.95,"yellow"),(1,"red")],
+                'NO2 (ppb)': [(0,"#F0F0F0"),(0.00000000000001,"white"),(0.9,"yellow"),(1,"red")],
+                'O3 (ppb)': [(0,"#F0F0F0"),(0.00000000000001,"white"),(0.9,"yellow"),(1,"red")],
                 'Adverse Takeoffs/Landings': [(0,"white"),(1,"red")],
                 'Total Takeoffs/Landings': [(0,"white"),(1,"red")]
             }

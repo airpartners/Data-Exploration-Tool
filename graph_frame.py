@@ -38,16 +38,16 @@ class GraphFrame():
         # "position": "relative",
 
         # 'margin' affects the size of the bounding box
-        "margin-left": "20px", # adds a horizontal space between dropdowns menus and next chunk of text
-        "margin-right": "50px", # adds a horizontal space between dropdowns menus and next chunk of text
+        "margin-left": "7px", # adds a horizontal space between dropdowns menus and next chunk of text
+        "margin-right": "40px", # adds a horizontal space between dropdowns menus and next chunk of text
         "margin-top": "20px",
         "margin-bottom": "20px",
-        "border-radius": "20px", # rounded corners!
+        "border-radius": "5px", # rounded corners!
 
         # 'padding' affects the positioning of the text withing the bounding box
-        "padding-left": "60px",
-        "padding-right": "60px",
-        "padding-top": "5px",
+        "padding-left": "30px",
+        "padding-right": "30px",
+        "padding-top": "8px",
         "padding-bottom": "5px",
 
         # font size and color
