@@ -41,11 +41,13 @@ class Page():
         "right": 0,
         "bottom": 0,
         "width": sidebar_width[0],
-        "padding": "2rem 1rem",
         "background-color": css.color_scheme["sidebar_background"],
         "border-style": "solid",
         "border-width": "8px",
         "border-color": css.color_scheme["sidebar_border"],
+        "padding-left": "10px",
+        "padding-right": "10px",
+        "padding-bottom": "15px",
     }
 
     outer_layout_style = {

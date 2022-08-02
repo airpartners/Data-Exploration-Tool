@@ -214,12 +214,7 @@ class TimeSeries(GraphFrame):
                 ],
                 hovermode = 'x'
             )
-            fig.update_layout(
-                paper_bgcolor="rgb(0,0,0,0)",
-                legend = dict(bgcolor = css.color_scheme["main_background"]),
-                plot_bgcolor = "#FFFFFF",
-            )
-            fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor='#E3E3E3')
-            fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='#E3E3E3')
+
+            self.update_background_colors(fig)
 
             return fig

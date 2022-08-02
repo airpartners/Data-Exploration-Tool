@@ -120,7 +120,7 @@ class CalendarPlot(GraphFrame):
                     showscale=True
             )
 
-            fig.update_layout(paper_bgcolor="rgb(0,0,0,0)")
+            self.update_background_colors(fig)
 
             return fig
 

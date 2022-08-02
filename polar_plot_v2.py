@@ -60,7 +60,7 @@ class Polar(GraphFrame):
             df = self.data_importer.get_data_by_sensor(which_sensor)
             df = self.filter_by_date(df, start_date, end_date)
             df = df.rename(columns={
-                "pm10.ML": "PM10 (μg/m^3)", 
+                "pm10.ML": "PM10 (μg/m^3)",
                 "pm25.ML": "PM2.5 (μg/m^3)",
                 "pm1.ML": "PM1 (μg/m^3)",
                 "co.ML": "CO (ppb)",
@@ -153,7 +153,7 @@ class Polar(GraphFrame):
             )
             fig.update_layout(showlegend=False)
             fig.update_layout(paper_bgcolor="rgb(0,0,0,0)")
-            
+
             # add another column which is hour converted to degrees
             # fig.update_layout(
             #     polar={
@@ -173,6 +173,7 @@ class Polar(GraphFrame):
 
             # margins = 200
             # fig.update_layout(margin = {'t': 0, 'l': margins, 'r': margins})
-            fig.update_layout(margin = {'t': 0})
+            fig.update_layout(margin = {'t': 20})
+            self.update_background_colors(fig)
 
             return fig

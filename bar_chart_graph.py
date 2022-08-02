@@ -24,7 +24,7 @@ class BarChartGraph(GraphFrame):
         """
         Defines the structure of barchart in html
 
-        The filter message and dropdown menus are defined as html.Div() arguments, and the graph will be updated in the 
+        The filter message and dropdown menus are defined as html.Div() arguments, and the graph will be updated in the
         add_graph_callback(): update_figure() function below
 
         """
@@ -50,17 +50,17 @@ class BarChartGraph(GraphFrame):
         """
         Defines and returns all the text and calendar plot features
 
-        This function consists of two sections: 
+        This function consists of two sections:
         - @self.app.callback that contains all the input and output callback functions;
         - the main plotting function update_figure() that takes sensor and pollutant selections from the filter message dropdowns(defined above
          as html.Div() arguments in get_html() function) to choose the demanded dataset and/or select the demanded column of dataset to plot on the graph
-        
+
         """
 
         @self.app.callback(
             # the id of the graph lines up with the id argument in dcc.Graph defined in get_html() function
-            Output(self.get_id('select-time'), 'figure'), 
-            Output(self.get_id('relative-text'), 'style'), 
+            Output(self.get_id('select-time'), 'figure'),
+            Output(self.get_id('relative-text'), 'style'),
             Input( self.get_id('which-sensor'), 'value'),
             Input( self.get_id('date-picker-range'), 'start_date'),
             Input( self.get_id('date-picker-range'), 'end_date'),
@@ -68,11 +68,11 @@ class BarChartGraph(GraphFrame):
         )
         def update_figure(which_sensor, start_date, end_date, normalize_height = True, stat_type = "mean", percentage_error = False):
             """
-            Main plotting function: 
-            - selects and processes the dataset 
+            Main plotting function:
+            - selects and processes the dataset
             - then makes the plot
-            
-            """            
+
+            """
             # calling dataset from data_importer and make it a pandas dataframe
             df = self.data_importer.get_data_by_sensor(which_sensor, numeric_only = True)
 
@@ -84,7 +84,7 @@ class BarChartGraph(GraphFrame):
 
             # rename the columns in df_stats to something more understandable
             df_stats = df_stats.rename(index={
-                "pm10.ML": "PM10 (μg/m^3)", 
+                "pm10.ML": "PM10 (μg/m^3)",
                 "pm25.ML": "PM2.5 (μg/m^3)",
                 "pm1.ML": "PM1 (μg/m^3)",
                 "co.ML": "CO (ppb)",
@@ -103,7 +103,7 @@ class BarChartGraph(GraphFrame):
 
             # rename the columns in the dataset of the selected sensor
             df = df.rename(columns={
-                "pm10.ML": "PM10 (μg/m^3)", 
+                "pm10.ML": "PM10 (μg/m^3)",
                 "pm25.ML": "PM2.5 (μg/m^3)",
                 "pm1.ML": "PM1 (μg/m^3)",
                 "co.ML": "CO (ppb)",
@@ -178,8 +178,9 @@ class BarChartGraph(GraphFrame):
 
 
             # remove the awkward whitespace where the title used to be
-            fig.update_layout(margin = {'t': 20}) 
-            fig.update_layout(paper_bgcolor="rgb(0,0,0,0)")
+            fig.update_layout(margin = {'t': 20})
+            self.update_background_colors(fig)
+
 
             # mark the line y=1 i.e. when filtered mean/median equals entire dataset mean/median
             if normalize_height:

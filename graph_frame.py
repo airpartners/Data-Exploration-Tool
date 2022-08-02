@@ -78,7 +78,7 @@ class GraphFrame():
         # "margin-right": "10px",
         # "margin-left": "10px",
         "overflow-y": "visible",
-        # "max-height": "200%",
+        "max-height": "100%",
     }
 
     dropdown_style_header = dropdown_style_2 | {
@@ -194,7 +194,6 @@ class GraphFrame():
     def filter_picker(self, my_id = 'filter-set'):
         vars = self.meteorology_vars + self.flight_vars
 
-
         filter_sliders = []
         graph_inputs = []
         graph_inputs_state = []
@@ -298,6 +297,18 @@ class GraphFrame():
 
         # now have filter_picker() return the div with all the RangeSliders after all the callbacks have been added
         return return_var
+
+## /////////////////////////////////////////////////// ##
+## Graph Styling Functions
+    def update_background_colors(self, fig):
+        fig.update_layout(
+            paper_bgcolor="rgb(0,0,0,0)",
+            legend = dict(bgcolor = css.color_scheme["main_background"]),
+            plot_bgcolor = "#FFFFFF",
+        )
+        fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor='#E3E3E3')
+        fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='#E3E3E3')
+
 
 ## /////////////////////////////////////////////////// ##
 ## Variables
