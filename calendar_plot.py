@@ -19,7 +19,7 @@ class CalendarPlot(GraphFrame):
         """
         Defines the structure of barchart in html
 
-        The filter message and dropdown menus are defined as html.Div() arguments, and the graph will be updated in the 
+        The filter message and dropdown menus are defined as html.Div() arguments, and the graph will be updated in the
         add_graph_callback(): update_figure() function below
 
         """
@@ -43,11 +43,11 @@ class CalendarPlot(GraphFrame):
         """
         Defines and returns all the text and calendar plot features
 
-        This function consists of two sections: 
+        This function consists of two sections:
         - @self.app.callback that contains all the input and output callback functions;
         - the main plotting function update_figure() that takes sensor and pollutant selections from the filter message dropdowns(defined above
          as html.Div() arguments in get_html() function) to choose the demanded dataset and/or select the demanded column of dataset to plot on the graph
-        
+
         """
 
         @self.app.callback(
@@ -61,10 +61,9 @@ class CalendarPlot(GraphFrame):
 
         def update_figure(which_sensor, pollutant):
             """
-            Main plotting function: 
+            Main plotting function:
             - selects and processes the dataset
             - then makes the plot
-            
             """
 
             # select which sensor data to draw from
@@ -75,10 +74,10 @@ class CalendarPlot(GraphFrame):
 
             # rename the columns in df_stats to something more understandable
             df = df.rename(columns={
-                "pm10.ML": "PM10 (μg/m^3)", 
+                "pm10.ML": "PM10 (μg/m^3)",
                 "pm25.ML": "PM2.5 (μg/m^3)",
                 "pm1.ML": "PM1 (μg/m^3)",
-                "co,ML": "CO (ppb)",
+                "co.ML": "CO (ppb)",
                 "correctedNO": "NO (ppb)",
                 "no2.ML": "NO2 (ppb)",
                 "o3.ML": "O3 (ppb)",
