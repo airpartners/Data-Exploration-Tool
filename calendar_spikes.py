@@ -8,15 +8,20 @@ import plotly.graph_objects as go
 import plotly.express as px
 from graph_frame import GraphFrame
 
+"""
+This file is currently abandoned, but could potentially be applied for future use.
+
+The goal of this file is to apply convolution to the dataset to find out the continuous 24-hour mean, so that if there's a spike that goes from eg. 8pm on the
+first day to 6am on the second day the spike can still be detected. However, it doesn't seem to be functioning very well in this case, but a similar functionality
+is worthy to be explored and developed.
+
+"""
+
 
 class CalendarSpikePlot(GraphFrame):
     def get_explanation(self):
         return [
-            # html.P("Text some text some text some text."),
-            # html.P("Text some text some text some text."),
-            # html.P("Text some text some text some text."),
-            # html.P("Text some text some text some text."),
-            # html.P("Text some text some text some text."),
+            # html.P("Text some text some text some text.")
         ]
 
 
@@ -34,7 +39,7 @@ class CalendarSpikePlot(GraphFrame):
                     ],
                     style = self.text_style
                 ),
-                # Placeholder for a graph to be created.
+                # # Placeholder for a graph to be created.
                 # This graph will be updated in the @app.callback: update_figure function below
                 # html.Div(
                     # chilfwidren = [
@@ -63,17 +68,6 @@ class CalendarSpikePlot(GraphFrame):
 
             start_date = df.index[0]
             end_date = df.index[-1]
-
-
-            # limit = {
-            #     'pm25.ML': 20,
-            #     'pm10.ML': 35,
-            #     'pm1.ML': 35,
-            #     'correctedNO': 45,
-            #     'co.ML': 9000,
-            #     'no2.ML': 1000,
-            #     'o3,ML': 1000
-            # }
 
             # smooth = 24
             # conv = [1/smooth] * smooth
