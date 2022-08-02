@@ -199,8 +199,8 @@ class Presets():
                 chart_type_ids["correlation_plot"],
                 {
                     "sensor_location": 0,
-                    'x_axis': "adverse_flight_count",
-                    'pollutant': "co.ML",
+                    'x_axis': "Adverse Takeoffs/Landings",
+                    'pollutant': "CO (ppb)",
                     "start_date": preset_date_ranges["data_start"],
                     "end_date": preset_date_ranges["data_end"],
                     "show_details": True,
