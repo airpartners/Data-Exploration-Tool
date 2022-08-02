@@ -267,8 +267,8 @@ class GraphFrame():
 
             outputs_list = []
             for var in vars:
-                var_min = int(self.data_importer.df_stats[self.sensor_names[sensor]]["min"][var])
-                var_max = int(self.data_importer.df_stats[self.sensor_names[sensor]]["max"][var])
+                var_min = int(self.data_importer.df_stats[self.sensor_names[sensor]]["min"][self.var_col_names[var]])
+                var_max = int(self.data_importer.df_stats[self.sensor_names[sensor]]["max"][self.var_col_names[var]])
                 if var in vars_to_show:
                     outputs_list.append(self.filter_picker_style | {'display': 'inline'})
                     outputs_list.append(no_update)
@@ -287,8 +287,9 @@ class GraphFrame():
             prevent_initial_call = True
         )
         def slider_callback(*var_ranges):
-            return {var: range for var, range in zip(vars.keys(), var_ranges)}
+            return {var: range for var, range in zip(vars, var_ranges)}
 
+        # now have filter_picker() return the div with all the RangeSliders after all the callbacks have been added
         return return_var
 
 ## /////////////////////////////////////////////////// ##
@@ -337,6 +338,23 @@ class GraphFrame():
     ]
 
     all_vars = meteorology_vars + gas_vars + particles_vars + flight_vars
+
+    var_col_names = {
+        "Temperature (°C)": "temp_manifold",
+        "Humidity (%)": "rh_manifold",
+        "Wind Speed (m/s)": "ws",
+        "CO (ppb)": "co.ML",
+        "NO (ppb)": "correctedNO",
+        "NO2 (ppb)": "no2.ML",
+        "O3 (ppb)": "o3.ML",
+        "PM1 (μg/m^3)": "pm1.ML",
+        "PM2.5 (μg/m^3)": "pm25.ML",
+        "PM10 (μg/m^3)": "pm10.ML",
+        "Adverse Takeoffs/Landings": "adverse_flight_count",
+        "Total Takeoffs/Landings": "count",
+        "wind_direction_cardinal": "wind_direction_cardinal",
+    }
+
 
 ## //////////////////////////////////////////////////////// ##
 ##  Sensor locations and names
@@ -427,13 +445,13 @@ class GraphFrame():
         return df
 
     def filter_by_var(self, df, var, var_min, var_max):
-        if not var in df.columns:
+        if not self.var_col_names[var] in df.columns:
             raise ValueError(f"Variable {var} is not in the dataframe. Try one of {df.columns} instead.")
         if var_min is not None and var_max is not None:
             return \
                 df[
-                    (df[var] >= var_min) &
-                    (df[var] <= var_max)
+                    (df[self.var_col_names[var]] >= var_min) &
+                    (df[self.var_col_names[var]] <= var_max)
                 ]
         # else:
         return df
@@ -443,7 +461,7 @@ class GraphFrame():
             return df
         if not isinstance(wind_direction, list):
             wind_direction = [wind_direction]
-        return df[ df["wind_direction_cardinal"].isin(wind_direction) ]
+        return df[ df[self.var_col_names["wind_direction_cardinal"]].isin(wind_direction) ]
 
     def normalize_height(self, df, max_val = 1, do_it = True):
         if not do_it:
