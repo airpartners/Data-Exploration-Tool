@@ -43,7 +43,7 @@ class Page():
         "width": sidebar_width[0],
         "background-color": css.color_scheme["sidebar_background"],
         "border-style": "solid",
-        "border-width": "8px",
+        "border-width": "8px 8px 0px 8px",
         "border-color": css.color_scheme["sidebar_border"],
         "padding-left": "10px",
         "padding-right": "10px",
@@ -141,7 +141,7 @@ class Page():
             return tuple(output)
 
     def create_layout(self):
-        # create the inner layout: everything that appears in the body of te page
+        # create the inner layout: everything that appears in the body of the page
         for chart_num in range(self.n_charts):
 
             # add dropdown
@@ -181,7 +181,7 @@ class Page():
                         get_sensor_map(),
                     ],
                 #     id = 'sidebar-contents',
-                #     style = {'display': 'block'},
+                    style = {"margin-bottom": "30px"},
                 )
                 # ----
             ],

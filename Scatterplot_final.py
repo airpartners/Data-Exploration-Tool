@@ -119,7 +119,7 @@ class Scatter(GraphFrame):
 
             fig.update_layout(
                 transition_duration = 500,
-                margin = {'t': 0}, # removes the awkward whitespace where the title used to be
+                margin = {'t': 20}, # removes the awkward whitespace where the title used to be
             )
 
             self.update_background_colors(fig)

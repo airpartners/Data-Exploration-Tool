@@ -52,7 +52,7 @@ class GraphFrame():
 
         # font size and color
         "font-size" : "16px",
-        "font-family": "Verdana, Open Sans, Arial",
+        "font-family": "Arial",
         "color": css.color_scheme["explanation_text"],
         "background-color": css.color_scheme["explanation_background"],
     }
@@ -95,6 +95,7 @@ class GraphFrame():
         "margin-left": "10px",
         "font-size": "18px",
         "vertical-align": "middle",
+        "overflow-y": "visible",
         # "font-family": "Arial", # not used or doesn't work
         # "line-height": "0%", # helps reduce the line spacing
     }
@@ -142,7 +143,7 @@ class GraphFrame():
                 value = None,
                 multi = True,
                 id = self.get_id(my_id),
-                style = self.dropdown_style
+                style = self.dropdown_style_2
             )
 
     def pollutant_picker(self, my_id = 'pollutant-dropdown', multi = True, show_flights = True):
