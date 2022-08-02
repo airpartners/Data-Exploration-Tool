@@ -65,18 +65,18 @@ class GraphFrame():
 
     dropdown_style = {
         "display": "inline-block",
-        "width": "400px",
-        # "height": "30px",
+        "width": "50%",
+        "height": "32px",
         "margin-left": "5px",
         "margin-right": "15px",
-        "font-size": "18px",
+        "font-size": "17px",
         "font-family": "Arial",
         "vertical-align": "middle",
         # "line-height": "0%", # helps reduce the line spacing
     }
 
     dropdown_style_2 = dropdown_style | {
-        "width": "350px",
+        "width": "50%",
         # "margin-right": "10px",
         # "margin-left": "10px",
         "overflow-y": "visible",
@@ -93,7 +93,7 @@ class GraphFrame():
         # "display": "flex",
         "display": "inline-block",
         # "width": "200px", # not used or doesn't work
-        # "height": "40px",
+        "height": "32px",
         "margin-left": "10px",
         "font-size": "18px",
         "vertical-align": "middle",
@@ -125,7 +125,7 @@ class GraphFrame():
                 value = 0, # default value
                 id = self.get_id(id), # javascript id, used in @app.callback to reference this element, below
                 clearable = False, # prevent users from deselecting all sensors
-                style = self.dropdown_style | {"width": "350px"}
+                style = self.dropdown_style | {"width": "220px"}
             )
 
     def wind_direction_picker(self, my_id = 'wind-direction-picker'):
@@ -161,7 +161,7 @@ class GraphFrame():
                 multi = multi,
                 id = self.get_id(my_id),
 
-                style = (self.dropdown_style_2 | {"width": "800px"}) if multi else (self.dropdown_style | {"width": "300px"})
+                style = (self.dropdown_style_2 | {"width": "500px"}) if multi else (self.dropdown_style | {"width": "200px"})
             )
 
     def correlation_xvar(self, id = 'x-axis'):
