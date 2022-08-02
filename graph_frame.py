@@ -185,7 +185,7 @@ class GraphFrame():
             )
 
     def filter_picker(self, my_id = 'filter-set'):
-        vars = self.meteorology_vars | self.flight_vars
+        vars = self.meteorology_vars + self.flight_vars
 
 
         filter_sliders = []
@@ -194,7 +194,8 @@ class GraphFrame():
         dropdown_targets = []
         sensor_picker_callback_targets = []
 
-        for var, var_name in vars.items():
+        for var in vars:
+            var_name = var
 
             filter_id = self.get_id('filter-by-' + var)
             filter_display_id = self.get_id('show-filter-by-' + var)
@@ -242,7 +243,7 @@ class GraphFrame():
                         id = self.get_id('filter-callback-data')
                     ), # used for storing data; not displayed
                     dcc.Dropdown(
-                        options = [{'label': var_name, 'value': var} for var, var_name in vars.items()],
+                        options = [{'label': var, 'value': var} for var in vars],
                         value = 'blankenship',
 
                         multi = True,

@@ -45,11 +45,11 @@ class Presets():
         "show_details": ["explanation", "open"],
         "ignore_units": ["normalize-height", "on"],
         "filter_selector": ["filter-set", "value"],
-        "hum_filter": ["filter-by-rh_manifold", "value"], # "value" is a list of [min, max]
-        "temp_filter": ["filter-by-temp_manifold", "value"], # "value" is a list of [min, max]
-        "wind_speed_filter": ["filter-by-ws", "value"], # "value" is a list of [min, max]
-        "total_flight_filter": ["filter-by-count", "value"], # "value" is a list of [min, max]
-        "adverse_flight_filter": ["filter-by-adverse_flight_count", "value"], # "value" is a list of [min, max]
+        "hum_filter": ["filter-by-Humidity (%)", "value"], # "value" is a list of [min, max]
+        "temp_filter": ["filter-by-Temperature (°C)", "value"], # "value" is a list of [min, max]
+        "wind_speed_filter": ["filter-by-Wind Speed (m/s)", "value"], # "value" is a list of [min, max]
+        "total_flight_filter": ["filter-by-Total Takeoffs/Landings", "value"], # "value" is a list of [min, max]
+        "adverse_flight_filter": ["filter-by-Adverse Takeoffs/Landings", "value"], # "value" is a list of [min, max]
         "wind_selector": ["wind-direction-picker", "value"], # "value" is a list of wind directions, e.g. ["NW", "SE"]
     }
 
@@ -205,7 +205,7 @@ class Presets():
                     "end_date": preset_date_ranges["data_end"],
                     "show_details": True,
                     "wind_selector": ["NW", "SE"],
-                    "filter_selector": ["ws", "temp_manifold"],
+                    "filter_selector": ["Wind Speed (m/s)", "Temperature (°C)"],
                     "wind_speed_filter": [6, 100],
                     "temp_filter": [10, 100],
                 }
