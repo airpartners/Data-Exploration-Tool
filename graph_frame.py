@@ -155,7 +155,7 @@ class GraphFrame():
                 multi = multi,
                 id = self.get_id(my_id),
 
-                style = (self.dropdown_style_2 | {"width": "500px"}) if multi else (self.dropdown_style | {"width": "200px"})
+                style = (self.dropdown_style_2 | {"width": "400px"}) if multi else (self.dropdown_style | {"width": "200px"})
             )
 
     def correlation_xvar(self, id = 'x-axis'):
@@ -165,7 +165,7 @@ class GraphFrame():
                 value='Humidity (%)',
 
                 id=self.get_id(id),
-                style = self.dropdown_style | {"width": "340px"}
+                style = self.dropdown_style | {"width": "230px"}
             )
 
     def correlation_yvar(self, id = 'y-axis'):
@@ -176,7 +176,7 @@ class GraphFrame():
                 multi = True,
 
                 id=self.get_id(id),
-                style = self.dropdown_style | {"width": "340px"}
+                style = self.dropdown_style | {"width": "300px"}
             )
 
 
