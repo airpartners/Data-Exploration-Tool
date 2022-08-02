@@ -122,6 +122,8 @@ class Scatter(GraphFrame):
                 margin = {'t': 0}, # removes the awkward whitespace where the title used to be
             )
 
+            fig.update_layout(paper_bgcolor="rgb(0,0,0,0)")
+                
             # # set title and caption
             # string1 = "Scatter plot"
             # myTitle = '<b>'+string1+'</b>'

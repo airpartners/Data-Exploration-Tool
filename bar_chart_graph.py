@@ -179,6 +179,7 @@ class BarChartGraph(GraphFrame):
 
             # remove the awkward whitespace where the title used to be
             fig.update_layout(margin = {'t': 20}) 
+            fig.update_layout(paper_bgcolor="rgb(0,0,0,0)")
 
             # mark the line y=1 i.e. when filtered mean/median equals entire dataset mean/median
             if normalize_height:

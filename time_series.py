@@ -213,6 +213,7 @@ class TimeSeries(GraphFrame):
                 ],
                 hovermode = 'x'
             )
+            fig.update_layout(paper_bgcolor="rgb(0,0,0,0)")
 
 
             return fig

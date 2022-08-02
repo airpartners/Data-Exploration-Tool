@@ -152,7 +152,8 @@ class Polar(GraphFrame):
 
             )
             fig.update_layout(showlegend=False)
-
+            fig.update_layout(paper_bgcolor="rgb(0,0,0,0)")
+            
             # add another column which is hour converted to degrees
             # fig.update_layout(
             #     polar={
