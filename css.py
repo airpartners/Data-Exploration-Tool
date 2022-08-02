@@ -16,8 +16,8 @@
 
 color_scheme = {
     "sidebar_background": "#FFFFFF",
-    "sidebar_border": "#69C5ED",
+    "sidebar_border": "#43bfe5",
     "main_background": "#EDFDFF",   # I like this color!
-    "explanation_background": "#69C5ED",
+    "explanation_background": "#43bfe5",
     "explanation_text": "#F5F5F5",
 }
