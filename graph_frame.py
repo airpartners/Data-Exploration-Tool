@@ -29,7 +29,7 @@ class GraphFrame():
         "font-size" : "18px",
         "font-family": "Arial",
         "padding-right": "15px",
-        # "line-height": "0%", # helps reduce the line spacing
+        "line-height": "2", # line spacing
     }
 
     text_style_explanation = {
@@ -47,14 +47,16 @@ class GraphFrame():
         # 'padding' affects the positioning of the text withing the bounding box
         "padding-left": "30px",
         "padding-right": "30px",
-        "padding-top": "8px",
-        "padding-bottom": "5px",
+        "padding-top": "0px",
+        "padding-bottom": "0px",
 
         # font size and color
         "font-size" : "16px",
         "font-family": "Arial",
         "color": css.color_scheme["explanation_text"],
         "background-color": css.color_scheme["explanation_background"],
+
+        "line-height": "1.6", # line spacing
     }
 
     filter_picker_style = text_style | {"display": "inline"}
