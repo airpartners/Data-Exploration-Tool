@@ -20,4 +20,5 @@ color_scheme = {
     "main_background": "#EDFDFF",   # I like this color!
     "explanation_background": "#43bfe5",
     "explanation_text": "#F5F5F5",
+    "horizontal_line": "#000000",
 }

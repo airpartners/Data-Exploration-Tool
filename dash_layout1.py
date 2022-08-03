@@ -67,7 +67,7 @@ class Page():
         self.button_ids = list(range(n_charts + 1))
         # access this with self.chart_ids[chart_type][id_num]
         self.next_id_num = 0 # prepare for the next graph to be added
-        self.inner_layout = html.Div(children = [], id = 'inner_main')
+        self.inner_layout = html.Div(children = [self.create_titlebar()], id = 'inner_main')
 
         self.outer_layout = html.Div(
             children = [self.inner_layout, self.create_sidebar()],
@@ -159,6 +159,15 @@ class Page():
                 self.inner_layout.children.append(graph_frame.frame)
 
         # self.inner_layout.children.append(self.create_dropdown(chart_num + 1, add_callback = False))
+
+    def create_titlebar(self):
+        titlebar = html.Div(
+            children = [
+                html.H1("East Boston Data Exploration Tool"),
+                html.Hr()
+            ]
+        )
+        return titlebar
 
     def create_sidebar(self):
         presets = Presets(self.app)

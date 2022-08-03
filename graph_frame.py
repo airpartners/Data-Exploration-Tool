@@ -430,7 +430,14 @@ class GraphFrame():
         )
 
         children.append(
-            html.Hr(style = {'border': '8px solid black'})
+            html.Hr(
+                style = {
+                    "height": "8px",
+                    "border-width": "0",
+                    "color": css.color_scheme["horizontal_line"],
+                    "background-color": css.color_scheme["horizontal_line"]
+                }
+            )
         )
 
         return_div = \
