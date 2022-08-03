@@ -90,9 +90,9 @@ class GraphFrame():
 
     date_picker_style = dropdown_style | {
         "display": "inline-block",
-        "width": "290px", # not used or doesn't work
+        "width": "290px",
         "height": "80%",
-        "line-height": "0%", # helps reduce the line spacing
+        "line-height": "150%",
     }
 
 ## //////////////////////////////////////////////////////// ##

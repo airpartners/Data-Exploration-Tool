@@ -1,5 +1,6 @@
 from dash import Dash, html, dcc
 from dash.dependencies import Input, Output, State
+import dash_bootstrap_components as dbc
 from dash.exceptions import PreventUpdate
 import datetime
 
@@ -9,6 +10,7 @@ from bar_chart_graph import BarChartGraph
 from Polar import Polar
 from Scatterplot_final import Scatter
 from calendar_plot import CalendarPlot
+import css
 
 chart_classes = {
     0: CalendarPlot,
@@ -54,7 +56,11 @@ class Presets():
     }
 
     preset_scenarios = {
-        "Reset Graphs": [
+        # ///////////////////////////////////////////////////////////// #
+        # //                    Preset Number 1                      // #
+        # ///////////////////////////////////////////////////////////// #
+
+        ("Default", "To get back to the default settings: Explore the calendar, timeline, correlations, wind direction, and average pollutant charts."): [
             (
                 chart_type_ids["calendar_plot"],
                 {
@@ -106,7 +112,13 @@ class Presets():
             ),
 
         ],
-        "Pre-vs. Post-Pandemic": [
+        # ///////////////////////////////////////////////////////////// #
+        # //                    Preset Number 2                      // #
+        # ///////////////////////////////////////////////////////////// #
+        (
+            "Pre-vs. Post-Pandemic",
+            "During the Covid-19 pandemic, airport activity dropped dramatically. So did particulate and gas pollution."
+        ): [
             (
                 chart_type_ids["bar_chart"],
                 {
@@ -138,7 +150,10 @@ class Presets():
                 },
             ),
         ],
-        "Source Direction": [
+        # ///////////////////////////////////////////////////////////// #
+        # //                    Preset Number 3                      // #
+        # ///////////////////////////////////////////////////////////// #
+        ("Sources by Wind Direction", "At each sensor, see where the pollution was coming from based on wind direction and speed. Hint: pollution was highest when the wind was blowing in from the airport."): [
             (
                 chart_type_ids["polar_plot"],
                 {
@@ -194,7 +209,10 @@ class Presets():
             #     }
             # ),
         ],
-        "Pollutant/Flights Correlation": [
+        # ///////////////////////////////////////////////////////////// #
+        # //                    Preset Number 4                      // #
+        # ///////////////////////////////////////////////////////////// #
+        ("Pollutant/Flights Correlation", "Under certain meteorological conditions, CO and NO2 are highly correlated with airport activity on runways near the sensor."): [
             (
                 chart_type_ids["correlation_plot"],
                 {
@@ -217,12 +235,12 @@ class Presets():
     def __init__(self, app):
         self.app = app
         self.layout = self.get_html()
-        for scenario_name, scenario in self.preset_scenarios.items():
+        for (scenario_name, scenario_description), scenario in self.preset_scenarios.items():
             self.add_callbacks(scenario_name, scenario)
 
     def get_html(self):
         pandemic_radioitem = dcc.RadioItems(
-            options = list(self.preset_scenarios.keys()),
+            options = [scenario_item[0] for scenario_item in self.preset_scenarios.keys()],
             value = None,
             inline = False,
             style = {'display': 'block'},
@@ -230,8 +248,37 @@ class Presets():
         )
         return pandemic_radioitem
 
+    def get_cards(self):
+        cards = []
+        for scenario_item in self.preset_scenarios.keys():
+            scenario_name = scenario_item[0]
+            scenario_desc = scenario_item[1]
+            card = \
+                dbc.Col(
+                    dbc.Card(
+                        dbc.CardBody(
+                            [
+                                html.H4(scenario_name),
+                                html.P(scenario_desc),
+                                html.Button(
+                                    children = 'See it yourself',
+                                    n_clicks = 0,
+                                    id = self.get_str_id('preset-button', scenario_name)
+                                ),
+                            ],
+                        ),
+                        # style = {"width": "18rem", "display": "inline-flex"},
+                        color = css.color_scheme["presets"],
+                    )
+                )
+            cards.append(card)
+        return html.Div(dbc.Row(children = cards))
+
     def get_id(self, id_str, id_num):
         return id_str + "-" + str(id_num)
+
+    def get_str_id(self, id_str, id_suffix):
+        return id_str + ''.join(filter(str.isalnum, id_suffix))
 
     def get_id_num_from_chart_num(self, chart_num, chart_type):
         return chart_num * len(self.chart_type_ids) + chart_type
@@ -249,12 +296,12 @@ class Presets():
         # generate callback based on outputs
         @self.app.callback(
             *outputs,
-            Input('preset-radioitems', 'value'),
+            Input(self.get_str_id('preset-button', scenario_name), 'n_clicks'),
             prevent_initial_call = True
         )
         def execute_presets(radio_scenario_name):
-            if radio_scenario_name != scenario_name:
-                raise PreventUpdate # https://community.plotly.com/t/how-to-leave-callback-output-unchanged/7276/13
+            # if radio_scenario_name != scenario_name:
+            #     raise PreventUpdate # https://community.plotly.com/t/how-to-leave-callback-output-unchanged/7276/13
 
             return_list = []
             # for (chart_type, graph_dict) in self.preset_scenarios[scenario_id]:
