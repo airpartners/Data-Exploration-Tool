@@ -166,6 +166,7 @@ class Page():
                 # ----
                 html.Div(
                     [
+<<<<<<< HEAD
                         html.H4("Glossary"),
                         "Click ",
                         html.A(children = "here", href = "https://drive.google.com/file/d/1-LYSGcHN8OrbqNxsyA52OK2MH4cM78Gz/view?usp=sharing/", target="_blank"),
@@ -176,6 +177,21 @@ class Page():
                     ],
                 #     id = 'sidebar-contents',
                     style = CSS.glossary_style,
+=======
+                        "View the ",
+                        html.A(
+                            children = "glossary",
+                            href = "https://drive.google.com/file/d/1-LYSGcHN8OrbqNxsyA52OK2MH4cM78Gz/view?usp=sharing/",
+                            target = "_blank",
+                        ),
+                        " to learn more about this tool.",
+                        html.Hr(style = {"margin-bottom": "0px", "margin-top": "4px"}),
+                        html.H4("Sensor Locations", style = {"text-align": "center", "margin-top": "0px"}),
+                        get_sensor_map(),
+                    ],
+                #     id = 'sidebar-contents',
+                    style = {"margin-bottom": "10px"},
+>>>>>>> 402ff345f1529374ccd24ed3187d90dc03e01874
                 )
                 # ----
             ],
