@@ -189,9 +189,10 @@ class Page():
                 # ----
                 html.Div(
                     [
-                        # html.H2("COVID Pandemic Dates Selection"),
-                        # presets.layout,
-                        # html.Hr(),
+                        "Click on ",
+                        html.A(children = "glossary", href = "https://drive.google.com/file/d/1-LYSGcHN8OrbqNxsyA52OK2MH4cM78Gz/view?usp=sharing/", target="_blank"),
+                        " to check out new terms",
+                        html.Hr(),
                         html.H2("Sensor Locations"),
                         get_sensor_map(),
                     ],
