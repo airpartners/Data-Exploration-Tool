@@ -8,6 +8,7 @@ import plotly.express as px
 import numpy as np
 from sigfig import round
 from graph_frame import GraphFrame
+from css import CSS
 
 class BarChartGraph(GraphFrame):
     def get_explanation(self):
@@ -37,7 +38,7 @@ class BarChartGraph(GraphFrame):
                 html.Div(
                     ", relative to the baseline average",
                     id = self.get_id('relative-text'),
-                    style = self.text_style
+                    style = CSS.text_style
                 ),
                 "?",
                 self.normalize_switch(id = 'normalize-height'),
@@ -187,8 +188,8 @@ class BarChartGraph(GraphFrame):
                 fig.add_hline(y=1, line_width=3, line_dash="dot", line_color="navy", annotation=dict(text='Average'))
 
             if normalize_height:
-                relative_text_style = self.text_style
+                relative_text_style = CSS.text_style
             else:
-                relative_text_style = self.text_style | {'display': 'none'}
+                relative_text_style = CSS.text_style | {'display': 'none'}
 
             return fig, relative_text_style

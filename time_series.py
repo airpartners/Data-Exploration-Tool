@@ -4,7 +4,7 @@ from dash.dependencies import Input, Output
 import plotly.express as px
 
 from graph_frame import GraphFrame
-import css
+from css import CSS
 
 class TimeSeries(GraphFrame):
 
@@ -38,7 +38,7 @@ class TimeSeries(GraphFrame):
                         "?",
                         self.normalize_switch(),
                     ],
-                    style = self.text_style
+                    style = CSS.text_style
                 ),
                 # Placeholder for a graph to be created.
                 # This graph will be updated in the @app.callback: update_figure function below

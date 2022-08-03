@@ -7,6 +7,7 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 from graph_frame import GraphFrame
+from css import CSS
 
 class Scatter(GraphFrame):
     def get_explanation(self):

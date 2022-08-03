@@ -11,92 +11,11 @@ from sigfig import round
 import datetime
 # from filter_graph import FilterGraph # import from supporting file (contained in this repo)
 from data_importer import DataImporter
-import css
+from css import CSS
 
 
 # Parent class for TimeSeries, BarChart, CorrelationPlot, and PolarPlot
 class GraphFrame():
-
-    # define HTML styles for text and dropdown menus. Use this to change font size, alignment, etc.
-    text_style = {
-        # "display": "inline-block", # if you take this out, all successive elements will be displayed on separate lines
-        # "display": "flex",
-        "display": "inline-block",
-        # "transform": "translateY(0%)", # vertical alignment
-        # "position": "relative",
-        "margin-left": "10px", # adds a horizontal space between dropdowns menus and next chunk of text
-        "margin-right": "10px", # adds a horizontal space between dropdowns menus and next chunk of text
-        "font-size" : "18px",
-        "font-family": "Arial",
-        "padding-right": "15px",
-        "line-height": "2", # line spacing
-    }
-
-    text_style_explanation = {
-        "display": "inline-block",
-        # "transform": "translateY(0%)", # vertical alignment
-        # "position": "relative",
-
-        # 'margin' affects the size of the bounding box
-        "margin-left": "7px", # adds a horizontal space between dropdowns menus and next chunk of text
-        "margin-right": "40px", # adds a horizontal space between dropdowns menus and next chunk of text
-        "margin-top": "20px",
-        "margin-bottom": "20px",
-        "border-radius": "5px", # rounded corners!
-
-        # 'padding' affects the positioning of the text withing the bounding box
-        "padding-left": "30px",
-        "padding-right": "30px",
-        "padding-top": "0px",
-        "padding-bottom": "0px",
-
-        # font size and color
-        "font-size" : "16px",
-        "font-family": "Arial",
-        "color": css.color_scheme["explanation_text"],
-        "background-color": css.color_scheme["explanation_background"],
-
-        "line-height": "1.6", # line spacing
-    }
-
-    filter_picker_style = text_style | {"display": "inline"}
-
-    # text_style_bold = text_style_explanation |
-
-    dropdown_style = {
-        "display": "inline-block",
-        "width": "50%",
-        "height": "32px",
-        "margin-left": "8px",
-        "margin-right": "8px",
-        "font-size": "16px",
-        "font-family": "Arial",
-        "vertical-align": "middle",
-        # "line-height": "0%", # helps reduce the line spacing
-    }
-
-    dropdown_style_2 = dropdown_style | {
-        "width": "300px",
-        # "margin-right": "10px",
-        # "margin-left": "10px",
-        "overflow-y": "visible",
-        "max-height": "100%",
-    }
-
-    dropdown_style_header = dropdown_style_2 | {
-        "font-size": "20px",
-        "font-weight": "bold",
-        }
-
-    date_picker_style = dropdown_style | {
-        "display": "inline-block",
-        "width": "290px",
-        "height": "80%",
-        "line-height": "150%",
-    }
-
-## //////////////////////////////////////////////////////// ##
-##  Reused HTML components
 
     def date_picker(self, id = 'date-picker-range'):
         return \
@@ -107,7 +26,7 @@ class GraphFrame():
                 start_date = datetime.date(2019, 9, 8), # default value
                 end_date = datetime.date(2021, 3, 5), # default value
                 id = self.get_id(id),
-                style = self.date_picker_style,
+                style = CSS.date_picker_style,
             )
 
     def sensor_picker(self, id = 'which-sensor'):
@@ -119,7 +38,7 @@ class GraphFrame():
                 value = 0, # default value
                 id = self.get_id(id), # javascript id, used in @app.callback to reference this element, below
                 clearable = False, # prevent users from deselecting all sensors
-                style = self.dropdown_style | {"width": "220px"}
+                style = CSS.dropdown_style | {"width": "220px"}
             )
 
     def wind_direction_picker(self, my_id = 'wind-direction-picker'):
@@ -139,7 +58,7 @@ class GraphFrame():
                 value = None,
                 multi = True,
                 id = self.get_id(my_id),
-                style = self.dropdown_style_2 | {"width": "300px", "margin-right": "10px"}
+                style = CSS.dropdown_style_2 | {"width": "300px", "margin-right": "10px"}
             )
 
     def pollutant_picker(self, my_id = 'pollutant-dropdown', multi = True, show_flights = True):
@@ -155,7 +74,7 @@ class GraphFrame():
                 multi = multi,
                 id = self.get_id(my_id),
 
-                style = (self.dropdown_style_2 | {"width": "400px"}) if multi else (self.dropdown_style | {"width": "200px"})
+                style = (CSS.dropdown_style_2 | {"width": "400px"}) if multi else (CSS.dropdown_style | {"width": "200px"})
             )
 
     def correlation_xvar(self, id = 'x-axis'):
@@ -165,7 +84,7 @@ class GraphFrame():
                 value='Humidity (%)',
 
                 id=self.get_id(id),
-                style = self.dropdown_style | {"width": "230px"}
+                style = CSS.dropdown_style | {"width": "230px"}
             )
 
     def correlation_yvar(self, id = 'y-axis'):
@@ -176,7 +95,7 @@ class GraphFrame():
                 multi = True,
 
                 id=self.get_id(id),
-                style = self.dropdown_style | {"width": "300px"}
+                style = CSS.dropdown_style | {"width": "300px"}
             )
 
 
@@ -222,7 +141,7 @@ class GraphFrame():
                             style = {'display': 'inline', "line-height": "normal"},
                         )
                     ],
-                    style = self.filter_picker_style | {'display': 'none'},
+                    style = CSS.filter_picker_style | {'display': 'none'},
                     id = filter_display_id
                 )
             )
@@ -254,7 +173,7 @@ class GraphFrame():
                         multi = True,
                         id = self.get_id(my_id),
 
-                        style = (self.dropdown_style_2 | {"width": "100%"})
+                        style = (CSS.dropdown_style_2 | {"width": "100%"})
                     ),
                     *filter_sliders,
                 ]
@@ -275,10 +194,10 @@ class GraphFrame():
                 var_min = int(self.data_importer.df_stats[self.sensor_names[sensor]]["min"][self.var_col_names[var]])
                 var_max = int(self.data_importer.df_stats[self.sensor_names[sensor]]["max"][self.var_col_names[var]])
                 if var in vars_to_show:
-                    outputs_list.append(self.filter_picker_style | {'display': 'inline'})
+                    outputs_list.append(CSS.filter_picker_style | {'display': 'inline'})
                     outputs_list.append(no_update)
                 else:
-                    outputs_list.append(self.filter_picker_style | {'display': 'none'})
+                    outputs_list.append(CSS.filter_picker_style | {'display': 'none'})
                     outputs_list.append([var_min, var_max])
                 # also:
                 outputs_list.append(var_min)
@@ -303,7 +222,7 @@ class GraphFrame():
         if not is_polar:
             fig.update_layout(
                 paper_bgcolor="rgb(0,0,0,0)",
-                legend = dict(bgcolor = css.color_scheme["main_background"]),
+                legend = dict(bgcolor = CSS.color_scheme["main_background"]),
                 plot_bgcolor = "#FFFFFF",
             )
             fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor='#E3E3E3')
@@ -418,14 +337,14 @@ class GraphFrame():
                     children = self.get_explanation(),
                     open = True,
                     id = self.get_id("explanation"),
-                    style = self.text_style_explanation,
+                    style = CSS.text_style_explanation,
                 )
         )
 
         children.append(
             html.Div(
                 self.get_html(),
-                style = self.text_style,
+                style = CSS.text_style,
             )
         )
 
@@ -434,8 +353,8 @@ class GraphFrame():
                 style = {
                     "height": "8px",
                     "border-width": "0",
-                    "color": css.color_scheme["horizontal_line"],
-                    "background-color": css.color_scheme["horizontal_line"]
+                    "color": CSS.color_scheme["horizontal_line"],
+                    "background-color": CSS.color_scheme["horizontal_line"]
                 }
             )
         )
@@ -443,7 +362,7 @@ class GraphFrame():
         return_div = \
         html.Div(
             children = children,
-            style = self.text_style | {'display': initial_display_status},
+            style = CSS.text_style | {'display': initial_display_status},
             id = self.get_id('frame')
         )
 

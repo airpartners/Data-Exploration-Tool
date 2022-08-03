@@ -11,7 +11,7 @@ from Scatterplot_final import Scatter
 from calendar_plot import CalendarPlot
 from get_sensor_map import get_sensor_map
 from presets import Presets
-import css
+from css import CSS
 
 from dash_extensions.enrich import DashProxy, MultiplexerTransform
 
@@ -33,31 +33,6 @@ class Page():
         4: BarChartGraph,
     }
 
-    sidebar_width = ["16rem", "1rem"]
-
-    sidebar_style = {
-        "position": "fixed",
-        "top": 0,
-        # "left": 0,
-        "right": 0,
-        "bottom": 0,
-        "width": sidebar_width[0],
-        "background-color": css.color_scheme["sidebar_background"],
-        "border-style": "solid",
-        # "border-width": "8px 8px 0px 8px", # remove the bottom border # top, right, bottom, left
-        "border-width": "8px 8px 8px 8px",
-        "border-color": css.color_scheme["sidebar_border"],
-        "padding-left": "10px",
-        "padding-right": "10px",
-        "padding-bottom": "10px",
-    }
-
-    outer_layout_style = {
-        'margin-right': sidebar_width[0],
-        'padding-right': "10px",
-        "background-color": css.color_scheme["main_background"],
-    }
-
     n_starting_charts = 5
 
     def __init__(self, app, n_charts = 10) -> None:
@@ -74,7 +49,7 @@ class Page():
         self.outer_layout = html.Div(
             children = [self.inner_layout, self.create_sidebar()],
             id = 'outer_main',
-            style = self.outer_layout_style,
+            style = CSS.outer_layout_style,
         )
 
         self.sidebar_is_open = True
@@ -91,7 +66,7 @@ class Page():
             return html.Div(
                 children = f"Cannot add more than {self.n_charts - 1} charts.",
                 id = self.get_id('new-chart-dropdown', chart_num),
-                style = GraphFrame.text_style | {'display': initial_display_status},
+                style = CSS.text_style | {'display': initial_display_status},
             )
         # else:
 
@@ -117,7 +92,7 @@ class Page():
             value = None, # default value
             id = self.get_id('new-chart-dropdown', chart_num), # javascript id, used in @app.callback to reference this element
             placeholder = placeholder,
-            style = GraphFrame.dropdown_style_header | {'display': initial_display_status} # right-most dictionary xwins ties for keys
+            style = CSS.dropdown_style_header | {'display': initial_display_status} # right-most dictionary xwins ties for keys
         )
         if add_callback:
             self.add_dropdown_callback(chart_num)
@@ -167,11 +142,13 @@ class Page():
 
         titlebar = html.Div(
             children = [
+                # html.H5(" "),
                 html.H1("East Boston Data Exploration Tool"),
                 html.Hr(),
-                html.H2("Choose one of the following scenarios to explore, or scroll down to play with the graphs yourself"),
-                presets.get_cards()
-            ]
+                html.H5(html.B("Choose one of the following scenarios to explore, or scroll down to play with the graphs yourself :D")),
+                presets.get_cards(),
+            ],
+            style=CSS.titlebar_style
         )
         return titlebar
 
@@ -189,20 +166,21 @@ class Page():
                 # ----
                 html.Div(
                     [
-                        "Click on ",
-                        html.A(children = "glossary", href = "https://drive.google.com/file/d/1-LYSGcHN8OrbqNxsyA52OK2MH4cM78Gz/view?usp=sharing/", target="_blank"),
-                        " to check out new terms",
+                        html.H4("Glossary"),
+                        "Click ",
+                        html.A(children = "here", href = "https://drive.google.com/file/d/1-LYSGcHN8OrbqNxsyA52OK2MH4cM78Gz/view?usp=sharing/", target="_blank"),
+                        " to check out the glossary of this page",
                         html.Hr(),
-                        html.H2("Sensor Locations"),
+                        html.H4("Sensor Locations"),
                         get_sensor_map(),
                     ],
                 #     id = 'sidebar-contents',
-                    # style = {"margin-bottom": "10px"},
+                    style = CSS.glossary_style,
                 )
                 # ----
             ],
             n_clicks = 0,
-            style = self.sidebar_style,
+            style = CSS.sidebar_style,
             id = 'sidebar',
         )
 

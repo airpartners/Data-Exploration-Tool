@@ -11,6 +11,7 @@ from Polar import Polar
 from Scatterplot_final import Scatter
 from calendar_plot import CalendarPlot
 import css
+from css import CSS
 
 chart_classes = {
     0: CalendarPlot,
@@ -258,17 +259,24 @@ class Presets():
                     dbc.Card(
                         dbc.CardBody(
                             [
-                                html.H4(scenario_name),
+                                html.H5(html.B(scenario_name)),
                                 html.P(scenario_desc),
                                 html.Button(
                                     children = 'See it yourself',
                                     n_clicks = 0,
+                                    style = {
+                                        "border-color": CSS.color_scheme["presets"], 
+                                        "border-radius": "4px",
+                                        # "border-style": "solid",
+                                        "background-color": "white",
+                                        "color": CSS.color_scheme["presets"]
+                                    },
                                     id = self.get_str_id('preset-button', scenario_name)
                                 ),
                             ],
                         ),
-                        # style = {"width": "18rem", "display": "inline-flex"},
-                        color = css.color_scheme["presets"],
+                        style = {"display": "inline-flex", "color": "white", "margin-top": "8px"},
+                        color = CSS.color_scheme["presets"],
                     )
                 )
             cards.append(card)

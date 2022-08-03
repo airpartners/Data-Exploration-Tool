@@ -2,6 +2,7 @@ from dash import html, dcc, Input, Output
 from plotly_calplot import calplot # pip install plotly-calplot
 import pandas as pd
 from graph_frame import GraphFrame
+from css import CSS
 
 
 class CalendarPlot(GraphFrame):
@@ -34,7 +35,7 @@ class CalendarPlot(GraphFrame):
                         self.pollutant_picker(multi = False, show_flights = True), # calling the pollutant dropdown menu defined in graph_frame.py
                         " over the entire date range for that sensor?",
                     ],
-                    style = self.text_style # defining text styles
+                    style = CSS.text_style # defining text styles
                 ),
                 dcc.Graph(id = self.get_id('calendar-plot'))
             ]
