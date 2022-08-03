@@ -189,15 +189,19 @@ class Page():
                 # ----
                 html.Div(
                     [
-                        "Click on ",
-                        html.A(children = "glossary", href = "https://drive.google.com/file/d/1-LYSGcHN8OrbqNxsyA52OK2MH4cM78Gz/view?usp=sharing/", target="_blank"),
-                        " to check out new terms",
-                        html.Hr(),
-                        html.H2("Sensor Locations"),
+                        "View the ",
+                        html.A(
+                            children = "glossary",
+                            href = "https://drive.google.com/file/d/1-LYSGcHN8OrbqNxsyA52OK2MH4cM78Gz/view?usp=sharing/",
+                            target = "_blank",
+                        ),
+                        " to learn more about this tool.",
+                        html.Hr(style = {"margin-bottom": "0px", "margin-top": "4px"}),
+                        html.H4("Sensor Locations", style = {"text-align": "center", "margin-top": "0px"}),
                         get_sensor_map(),
                     ],
                 #     id = 'sidebar-contents',
-                    # style = {"margin-bottom": "10px"},
+                    style = {"margin-bottom": "10px"},
                 )
                 # ----
             ],
