@@ -10,6 +10,7 @@ class CalendarPlot(GraphFrame):
             html.P([html.B("Calendar Plot:"), " Shows the pollution levels at a certain sensor over the entire data collection period. ",
             "Select a sensor location and a pollutant to show. ",
             "Each horizontal strip represents 365 days of data. Each square represents the average concentration levels for one day. ",
+            "If ",html.B("\"Adverse Takeoffs/Landings\""), " or ",html.B("\"Total Takeoffs/Landings\"")," are selected, the square represents the average  takeoffs and landings per hour on that day",
             "Each column represents one week (the top row is all Mondays, etc.)"]
             )
         ]
@@ -98,15 +99,15 @@ class CalendarPlot(GraphFrame):
 
             # define colorscales based on EPA standards
             color_scale = {
-                'PM2.5 (μg/m^3)': [(0,"#F0F0F0"),(0.00000000000001,"white"),(0.5,"yellow"),(1,"red")],
-                'PM10 (μg/m^3)': [(0,"#F0F0F0"),(0.00000000000001,"white"),(0.5,"yellow"),(1,"red")],
-                'PM1 (μg/m^3)': [(0,"#F0F0F0"),(0.00000000000001,"white"),(0.5,"yellow"),(1,"red")],
-                'NO (ppb)': [(0,"#F0F0F0"),(0.00000000000001,"white"),(0.9,"yellow"),(1,"red")],
-                'CO (ppb)': [(0,"#F0F0F0"),(0.00000000000001,"white"),(0.95,"yellow"),(1,"red")],
-                'NO2 (ppb)': [(0,"#F0F0F0"),(0.00000000000001,"white"),(0.9,"yellow"),(1,"red")],
-                'O3 (ppb)': [(0,"#F0F0F0"),(0.00000000000001,"white"),(0.9,"yellow"),(1,"red")],
-                'Adverse Takeoffs/Landings': [(0,"white"),(1,"red")],
-                'Total Takeoffs/Landings': [(0,"white"),(1,"red")]
+                'PM2.5 (μg/m^3)': [(0,"#eeeeee"),(0.00000000000001,"white"),(0.5,"#ffc300"),(0.95,"#ff5733"),(1,"#900c3f")],
+                'PM10 (μg/m^3)': [(0,"#eeeeee"),(0.00000000000001,"white"),(0.5,"#ffc300"),(0.95,"#ff5733"),(1,"#900c3f")],
+                'PM1 (μg/m^3)': [(0,"#eeeeee"),(0.00000000000001,"white"),(0.5,"#ffc300"),(0.95,"#ff5733"),(1,"#900c3f")],
+                'NO (ppb)': [(0,"#eeeeee"),(0.00000000000001,"white"),(0.9,"#ffc300"),(0.95,"#ff5733"),(1,"#900c3f")],
+                'CO (ppb)': [(0,"#eeeeee"),(0.00000000000001,"white"),(0.9,"#ffc300"),(0.95,"#ff5733"),(1,"#900c3f")],
+                'NO2 (ppb)': [(0,"#eeeeee"),(0.00000000000001,"white"),(0.9,"#ffc300"),(0.95,"#ff5733"),(1,"#900c3f")],
+                'O3 (ppb)': [(0,"#eeeeee"),(0.00000000000001,"white"),(0.9,"#ffc300"),(0.95,"#ff5733"),(1,"#900c3f")],
+                'Adverse Takeoffs/Landings': [(0, "#eeeeee"),(0.00001,"white"),(1,"#c70039")],
+                'Total Takeoffs/Landings': [(0,"#eeeeee"),(0.00001,"white"),(1,"#c70039")]
             }
 
             # creating the plot
