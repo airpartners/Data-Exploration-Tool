@@ -1,8 +1,57 @@
-import css
+import plotly.io as pio
 
 class CSS():
 
-    # dash_layout1
+    # not involving colors:
+    sidebar_width = ["16rem", "1rem"]
+
+    titlebar_style = {
+        'margin-left': '10px',
+        'padding-left': '10px',
+        'padding-top': '10px',
+        'top': '20px'
+    }
+
+    glossary_style = {"margin-top": "10px"}
+
+    # text_style_bold = text_style_explanation |
+
+    dropdown_style = {
+        "display": "inline-block",
+        "width": "50%",
+        "height": "32px",
+        "margin-left": "8px",
+        "margin-right": "8px",
+        "font-size": "16px",
+        "font-family": "Arial",
+        "vertical-align": "middle",
+        # "line-height": "0%", # helps reduce the line spacing
+    }
+
+    dropdown_style_2 = dropdown_style | {
+        "width": "300px",
+        # "margin-right": "10px",
+        # "margin-left": "10px",
+        "overflow-y": "visible",
+        "max-height": "100%",
+    }
+
+    dropdown_style_header = dropdown_style_2 | {
+        "font-size": "20px",
+        "font-weight": "bold",
+        }
+
+    date_picker_style = dropdown_style | {
+        "display": "inline-block",
+        "width": "290px",
+        "height": "80%",
+        "line-height": "150%",
+    }
+
+
+    # -------------------------------------------------------------------------------------------------------------
+    # involving colors
+
     color_scheme = {
         "sidebar_background": "#FFFFFF",
         "sidebar_border": "#43bfe5",
@@ -13,25 +62,7 @@ class CSS():
         "presets": "#E56943",
     }
 
-    
-    # color_scheme = {
-    #     "sidebar_background": "#f8f9fa",
-    #     "sidebar_border": "#D3D3D3",
-    #     "main_background": "#F5FEFF",
-    #     "explanation_background": "#5D98E9",
-    #     "explanation_text": "#f5f5f5",
-    # }
-
-    # color_scheme = {
-    #     "sidebar_background": "#D6FBFF",
-    #     "sidebar_border": "#D3D3D3",
-    #     "main_background": "#EDFDFF",   # I like this color!
-    #     "explanation_background": "#5D98E9",
-    #     "explanation_text": "#F5F5F5",
-    # }
-
-
-    sidebar_width = ["16rem", "1rem"]
+    template = "plotly_dark"
 
     sidebar_style = {
         "position": "fixed",
@@ -56,19 +87,7 @@ class CSS():
         "background-color": color_scheme["main_background"],
     }
 
-    titlebar_style = {
-        'margin-left': '10px',
-        'padding-left': '10px',
-        'padding-top': '10px',
-        'top': '20px'
-    }
-
-    glossary_style = {"margin-top": "10px"}
-
-
-
-    # graph_frame
-        # define HTML styles for text and dropdown menus. Use this to change font size, alignment, etc.
+    # define HTML styles for text and dropdown menus. Use this to change font size, alignment, etc.
     text_style = {
         # "display": "inline-block", # if you take this out, all successive elements will be displayed on separate lines
         # "display": "flex",
@@ -111,41 +130,5 @@ class CSS():
     }
 
     filter_picker_style = text_style | {"display": "inline"}
-
-    # text_style_bold = text_style_explanation |
-
-    dropdown_style = {
-        "display": "inline-block",
-        "width": "50%",
-        "height": "32px",
-        "margin-left": "8px",
-        "margin-right": "8px",
-        "font-size": "16px",
-        "font-family": "Arial",
-        "vertical-align": "middle",
-        # "line-height": "0%", # helps reduce the line spacing
-    }
-
-    dropdown_style_2 = dropdown_style | {
-        "width": "300px",
-        # "margin-right": "10px",
-        # "margin-left": "10px",
-        "overflow-y": "visible",
-        "max-height": "100%",
-    }
-
-    dropdown_style_header = dropdown_style_2 | {
-        "font-size": "20px",
-        "font-weight": "bold",
-        }
-
-    date_picker_style = dropdown_style | {
-        "display": "inline-block",
-        "width": "290px",
-        "height": "80%",
-        "line-height": "150%",
-    }
-
-
 
 
