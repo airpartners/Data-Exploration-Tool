@@ -1,4 +1,5 @@
 from dash import Dash, html, dcc
+import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output
 from graph_frame import GraphFrame
 from time_series import TimeSeries
@@ -161,10 +162,46 @@ class Page():
         # self.inner_layout.children.append(self.create_dropdown(chart_num + 1, add_callback = False))
 
     def create_titlebar(self):
+        dummy_text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla augue enim, finibus eget risus sit amet, tempus condimentum nibh. Nullam sodales lacus ac dolor dignissim, at pharetra nibh pulvinar. Nam vitae mauris in metus efficitur rutrum. Duis lorem massa, dictum eu eros in, suscipit dapibus urna. Nulla porttitor turpis porttitor."
+
+        card = dbc.Card(
+            dbc.CardBody(
+                [
+                    html.H4("Title", className="card-title"),
+                    html.H6("Card subtitle", className="card-subtitle"),
+                    html.P(
+                        "Some quick example text to build on the card title and make "
+                        "up the bulk of the card's content.",
+                        className="card-text",
+                    ),
+                    dbc.CardLink("Card link", href="#"),
+                    dbc.CardLink("External link", href="https://google.com"),
+                ],
+            ),
+            # style = {"width": "18rem", "display": "inline-flex"},
+            color = "#ff0000",
+        )
+
+        cards = \
+        html.Div(
+        # dbc.Container(
+            dbc.Row(
+                [
+                    dbc.Col(card),
+                    dbc.Col(card),
+                    dbc.Col(card),
+                    dbc.Col(card),
+                    dbc.Col(card),
+                ],
+                # className="mb-4",
+            )
+        )
+
         titlebar = html.Div(
             children = [
                 html.H1("East Boston Data Exploration Tool"),
-                html.Hr()
+                html.Hr(),
+                cards
             ]
         )
         return titlebar
@@ -239,7 +276,7 @@ class Page():
 
 if __name__ == '__main__':
     # app = Dash(__name__) # initialize the app
-    app = DashProxy(transforms=[MultiplexerTransform()]) # https://community.plotly.com/t/multiple-callbacks-for-an-output/51247/4
+    app = DashProxy(transforms=[MultiplexerTransform()], external_stylesheets = [dbc.themes.BOOTSTRAP]) # https://community.plotly.com/t/multiple-callbacks-for-an-output/51247/4
 
     p = Page(app, n_charts = 7) # 7 is the maximum possible number here; add any more graphs and things start to break
     # app.layout = html.Div(p.layout)
