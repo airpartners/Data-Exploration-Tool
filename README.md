@@ -14,13 +14,13 @@ To get more detailed information on Plotly and Dash, read through the [tutorial]
 
 Start by cloning this repo. Then you will need to download some data files separately. Open up the file `my_data_directory.py` and follow the instructions in the docstring. It will guide you through making the proper file structure and downloading the raw data. You will also need to modify one line in that file and run a git command to avoid committing your changes back into this repo.
 
-Next, you should be able to open up the file `dash_layout1.py`, then run it. It will take a little while (~1-2 minutes) to process the data (it will be faster the next time you run it). By default, the dash interface will be running on your computer's local IP address [`127.0.0.1:8050`](http://127.0.0.1:8050/). Type this IP into your browser to view the interface.
+Next, you should be able to open up the file `main.py`, then run it. It will take a little while (~1-2 minutes) to process the data (it will be faster the next time you run it). By default, the dash interface will be running on your computer's local IP address [`127.0.0.1:8050`](http://127.0.0.1:8050/). Type this IP into your browser to view the interface.
 
 # Structure of this Repo
 
-## dash_layout1.py
+## main.py
 
-The main script that will run the data exploration tool is titled `dash_layout1.py`. This initializes the main page, loads the data, and creates all the graph objects. Let's take a quick look at the `__init__()` function of `Page`, the main class defined in `dash_layout1.py`:
+The main script that will run the data exploration tool is titled `main.py`. This initializes the main page, loads the data, and creates all the graph objects. Let's take a quick look at the `__init__()` function of `Page`, the main class defined in `main.py`:
 
 ```
 def __init__(self, app, n_charts = 10) -> None:
@@ -86,13 +86,13 @@ This file defines the `GraphFrame` class, which is the parent class to all of th
 
 For example, each `GraphFrame` subclass must define a function `def get_explanation()` function, which returns a chunk of `dash.html` code to display above the graph; `def get_html()`, which returns `dash.html` code containing the layout of the supporting elements (text, dropdowns, etc.); and `def add_graph_callback()`, which defines the callbacks for those elements and imbues them with the power to update the graph in question.
 
-`GraphFrame` is a parent class for `TimeSeries` (defined in `time_series.py`), `Scatter` (`Scatterplot_final.py`), BarChartGraph (`bar_chart_graph.py`), `CalendarPlot` (`calendar_plot.py`), and `Polar` (two different versions are defined in `Polar.py` and `polar_plot_v2.py`; check which one is being used based on which of those two files is imported at the top of `dash_layout1.py`).
+`GraphFrame` is a parent class for `TimeSeries` (defined in `time_series.py`), `Scatter` (`Scatterplot_final.py`), BarChartGraph (`bar_chart_graph.py`), `CalendarPlot` (`calendar_plot.py`), and `Polar` (two different versions are defined in `Polar.py` and `polar_plot_v2.py`; check which one is being used based on which of those two files is imported at the top of `main.py`).
 
 ### Other notes on graph_frame.py
 
 The first 200 lines or so of `graph_frame.py` define styling and chunks of `dash.html` that will be used repeatedly by `GraphFrame` subclasses.
 
-The `__init__()` function is quite small, and just calls the  `self.get_explanation()`, `self.get_html()`, and `self.add_graph_callback()` functions on its subclasses, wrapping the resulting `dash.html` code in a Div with a special `id` so that `dash_layout1.py` knows how to turn its visibility on and off.
+The `__init__()` function is quite small, and just calls the  `self.get_explanation()`, `self.get_html()`, and `self.add_graph_callback()` functions on its subclasses, wrapping the resulting `dash.html` code in a Div with a special `id` so that `main.py` knows how to turn its visibility on and off.
 
 Arguably the most important function in this entire class is the `self.get_id()` function, which is, verbatim:
 
@@ -105,7 +105,7 @@ This function is used to define the `id`s of pretty much every element defined i
 
 ## data_importer.py
 
-This is the file that loads all the East Boston data and makes it available as a Pandas dataframe for making graphs. A single `DataImporter` object is created at the start of `dash_layout1.py`, and it is passed to each `GraphFrame` as one of the `__init__()` arguments. This avoids having to repeat the expensive data loading process for each graph.
+This is the file that loads all the East Boston data and makes it available as a Pandas dataframe for making graphs. A single `DataImporter` object is created at the start of `main.py`, and it is passed to each `GraphFrame` as one of the `__init__()` arguments. This avoids having to repeat the expensive data loading process for each graph.
 
 When it is initialized, `DataImporter` looks for files specified in the file `csv_file_paths.py`. (If you look in that file, you will see that it imports from `my_data_directory.py`, which is the file you modified to specify the root path for the data directories).
 
