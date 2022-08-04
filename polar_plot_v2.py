@@ -28,6 +28,13 @@ class Polar(GraphFrame):
 
 
     def get_html(self):
+        """
+        Defines the structure of barchart in html
+
+        The filter message and dropdown menus are defined as html.Div() arguments, and the graph will be updated in the
+        add_graph_callback(): update_figure() function below
+
+        """
         # children = ...
         return \
             [
@@ -48,17 +55,39 @@ class Polar(GraphFrame):
             ]
 
     def add_graph_callback(self):
+        """
+        Defines and returns all the text and calendar plot features
+
+        This function consists of two sections:
+        - @self.app.callback that contains all the input and output callback functions;
+        - the main plotting function update_figure() that takes sensor and pollutant selections from the filter message dropdowns(defined above
+         as html.Div() arguments in get_html() function) to choose the demanded dataset and/or select the demanded column of dataset to plot on the graph
+
+        """
 
         @self.app.callback(
+            # the id of the graph lines up with the id argument in dcc.Graph defined in get_html() function
             Output(self.get_id('polar'),'figure'),
+
+            # the values of the two inputs below are called from the filter message dropdowns above in get_html() function
             Input(self.get_id('which-sensor'), 'value'),
             Input( self.get_id('date-picker-range'), 'start_date'),
             Input( self.get_id('date-picker-range'), 'end_date'),
             Input(self.get_id('pollutant-dropdown'), 'value'),
         )
+
         def update_figure(which_sensor, start_date, end_date, pollutant):
+            """
+            Adding callbacks so that the graph automatically updates according to dropdown selections on the user interface
+            Graph is returned
+
+            """
+            # select which sensor's dataset to look at according to the value returned in 'which-sensor' dropdown
             df = self.data_importer.get_data_by_sensor(which_sensor)
+
+            # filter data by the date range that is returned from 'date-picker-range' dropdown
             df = self.filter_by_date(df, start_date, end_date)
+            # rename the variabels to something more understandable
             df = df.rename(columns={
                 "pm10.ML": "PM10 (μg/m^3)",
                 "pm25.ML": "PM2.5 (μg/m^3)",
@@ -74,14 +103,17 @@ class Polar(GraphFrame):
                 "count": "Total Takeoffs/Landings",
             })
 
+            # define subplot names
             wind_speed_labels = ["Calm Wind", "Moderate Wind", "Strong Wind"]
+            # define angular axis labels
             wind_direction_labels = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"]
-
+            # set angular axis division
             n_angles = len(wind_direction_labels)
             angles = [-1]
             angles.extend(range(int(360 / n_angles / 2), int(360 - 360 / n_angles / 2), int(360 / (n_angles - 1))))
             angles.append(361)
 
+            # 
             df["ws_category"] = pd.cut(df["Wind Speed (m/s)"], bins = [0, 1.5, 7.9, 100], labels = wind_speed_labels)
             df["wd_category"] = pd.cut(df["wd"] % 360, bins = angles, labels = wind_direction_labels)
             # df_polar = df.groupby(["ws_category", "wd_category"]).mean()
@@ -99,31 +131,20 @@ class Polar(GraphFrame):
             quantiles = ["q25", "q50", "q75"][::-1]
             colors = ["#FEF001", "#FD9A01", "#F00505"][::-1]
 
-
-            # print("Filtering by pollutant: ", pollutant)
-
-            limit = {
-                'co.ML': [0,9000],
-                'correctedNO': [0,71000],
-                'no2.ML': [0,71000],
-                'o3.ML': [0,93000],
-                'pm1.ML': [0,20],
-                'pm25.ML': [0,20],
-                'pm10.ML': [0,67]
-            }
-
+            # update the hover name for each traces on every single graph
             hover_trace_name = {
                 "q25": "25th percentile",
                 "q50": "median",
                 "q75": "75th percentile"
             }
 
+            # create three subplots of scatterpolar graph
             fig = make_subplots(rows = 1, cols = 3, subplot_titles = wind_speed_labels, specs = [[{"type": "polar"}]*3])
             for i, label in enumerate(wind_speed_labels):
                 df_subplot = df_polar.loc[label]
                 for j, quantile in enumerate(quantiles):
 
-                    # print(df_polar.head(2))
+                    # define the graph of each trace (calm/moderate/strong winds)
                     fig.add_trace(
                         go.Scatterpolar(
                             r = df_subplot[quantile],
@@ -141,38 +162,22 @@ class Polar(GraphFrame):
                         col = i + 1,
                     )
 
+            # define wind direction axis direction to clockwise
             fig.update_polars(
                 angularaxis = {
                     "direction": "clockwise",
                 }
             )
+
             fig.update_traces(
                 fill='toself',
                 hovertemplate = '<br>Wind direction: %{theta}<br>Concentration: %{r}'
 
             )
             fig.update_layout(showlegend=False)
+            # set background color to transparent
             fig.update_layout(paper_bgcolor="rgb(0,0,0,0)")
 
-            # add another column which is hour converted to degrees
-            # fig.update_layout(
-            #     polar={
-            #         "angularaxis": {
-            #             "tickmode": "array",
-            #             "tickvals": list(range(0, 360, 360 // 8)),
-            #             "ticktext": ['N','NE','E','SE','S','SW','W','NW'],
-            #         }
-            #     }
-            # )
-
-            # fig.layout.annotations =[dict(showarrow=False,
-            #                     text='Wind Speed (m/s)',
-            #                     xanchor='left',
-            #                     yanchor='bottom',
-            #                     font=dict(size=12 ))]
-
-            # margins = 200
-            # fig.update_layout(margin = {'t': 0, 'l': margins, 'r': margins})
             fig.update_layout(margin = {'t': 20})
             self.update_background_colors(fig, is_polar = True)
 
