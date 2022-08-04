@@ -61,7 +61,6 @@ class TimeSeries(GraphFrame):
 
         """
 
-
         @self.app.callback(
             # the id of the graph lines up with the id argument in dcc.Graph defined in get_html() function
             Output(self.get_id('graph-to-update'), 'figure'),
