@@ -159,9 +159,35 @@ class Presets():
                     "end_date": preset_date_ranges["data_end"],
                     "show_details": True,
                     "ignore_units": True,
-                    "explanation": "Hellow Worlds!!! #0",
+                    "explanation": [
+                        html.H4("Post Pandemic"),
+                        html.P(
+                            "Same thing but for the date range of July 2020 through April 2021. During this period, the number of flights increased slightly to about 30% below ",
+                            "pre-pandemic levels. Even so, the pollutant levels have increased almost back to their pre-pandemic average. ",
+                        ),
+                        html.P("These graphs were made for the sensor at Orient Heights. Try exploring the effects at different sensors.")
+                    ],
                 },
             ),
+            (
+                chart_type_ids["calendar_plot"],
+                {
+                    "sensor_location": 0,
+                    "pollutant": "NO2 (ppb)",
+                    "show_details": True,
+                    "explanation": "You can use a calendar plot to look at higher time resolution for a particular pollutant, in this case NO2.",
+                },
+            ),
+            (
+                chart_type_ids["calendar_plot"],
+                {
+                    "sensor_location": 0,
+                    "pollutant": "NO2 (ppb)",
+                    "show_details": True,
+                    "explanation": "This last graph shows the same thing but for a particulate matter pollutant, in this case PM2.5. How do they compare?",
+                },
+            ),
+
         ],
         # ///////////////////////////////////////////////////////////// #
         # //                    Preset Number 3                      // #
