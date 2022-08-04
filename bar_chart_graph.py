@@ -41,7 +41,7 @@ class BarChartGraph(GraphFrame):
                     style = CSS.text_style
                 ),
                 "?",
-                self.normalize_switch(my_id = 'normalize-height'),
+                self.normalize_switch(my_id = 'normalize-height', is_barchart = True),
                 dcc.Graph(
                     id = self.get_id('select-time')
                 ),

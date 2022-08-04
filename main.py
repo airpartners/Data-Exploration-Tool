@@ -64,7 +64,8 @@ class Page():
         print("Creating Dropdown with id", self.get_id('new-chart-dropdown', chart_num))
         if not add_callback:
             return html.Div(
-                children = f"Cannot add more than {self.n_charts - 1} charts.",
+                # children = f"Cannot add more than {self.n_charts - 1} charts.",
+                children = html.Hr(),
                 id = self.get_id('new-chart-dropdown', chart_num),
                 style = CSS.text_style | {'display': initial_display_status},
             )
@@ -227,7 +228,7 @@ if __name__ == '__main__':
     app = DashProxy(transforms=[MultiplexerTransform()], external_stylesheets = [dbc.themes.BOOTSTRAP]) # https://community.plotly.com/t/multiple-callbacks-for-an-output/51247/4
     # , external_stylesheets = [dbc.themes.BOOTSTRAP]
 
-    p = Page(app, n_charts = 7) # 7 is the maximum possible number here; add any more graphs and things start to break
+    p = Page(app, n_charts = 6) # 7 is the maximum possible number here; add any more graphs and things start to break
     # app.layout = html.Div(p.layout)
     app.layout = html.Div(p.outer_layout)
 

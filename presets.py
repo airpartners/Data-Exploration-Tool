@@ -4,6 +4,12 @@ import dash_bootstrap_components as dbc
 from dash.exceptions import PreventUpdate
 import datetime
 
+from bar_chart_graph import BarChartGraph
+from Scatterplot_final import Scatter
+from calendar_plot import CalendarPlot
+from time_series import TimeSeries
+from polar_plot_v2 import Polar
+
 from css import CSS
 
 class Presets():
@@ -31,6 +37,7 @@ class Presets():
         "x_axis": ["x-axis", "value"],
         # "y_axis": ["y-axis", "value"],
         "show_details": ["explanation", "open"],
+        "explanation": ["explanation", "children"],
         "ignore_units": ["normalize-height", "on"],
         "filter_selector": ["filter-set", "value"],
         "hum_filter": ["filter-by-Humidity (%)", "value"], # "value" is a list of [min, max]
@@ -46,14 +53,17 @@ class Presets():
         # //                    Preset Number 1                      // #
         # ///////////////////////////////////////////////////////////// #
 
-        ("Default", "To get back to the default settings: Explore the calendar, timeline, correlations, wind direction, and average pollutant charts."): [
+        (
+            "Default",
+            "To get back to the default settings: Explore the calendar, timeline, correlations, wind direction, and average pollutant charts."): [
             (
                 chart_type_ids["calendar_plot"],
                 {
                     "sensor_location": 0,
                     "pollutant": "PM1 (μg/m^3)",
                     "show_details": True,
-                }
+                    "explanation": CalendarPlot.get_explanation("self-placeholder"),
+                },
             ),
             (
                 chart_type_ids["timeseries"],
@@ -62,7 +72,8 @@ class Presets():
                     "pollutant": "PM10 (μg/m^3)",
                     "show_details": True,
                     "ignore_units": False,
-                }
+                    "explanation": TimeSeries.get_explanation("self-placeholder"),
+                },
             ),
             (
                 chart_type_ids["correlation_plot"],
@@ -74,7 +85,8 @@ class Presets():
                     "start_date": datetime.date(2019, 12, 1),
                     "end_date": datetime.date(2019, 12, 31),
                     "show_details": True,
-                }
+                    "explanation": Scatter.get_explanation("self-placeholder"),
+                },
             ),
             (
                 chart_type_ids["polar_plot"],
@@ -84,7 +96,8 @@ class Presets():
                     "start_date": datetime.date(2019, 12, 1),
                     "end_date": datetime.date(2019, 12, 31),
                     "show_details": True,
-                }
+                    "explanation": Polar.get_explanation("self-placeholder"),
+                },
             ),
             (
                 chart_type_ids["bar_chart"],
@@ -94,7 +107,8 @@ class Presets():
                     "end_date": datetime.date(2019, 12, 31),
                     "show_details": True,
                     "ignore_units": False,
-                }
+                    "explanation": BarChartGraph.get_explanation("self-placeholder"),
+                },
             ),
 
         ],
@@ -111,9 +125,10 @@ class Presets():
                     "sensor_location": 0,
                     "start_date": preset_date_ranges["data_start"],
                     "end_date": preset_date_ranges["pandemic_start"],
-                    "show_details": False,
+                    "show_details": True,
                     "ignore_units": True,
-                }
+                    "explanation": "Hellow Worlds!!! #12",
+                },
             ),
             (
                 chart_type_ids["bar_chart"],
@@ -121,8 +136,9 @@ class Presets():
                     "sensor_location": 0,
                     "start_date": preset_date_ranges["pandemic_start"],
                     "end_date": preset_date_ranges["pandemic_end"],
-                    "show_details": False,
+                    "show_details": True,
                     "ignore_units": True,
+                    "explanation": "Hellow Worlds!!! #13",
                 },
             ),
             (
@@ -131,8 +147,9 @@ class Presets():
                     "sensor_location": 0,
                     "start_date": preset_date_ranges["pandemic_end"],
                     "end_date": preset_date_ranges["data_end"],
-                    "show_details": False,
+                    "show_details": True,
                     "ignore_units": True,
+                    "explanation": "Hellow Worlds!!! #0",
                 },
             ),
         ],
@@ -147,7 +164,8 @@ class Presets():
                     "start_date": preset_date_ranges["data_start"],
                     "end_date": preset_date_ranges["data_end"],
                     "show_details": True,
-                }
+                    "explanation": "Hellow Worlds!!! #1",
+                },
             ),
             (
                 chart_type_ids["polar_plot"],
@@ -155,8 +173,9 @@ class Presets():
                     "sensor_location": 1,
                     "start_date": preset_date_ranges["data_start"],
                     "end_date": preset_date_ranges["data_end"],
-                    "show_details": False,
-                }
+                    "show_details": True,
+                    "explanation": "Hellow Worlds!!! #2",
+                },
             ),
             (
                 chart_type_ids["polar_plot"],
@@ -164,8 +183,9 @@ class Presets():
                     "sensor_location": 2,
                     "start_date": preset_date_ranges["data_start"],
                     "end_date": preset_date_ranges["data_end"],
-                    "show_details": False,
-                }
+                    "show_details": True,
+                    "explanation": "Hellow Worlds!!! #3",
+                },
             ),
             (
                 chart_type_ids["polar_plot"],
@@ -173,8 +193,9 @@ class Presets():
                     "sensor_location": 3,
                     "start_date": preset_date_ranges["data_start"],
                     "end_date": preset_date_ranges["data_end"],
-                    "show_details": False,
-                }
+                    "show_details": True,
+                    "explanation": "Hellow Worlds!!! #4",
+                },
             ),
             (
                 chart_type_ids["polar_plot"],
@@ -182,8 +203,9 @@ class Presets():
                     "sensor_location": 4,
                     "start_date": preset_date_ranges["data_start"],
                     "end_date": preset_date_ranges["data_end"],
-                    "show_details": False,
-                }
+                    "show_details": True,
+                    "explanation": "Hellow Worlds!!! #5",
+                },
             ),
             # (
             #     chart_type_ids["polar_plot"],
@@ -191,7 +213,7 @@ class Presets():
             #         "sensor_location": 5,
             #         "start_date": preset_date_ranges["data_start"],
             #         "end_date": preset_date_ranges["data_end"],
-            #         "show_details": False,
+            #         "show_details": True,
             #     }
             # ),
         ],
@@ -212,7 +234,8 @@ class Presets():
                     "filter_selector": ["Wind Speed (m/s)", "Temperature (°C)"],
                     "wind_speed_filter": [6, 100],
                     "temp_filter": [10, 100],
-                }
+                    "explanation": "Hellow Worlds!!! #6",
+                },
             )
         ]
     }

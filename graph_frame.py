@@ -99,7 +99,7 @@ class GraphFrame():
             )
 
 
-    def normalize_switch(self, my_id = 'normalize-height'):
+    def normalize_switch(self, my_id = 'normalize-height', is_barchart = False):
         return_val = \
             daq.BooleanSwitch(
                 id = self.get_id(my_id),
@@ -115,6 +115,9 @@ class GraphFrame():
         )
         def change_normalize_switch_text(normalize_height):
             if normalize_height: # the button is on; the height is normalized
+                if is_barchart:
+                    return "Y axis is scaled relative to the average at that sensor"
+                # else:
                 return "Y axis is scaled to fill height"
             # else:
             return "Y axis shows real units"
