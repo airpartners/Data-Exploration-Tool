@@ -6,8 +6,8 @@ from graph_frame import GraphFrame
 from time_series import TimeSeries
 from bar_chart_graph import BarChartGraph
 from data_importer import DataImporter
-# from Polar import Polar
-from polar_plot_v2 import Polar
+# from Polar import Polar                   # uncomment this line to use the old polar plot version
+from polar_plot_v2 import Polar             # uncomment this line to use the new polar plot version
 from Scatterplot_final import Scatter
 from calendar_plot import CalendarPlot
 from get_sensor_map import get_sensor_map
@@ -110,12 +110,12 @@ class Page():
         def make_graphs_visible(chart_type):
             print(f"Dropdown with id is being called back!")
             output = [{'display': 'none'}] * self.n_chart_types # create it as a list so it can be modified
-            output.append(GraphFrame.dropdown_style_header | {'display': 'none'})
+            output.append(CSS.dropdown_style_header | {'display': 'none'})
             if chart_type is None:
                 return tuple(output) # then convert to a tuple before returning
             # else:
-            output[chart_type] = GraphFrame.text_style | {'display': 'block'}
-            output[-1] = GraphFrame.dropdown_style_header | {'display': 'block'}
+            output[chart_type] = CSS.text_style | {'display': 'block'}
+            output[-1] = CSS.dropdown_style_header | {'display': 'block'}
             return tuple(output)
 
     def create_layout(self):

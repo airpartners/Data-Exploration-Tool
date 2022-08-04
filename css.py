@@ -74,7 +74,8 @@ class CSS():
         "background-color": color_scheme["sidebar_background"],
         "border-style": "solid",
         # "border-width": "8px 8px 0px 8px", # remove the bottom border # top, right, bottom, left
-        "border-width": "8px 8px 8px 8px",
+        # "border-width": "8px 8px 8px 8px", # all borders showing
+        "border-width": "0px 0px 0px 8px", # only the left border showing
         "border-color": color_scheme["sidebar_border"],
         "padding-left": "10px",
         "padding-right": "10px",
