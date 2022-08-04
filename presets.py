@@ -127,7 +127,12 @@ class Presets():
                     "end_date": preset_date_ranges["pandemic_start"],
                     "show_details": True,
                     "ignore_units": True,
-                    "explanation": "Hellow Worlds!!! #12",
+                    "explanation": [
+                        html.H4("Pre-Pandemic"),
+                        "This bar chart shows the averages of all the variables over the pre-Pandemic date range of September 2019 to March 2020. During this period, ",
+                        "activity at Logan Airport was at typical levels, and pollution from particulate matter (PM1-10) as well as gas phase pollutants (CO, NOx) ",
+                        "was at or above average."
+                    ]
                 },
             ),
             (
@@ -138,7 +143,12 @@ class Presets():
                     "end_date": preset_date_ranges["pandemic_end"],
                     "show_details": True,
                     "ignore_units": True,
-                    "explanation": "Hellow Worlds!!! #13",
+                    "explanation": [
+                        html.H4("Peak Pandemic"),
+                        "This chart shows the same variables for the date range of March through June 2020. See how the number of flights arriving or departing from Logan ",
+                        "are about half of the average value. Accordingly, gas phase and particulate matter pollution levels were substantially lower (healthier) during ",
+                        "this period."
+                    ],
                 },
             ),
             (
@@ -270,7 +280,7 @@ class Presets():
                                 html.H5(html.B(scenario_name)),
                                 html.P(scenario_desc),
                                 html.Button(
-                                    children = 'See it yourself',
+                                    children = html.A('See it yourself', href = '#graphs'),
                                     n_clicks = 0,
                                     style = {
                                         "border-color": CSS.color_scheme["presets"],
@@ -313,7 +323,7 @@ class Presets():
         @self.app.callback(
             *outputs,
             Input(self.get_str_id('preset-button', scenario_name), 'n_clicks'),
-            prevent_initial_call = True
+            prevent_initial_call = False if scenario_name == "Default" else True # perform the callback on the Default preset
         )
         def execute_presets(radio_scenario_name):
             # if radio_scenario_name != scenario_name:

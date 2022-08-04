@@ -364,7 +364,7 @@ class GraphFrame():
         children.append(
             html.Hr(
                 style = {
-                    "height": "8px",
+                    "height": "12px",
                     "border-width": "0",
                     "color": CSS.color_scheme["horizontal_line"],
                     "background-color": CSS.color_scheme["horizontal_line"]

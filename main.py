@@ -148,6 +148,7 @@ class Page():
                 html.Hr(),
                 html.H5(html.B("Choose one of the following scenarios to explore, or scroll down to play with the graphs yourself :D")),
                 presets.get_cards(),
+                html.Hr(id = "graphs", style = {"height": "12px", "margin-top": "15px"}),
             ],
             style=CSS.titlebar_style
         )
