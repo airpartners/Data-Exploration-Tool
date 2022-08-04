@@ -1,6 +1,5 @@
 from dash import Dash, html, dcc
 import dash_bootstrap_components as dbc
-import dash_daq as daq
 from dash.dependencies import Input, Output
 from graph_frame import GraphFrame
 from time_series import TimeSeries
@@ -171,13 +170,6 @@ class Page():
                         "Click ",
                         html.A(children = "here", href = "https://drive.google.com/file/d/1-LYSGcHN8OrbqNxsyA52OK2MH4cM78Gz/view?usp=sharing/", target="_blank"),
                         " to check out the glossary of this page",
-                        daq.BooleanSwitch(
-                            id = "dark-mode",
-                            on = False,
-                            style = {'display': 'block'},
-                            label = "darkmode",
-                            labelPosition = "left"
-                        ),
                         html.Hr(),
                         html.H4("Sensor Locations"),
                         get_sensor_map(),
