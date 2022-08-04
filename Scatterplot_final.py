@@ -66,7 +66,10 @@ class Scatter(GraphFrame):
 
 
         @self.app.callback(
+            # the id of the graph lines up with the id argument in dcc.Graph defined in get_html() function
             Output(self.get_id('scatterplot'),'figure'),
+
+            # the values of the two inputs below are called from the filter message dropdowns above in get_html() function
             Input(self.get_id('which-sensor'), 'value'),
             Input(self.get_id('date-picker-range'), 'start_date'),
             Input(self.get_id('date-picker-range'), 'end_date'),
@@ -77,18 +80,26 @@ class Scatter(GraphFrame):
         )
 
         def update_figure(which_sensor, start_date, end_date, xaxis_column_name, yaxis_column_name, wind_direction, var_ranges):
+            """
+            Adding callbacks so that the graph automatically updates according to dropdown selections on the user interface
+            Graph is returned
+
+            """
+            # select which sensor's dataset to look at according to the value returned in 'which-sensor' dropdown
             df = self.data_importer.get_data_by_sensor(which_sensor)
+            # filter data by the date range that is returned from 'date-picker-range' dropdown
             df = self.filter_by_date(df, start_date, end_date)
 
-
+            # 
             for var, var_range in var_ranges.items():
-                # print("var:", var, ", var_range =", var_range)
-                print("filtering by", var, "; number of flights:", sum(df["adverse_flight_count"]))
                 df = self.filter_by_var(df, var, var_range[0], var_range[1])
 
             df = self.filter_by_wind_direction(df, wind_direction)
 
+            # round the dataset to 2 decimal places
             df = df.round(2)
+
+            # rename the variables to something more understandable
             df = df.rename(columns={
                 "pm10.ML": "PM10 (μg/m^3)",
                 "pm25.ML": "PM2.5 (μg/m^3)",
@@ -104,6 +115,7 @@ class Scatter(GraphFrame):
                 "count": "Total Takeoffs/Landings",
             })
 
+            # creating the scatterplot
             fig = px.scatter(df, x=xaxis_column_name, y=yaxis_column_name,
                     trendline="ols",
                     hover_name=df.index,
@@ -124,21 +136,5 @@ class Scatter(GraphFrame):
             )
 
             self.update_background_colors(fig)
-
-            # # set title and caption
-            # string1 = "Scatter plot"
-            # myTitle = '<b>'+string1+'</b>'
-
-            # string2 = 'This is the caption'
-            # myCaption = string2
-
-
-            # fig.update_layout(title=go.layout.Title(
-            #     text=myTitle, font=dict(
-            #     family="Courier New, monospace",
-            #     size=22,
-            #     color="#000000"
-            #     ))
-            # )
 
             return fig

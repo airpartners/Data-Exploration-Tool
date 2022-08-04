@@ -145,8 +145,6 @@ class GraphFrame():
                     id = filter_display_id
                 )
             )
-            print(f"I am a RangeSlider, and I have an id of {filter_id}")
-
             graph_inputs.append(Input(filter_id, "value"))
             graph_inputs_state.append(State(filter_id, "value"))
 

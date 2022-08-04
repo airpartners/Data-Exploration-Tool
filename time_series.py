@@ -73,13 +73,16 @@ class TimeSeries(GraphFrame):
         )
         # def update_figure(which_sensor, start_date, end_date, pollutant, normalize_height):
         def update_figure(which_sensor, pollutant, normalize_height):
-            print(f"Graph with id {self.id_num} being called back!")
-
+            """
+            Adding callbacks so that the graph automatically updates according to dropdown selections on the user interface
+            Graph is returned
+            
+            """
             # turn the input argument pollutamt into a list, since time series graph accepts multiple variables on the y-axis
             if isinstance(pollutant, str):
                 pollutant = [pollutant]
 
-            # select which sensor data to draw from
+            # select which sensor's dataset to look at according to the value returned in 'which-sensor' dropdown
             df = self.data_importer.get_data_by_sensor(which_sensor)
 
             if normalize_height:
