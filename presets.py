@@ -4,22 +4,7 @@ import dash_bootstrap_components as dbc
 from dash.exceptions import PreventUpdate
 import datetime
 
-
-from time_series import TimeSeries
-from bar_chart_graph import BarChartGraph
-from Polar import Polar
-from Scatterplot_final import Scatter
-from calendar_plot import CalendarPlot
-import css
 from css import CSS
-
-chart_classes = {
-    0: CalendarPlot,
-    1: TimeSeries,
-    2: Scatter,
-    3: Polar,
-    4: BarChartGraph,
-}
 
 class Presets():
 
@@ -265,7 +250,7 @@ class Presets():
                                     children = 'See it yourself',
                                     n_clicks = 0,
                                     style = {
-                                        "border-color": CSS.color_scheme["presets"], 
+                                        "border-color": CSS.color_scheme["presets"],
                                         "border-radius": "4px",
                                         # "border-style": "solid",
                                         "background-color": "white",

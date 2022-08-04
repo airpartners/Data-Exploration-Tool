@@ -77,37 +77,49 @@ class GraphFrame():
                 style = (CSS.dropdown_style_2 | {"width": "400px"}) if multi else (CSS.dropdown_style | {"width": "200px"})
             )
 
-    def correlation_xvar(self, id = 'x-axis'):
+    def correlation_xvar(self, my_id = 'x-axis'):
         return \
             dcc.Dropdown(
                 options = self.all_vars,
                 value='Humidity (%)',
 
-                id=self.get_id(id),
+                id=self.get_id(my_id),
                 style = CSS.dropdown_style | {"width": "230px"}
             )
 
-    def correlation_yvar(self, id = 'y-axis'):
+    def correlation_yvar(self, my_id = 'y-axis'):
         return \
             dcc.Dropdown(
                 options = self.all_vars,
                 value='O3 (ppb)',
                 multi = True,
 
-                id=self.get_id(id),
+                id=self.get_id(my_id),
                 style = CSS.dropdown_style | {"width": "300px"}
             )
 
 
-    def normalize_switch(self, id = 'normalize-height'):
-        return \
+    def normalize_switch(self, my_id = 'normalize-height'):
+        return_val = \
             daq.BooleanSwitch(
-                id = self.get_id(id),
+                id = self.get_id(my_id),
                 on = False,
                 style = {'display': 'block'},
-                label = "Ignore units",
-                labelPosition = "top"
+                label = "", # will be updated in the callback below
+                labelPosition = "bottom",
             )
+
+        @self.app.callback(
+            Output(self.get_id(my_id), 'label'),
+            Input(self.get_id(my_id), 'on'),
+        )
+        def change_normalize_switch_text(normalize_height):
+            if normalize_height: # the button is on; the height is normalized
+                return "Y axis is scaled to fill height"
+            # else:
+            return "Y axis shows real units"
+
+        return return_val
 
     def filter_picker(self, my_id = 'filter-set'):
         vars = self.meteorology_vars + self.flight_vars
