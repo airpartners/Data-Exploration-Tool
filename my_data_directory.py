@@ -6,9 +6,10 @@ def my_data_directory():
       (in your command prompt/terminal, navigate to the directory for this repo, then type):
       git update-index --skip-worktree my_data_directory.py
 
-    Before you start, choose a location on your computer to store your raw and processed data, and create a file system that
-    looks like this (you just need to create 9 folders on your computer, with this structure):
+    Before you start, choose a location on your computer to store the raw csv files wrapped in data.zip which you can download from here:
+    https://docs.google.com/uc?export=download&id=1xS5oDE1ID2NcCP-ZjBB2ZFbtrx4F3B4f
 
+    The structure of data.zip is shown as follows:
         📦data
         ┣ 📂east_boston
         ┃ ┣ 📂processed
@@ -128,5 +129,6 @@ def my_data_directory():
 
     # set the following line to return the topmost data directory
     # remember to use forward slashes (/) instead of backslashes (\) even if on a Windows system
-    # return "C:/.../data"
-    return "C:/dev/Air Partners/Data Analysis/data"
+    return "C:/.../data"
+    # return "C:/dev/Air Partners/Data Analysis/data"
+    # return "C:/Users/zxiong/Desktop/Olin/Air Partners/data/"
