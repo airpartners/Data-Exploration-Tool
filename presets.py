@@ -306,7 +306,7 @@ class Presets():
                                 html.H5(html.B(scenario_name)),
                                 html.P(scenario_desc),
                                 html.Button(
-                                    children = html.A('See it yourself', href = '#graphs'),
+                                    children = html.A('See it yourself', href = '#graphs', style = {"color": CSS.color_scheme["presets"]}),
                                     n_clicks = 0,
                                     style = {
                                         "border-color": CSS.color_scheme["presets"],

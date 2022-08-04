@@ -63,11 +63,15 @@ class Page():
     def create_dropdown(self, chart_num, initial_display_status, placeholder_text = None, add_callback = True):
         print("Creating Dropdown with id", self.get_id('new-chart-dropdown', chart_num))
         if not add_callback:
+            style = {'display': "inline", 'font-size': '12px', 'font-family': 'Times New Roman, Serif'}
             return html.Div(
                 # children = f"Cannot add more than {self.n_charts - 1} charts.",
-                children = html.Hr(),
+                children = [
+                    html.P("Developed by ", style = style),
+                    html.A("AirPartners.org", href = "https://www.airpartners.org/", style = style)
+                ],
                 id = self.get_id('new-chart-dropdown', chart_num),
-                style = CSS.text_style | {'display': initial_display_status},
+                style = {'display': initial_display_status, 'font-size': '12px', 'font-family': 'Times New Roman, Serif'},
             )
         # else:
 
