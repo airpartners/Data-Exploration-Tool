@@ -107,7 +107,6 @@ class Scatter(GraphFrame):
             fig = px.scatter(df, x=xaxis_column_name, y=yaxis_column_name,
                     trendline="ols",
                     hover_name=df.index,
-                    template=CSS.template
                     # log_x=True, size_max=15
                 )
 
