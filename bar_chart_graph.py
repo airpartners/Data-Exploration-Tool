@@ -26,15 +26,21 @@ class BarChartGraph(GraphFrame):
                 self.sensor_picker(), # calling the sensor dropdown menu defined in graph_frame.py
                 "what were the average pollution levels over the period of ",
                 self.date_picker(), # calling the date range dropdown menu defined in graph_frame.py
+                "when the wind was blowing from the ",
+                self.wind_direction_picker(my_id = 'wind-direction-picker'),
+
                 html.Div(
                     ", relative to the baseline average",
                     id = self.get_id('relative-text'),
                     style = CSS.text_style
                 ),
-                "?",
+
+                "? Filter by: ",
+                self.filter_picker(),
                 self.normalize_switch(my_id = 'normalize-height', is_barchart = True),
+
                 dcc.Graph(
-                    id = self.get_id('select-time')
+                    id = self.get_id('bar-chart-graph')
                 ),
             ]
 
@@ -51,14 +57,16 @@ class BarChartGraph(GraphFrame):
 
         @self.app.callback(
             # the id of the graph lines up with the id argument in dcc.Graph defined in get_html() function
-            Output(self.get_id('select-time'), 'figure'),
+            Output(self.get_id('bar-chart-graph'), 'figure'),
             Output(self.get_id('relative-text'), 'style'),
             Input( self.get_id('which-sensor'), 'value'),
             Input( self.get_id('date-picker-range'), 'start_date'),
             Input( self.get_id('date-picker-range'), 'end_date'),
             Input( self.get_id('normalize-height'), 'on'),
+            Input(self.get_id('wind-direction-picker'), 'value'),
+            Input(self.get_id('filter-callback-data'), 'data'),
         )
-        def update_figure(which_sensor, start_date, end_date, normalize_height = True, stat_type = "mean", percentage_error = False):
+        def update_figure(which_sensor, start_date, end_date, normalize_height, wind_direction, var_ranges):
             """
             Main plotting function:
             - selects and processes the dataset
@@ -66,7 +74,8 @@ class BarChartGraph(GraphFrame):
 
             """
             # calling dataset from data_importer and make it a pandas dataframe
-            df = self.data_importer.get_data_by_sensor(which_sensor, numeric_only = True)
+            # df = self.data_importer.get_data_by_sensor(which_sensor, numeric_only = True)
+            df = self.data_importer.get_data_by_sensor(which_sensor)
 
             # calling the statistic data that mainly includes the mean of the entire dataset
             df_stats = self.data_importer.df_stats
@@ -93,6 +102,11 @@ class BarChartGraph(GraphFrame):
             # filter by timestamp and wind direction
             df = self.filter_by_date(df, start_date, end_date)
 
+            for var, var_range in var_ranges.items():
+                df = self.filter_by_var(df, var, var_range[0], var_range[1])
+
+            df = self.filter_by_wind_direction(df, wind_direction)
+
             # rename the columns in the dataset of the selected sensor
             df = df.rename(columns={
                 "pm10.ML": "PM10 (μg/m^3)",
@@ -110,6 +124,7 @@ class BarChartGraph(GraphFrame):
             })
 
             # extract the stats data based on the sensor name
+            stat_type = "mean"
             if stat_type == "mean":
                 filtered_stat = df.mean(axis = 0)
                 normalized_stat = filtered_stat / df_stats[sensor_name, "mean"]

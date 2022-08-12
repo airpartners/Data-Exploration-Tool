@@ -375,6 +375,48 @@ class Presets():
                     "explanation": "Hellow Worlds!!! #7",
                 },
             ),
+            (
+                chart_type_ids["bar_chart"],
+                {
+                    "sensor_location": 0,
+                    "start_date": preset_date_ranges["data_start"],
+                    "end_date": preset_date_ranges["data_end"],
+                    "ignore_units": True,
+                    "filter_selector": ["Adverse Takeoffs/Landings"],
+                    "adverse_flight_filter": [0, 33],
+                    "show_explanation": True,
+                    "explanation_title": "Bar Chart",
+                    "explanation": [
+                        html.P(["Shows a summary of the pollution levels of multiple fine particle categories. ",
+                            "Select a date range between September 2019 and April 2020. The bar chart shows the average toxic gas concentrations in parts per billion (ppb) and particle concentrations in micrograms per cubic meter (μg/m^3) over the date range that is selected. ",
+                        ]),
+                        html.P(["To compare the values to the average pollutant concentration for the entire deployment period of that sensor, use the ", html.B('"Ignore units"'), " button. ",
+                            "When ", html.B('"Ignore units"'), " is selected, the bar chart shows the standardized data that is calculated by dividing the mean particle concentration during the selected time slot by the 2-year mean concentration of the same particles measured from the same sensor. "
+                        ]),
+                    ],
+                },
+            ),
+            (
+                chart_type_ids["bar_chart"],
+                {
+                    "sensor_location": 0,
+                    "start_date": preset_date_ranges["data_start"],
+                    "end_date": preset_date_ranges["data_end"],
+                    "ignore_units": True,
+                    "filter_selector": ["Adverse Takeoffs/Landings"],
+                    "adverse_flight_filter": [33, 100],
+                    "show_explanation": True,
+                    "explanation_title": "Bar Chart",
+                    "explanation": [
+                        html.P(["Shows a summary of the pollution levels of multiple fine particle categories. ",
+                            "Select a date range between September 2019 and April 2020. The bar chart shows the average toxic gas concentrations in parts per billion (ppb) and particle concentrations in micrograms per cubic meter (μg/m^3) over the date range that is selected. ",
+                        ]),
+                        html.P(["To compare the values to the average pollutant concentration for the entire deployment period of that sensor, use the ", html.B('"Ignore units"'), " button. ",
+                            "When ", html.B('"Ignore units"'), " is selected, the bar chart shows the standardized data that is calculated by dividing the mean particle concentration during the selected time slot by the 2-year mean concentration of the same particles measured from the same sensor. "
+                        ]),
+                    ],
+                },
+            ),
         ]
     }
 
