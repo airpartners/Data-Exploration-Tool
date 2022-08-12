@@ -341,7 +341,10 @@ class Presets():
         # ///////////////////////////////////////////////////////////// #
         # //                    Preset Number 4                      // #
         # ///////////////////////////////////////////////////////////// #
-        ("Pollutant/Flights Correlation", "Under certain meteorological conditions, CO and NO2 are highly correlated with airport activity on runways near the Orient Heights sensor."): [
+        (
+            "Pollutant/Flights Correlation",
+            "Under certain meteorological conditions, CO and NO2 are highly correlated with airport activity on runways near the Orient Heights sensor."
+        ): [
             (
                 chart_type_ids["correlation_plot"],
                 {
@@ -355,9 +358,23 @@ class Presets():
                     "filter_selector": ["Wind Speed (m/s)", "Temperature (°C)"],
                     "wind_speed_filter": [6, 100],
                     "temp_filter": [10, 100],
+                    "explanation_title": "Carbon Monoxide (CO) - Flight correlation",
                     "explanation": "Hellow Worlds!!! #6",
                 },
-            )
+            ),
+            (
+                chart_type_ids["timeseries"],
+                {
+                    "sensor_location": 0,
+                    "pollutant": ["Adverse Takeoffs/Landings", "PM10 (μg/m^3)", "NO2 (ppb)"],
+                    "start_date": datetime.date(2020, 10, 14),
+                    "end_date": datetime.date(2020, 10, 17),
+                    "ignore_units": True,
+                    "show_explanation": True,
+                    "explanation_title": "Runway Activity Over Time",
+                    "explanation": "Hellow Worlds!!! #7",
+                },
+            ),
         ]
     }
 

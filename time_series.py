@@ -22,8 +22,8 @@ class TimeSeries(GraphFrame):
                     [
                         "At ",
                         self.sensor_picker(),
-                        # "in the date range of ",
-                        # self.date_picker(),
+                        "in the date range of ",
+                        self.date_picker(),
                         ", what was the value of ",
                         self.pollutant_picker(),
                         "?",
@@ -60,9 +60,11 @@ class TimeSeries(GraphFrame):
             Input(self.get_id('which-sensor'), 'value'),
             Input(self.get_id('pollutant-dropdown'), 'value'),
             Input(self.get_id('normalize-height'), 'on'),
+            Input(self.get_id('date-picker-range'), 'start_date'),
+            Input(self.get_id('date-picker-range'), 'end_date'),
         )
         # def update_figure(which_sensor, start_date, end_date, pollutant, normalize_height):
-        def update_figure(which_sensor, pollutant, normalize_height):
+        def update_figure(which_sensor, pollutant, normalize_height, start_date, end_date):
             """
             Adding callbacks so that the graph automatically updates according to dropdown selections on the user interface
             Graph is returned
@@ -76,7 +78,7 @@ class TimeSeries(GraphFrame):
             df = self.data_importer.get_data_by_sensor(which_sensor)
 
             if normalize_height:
-                df = self.normalize_height(df)
+                df = self.normalize_height(df, start_date, end_date)
 
             # round the dataset to display 2 decimal places
             df = df.round(2)
@@ -130,8 +132,8 @@ class TimeSeries(GraphFrame):
             # ])
 
             # set the time range to be the entire dataset
-            start_date = df.index[0]
-            end_date = df.index[-1]
+            # start_date = df.index[0]
+            # end_date = df.index[-1]
             if len(pollutant) == 1:
                 y_label = pollutant[0]
             else:
@@ -174,16 +176,13 @@ class TimeSeries(GraphFrame):
                     ),
                     rangeslider = dict(
                         autorange = True,
-                        range = [start_date, end_date],
+                        range = [df.index[0], df.index[-1]], # keep the range slider able to select the entire date range of the dataset
                         visible = True,
                     ),
-                    type="date"
+                    type="date",
+                    range = [start_date, end_date],
                 ),
-                yaxis = dict(
-                    autorange = True,
-                    fixedrange = False
-                )
-
+                yaxis = dict(range = [0, 1]) if normalize_height else dict(autorange = True, fixedrange = False)
             )
 
             # when y=100%, filtered mean equals entire dataset mean

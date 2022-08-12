@@ -23,7 +23,7 @@ class GraphFrame():
                 display_format = 'MM/DD/Y',
                 min_date_allowed = datetime.date(2019, 9, 8),
                 max_date_allowed = datetime.date(2021, 3, 5),
-                start_date = datetime.date(2019, 9, 8), # default value
+                start_date = datetime.date(2020, 9, 8), # default value
                 end_date = datetime.date(2021, 3, 5), # default value
                 id = self.get_id(id),
                 style = CSS.date_picker_style,
@@ -348,7 +348,11 @@ class GraphFrame():
         children.append(
             html.Details(
                 children = [
-                    html.Summary("Details", id = self.get_id("explanation-title")), # will be populated by the first Presets call
+                    html.Summary(
+                        children = "Details",
+                        id = self.get_id("explanation-title"),
+                        style = {"font-weight": "bold", "font-size": "135%"},
+                    ), # will be populated by the first Presets call
                     html.Div(children = "Contents", id = self.get_id("explanation")) # will be populated by the first Presets call
                 ],
                 open = True,
@@ -402,7 +406,7 @@ class GraphFrame():
             return \
                 df[
                     (df.index.date >= pd.Timestamp(start_date).date()) &
-                    (df.index.date <= pd.Timestamp(end_date).date()  )
+                    (df.index.date <  pd.Timestamp(end_date).date())
                     # (df["timestamp_local"].dt.date >= pd.Timestamp(start_date).date()) &
                     # (df["timestamp_local"].dt.date <= pd.Timestamp(end_date).date()  )
                 ]
@@ -428,10 +432,13 @@ class GraphFrame():
             wind_direction = [wind_direction]
         return df[ df[self.var_col_names["wind_direction_cardinal"]].isin(wind_direction) ]
 
-    def normalize_height(self, df, max_val = 1, do_it = True):
-        if not do_it:
-            return df
-        return df / df.select_dtypes('number').max() * max_val
+    def normalize_height(self, df, start_date = None, end_date = None, max_val = 1):
+        if start_date and end_date:
+            df_denominator = self.filter_by_date(df, start_date, end_date)
+        else:
+            df_denominator = df
+
+        return df / df_denominator.select_dtypes('number').max() * max_val
 
     def as_percent(self, x):
         # handle non-numeric data
