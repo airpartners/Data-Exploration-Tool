@@ -346,12 +346,15 @@ class GraphFrame():
         children = []
 
         children.append(
-                html.Details(
-                    children = self.get_explanation(),
-                    open = True,
-                    id = self.get_id("explanation"),
-                    style = CSS.text_style_explanation,
-                )
+            html.Details(
+                children = [
+                    html.Summary("Details", id = self.get_id("explanation-title")), # will be populated by the first Presets call
+                    html.Div(children = "Contents", id = self.get_id("explanation")) # will be populated by the first Presets call
+                ],
+                open = True,
+                id = self.get_id("explanation-container"),
+                style = CSS.text_style_explanation,
+            )
         )
 
         children.append(

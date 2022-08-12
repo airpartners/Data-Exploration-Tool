@@ -14,19 +14,6 @@ from graph_frame import GraphFrame
 
 class Polar(GraphFrame):
 
-    def get_explanation(self):
-        return [
-            html.P([html.B("Polar Plot:"), " Shows the pollution levels at a certain location based on wind speed and direction. ",
-            "Select a sensor location, select a date range between September 2019 and April 2020, and select one pollutant at a time. ",
-            ]),
-            html.P([
-            "The directions shown on the polar plot represent the direction the wind was blowing ", html.B("from"), ". ",
-            "This type of graph can help with locating pollution sources, particularly if a large number of pollutants are ",
-            "blowing in from a certain direction."
-            ]),
-        ]
-
-
     def get_html(self):
         # children = ...
         return \

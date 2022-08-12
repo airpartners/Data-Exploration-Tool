@@ -8,15 +8,6 @@ from css import CSS
 
 class TimeSeries(GraphFrame):
 
-    def get_explanation(self):
-        return [
-            html.P([html.B("Timeseries:"), " Shows the pollution levels at a certain sensor over time. ",
-            "Select a date range between September 2019 and April 2020, and select one or more pollutants to show at once. ",
-            "To compare variables with different magnitudes, use the ", html.B('"Ignore units"'), " button ",
-            "to scale the values to fit the whole range."]
-            )
-        ]
-
     def get_html(self):
         """
         Defines the structure of barchart in html
@@ -75,7 +66,7 @@ class TimeSeries(GraphFrame):
             """
             Adding callbacks so that the graph automatically updates according to dropdown selections on the user interface
             Graph is returned
-            
+
             """
             # turn the input argument pollutamt into a list, since time series graph accepts multiple variables on the y-axis
             if isinstance(pollutant, str):

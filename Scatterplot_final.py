@@ -10,15 +10,6 @@ from graph_frame import GraphFrame
 from css import CSS
 
 class Scatter(GraphFrame):
-    def get_explanation(self):
-        return [
-            html.P([html.B("Correlation Plot:"), " Shows relationships between different variables at the same time. ",
-            "Select a sensor location and a date range between September 2019 and April 2020. You can choose what to display on the x-axis and y-axis respectively, and a correlation line is going to display in the graph to show the correlation between your y-axis variable and your x-axis variable. ",
-        ]),
-            html.P(["For example, if you choose “temperature” on the x-axis and “PM2.5” on the axis, the coefficient m of the displayed equation “PM2.5 = m * temperature + c” indicates how much PM2.5 concentration is correlated to the temperature. ",
-            "The R squared value shows how scattered the data points are, and the range goes from 0 to1. A higher R squared value (generally equals or exceeds 0.4) means a more convincing x-axis variable coefficient (m)."
-        ])
-        ]
 
     def get_html(self):
         """
@@ -90,7 +81,7 @@ class Scatter(GraphFrame):
             # filter data by the date range that is returned from 'date-picker-range' dropdown
             df = self.filter_by_date(df, start_date, end_date)
 
-            # 
+            #
             for var, var_range in var_ranges.items():
                 df = self.filter_by_var(df, var, var_range[0], var_range[1])
 

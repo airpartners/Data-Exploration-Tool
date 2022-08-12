@@ -6,16 +6,6 @@ from css import CSS
 
 
 class CalendarPlot(GraphFrame):
-    def get_explanation(self):
-        return [
-            html.P([html.B("Calendar Plot:"), " Shows the pollution levels at a certain sensor over the entire data collection period. ",
-            "Select a sensor location and a pollutant to show. ",
-            "Each horizontal strip represents 365 days of data. Each square represents the average concentration levels for one day. ",
-            "If ",html.B("\"Adverse Takeoffs/Landings\""), " or ",html.B("\"Total Takeoffs/Landings\"")," are selected, the square represents the average  takeoffs and landings per hour on that day",
-            "Each column represents one week (the top row is all Mondays, etc.)"]
-            )
-        ]
-
 
     def get_html(self):
         """

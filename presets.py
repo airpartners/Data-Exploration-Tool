@@ -36,8 +36,9 @@ class Presets():
         "pollutant": ["pollutant-dropdown", "value"],
         "x_axis": ["x-axis", "value"],
         # "y_axis": ["y-axis", "value"],
-        "show_details": ["explanation", "open"],
+        "show_explanation": ["explanation-container", "open"],
         "explanation": ["explanation", "children"],
+        "explanation_title": ["explanation-title", "children"],
         "ignore_units": ["normalize-height", "on"],
         "filter_selector": ["filter-set", "value"],
         "hum_filter": ["filter-by-Humidity (%)", "value"], # "value" is a list of [min, max]
@@ -61,8 +62,19 @@ class Presets():
                 {
                     "sensor_location": 0,
                     "pollutant": "PM1 (μg/m^3)",
-                    "show_details": True,
-                    "explanation": CalendarPlot.get_explanation("self-placeholder"),
+                    "show_explanation": True,
+                    "explanation_title": "Calendar Plot",
+                    "explanation": [
+                        html.P([
+                            "Shows the pollution levels at a certain sensor over the entire data collection period. ",
+                            "Select a sensor location and a pollutant to show."
+                        ]),
+                        html.P([
+                            "Each horizontal strip represents 365 days of data. Each square represents the average concentration levels for one day. ",
+                            "If ",html.B("\"Adverse Takeoffs/Landings\""), " or ",html.B("\"Total Takeoffs/Landings\"")," are selected, the square represents the average  takeoffs and landings per hour on that day",
+                            "Each column represents one week (the top row is all Mondays, etc.)"]
+                        )
+                    ],
                 },
             ),
             (
@@ -70,9 +82,18 @@ class Presets():
                 {
                     "sensor_location": 0,
                     "pollutant": "PM10 (μg/m^3)",
-                    "show_details": True,
+                    "show_explanation": True,
                     "ignore_units": False,
-                    "explanation": TimeSeries.get_explanation("self-placeholder"),
+                    "show_explanation": True,
+                    "explanation_title": "Timeseries Plot",
+                    "explanation": [
+                        html.P([
+                            "Shows the pollution levels at a certain sensor over time. ",
+                            "Select a date range between September 2019 and April 2020, and select one or more pollutants to show at once. ",
+                            "To compare variables with different magnitudes, use the ", html.B('"Ignore units"'), " button ",
+                            "to scale the values to fit the whole range."
+                        ]),
+                    ],
                 },
             ),
             (
@@ -84,8 +105,16 @@ class Presets():
                     'pollutant': "PM2.5 (μg/m^3)",
                     "start_date": datetime.date(2019, 12, 1),
                     "end_date": datetime.date(2019, 12, 31),
-                    "show_details": True,
-                    "explanation": Scatter.get_explanation("self-placeholder"),
+                    "show_explanation": True,
+                    "explanation_title": "Correlation Plot",
+                    "explanation": [
+                        html.P(["Shows relationships between different variables at the same time. ",
+                            "Select a sensor location and a date range between September 2019 and April 2020. You can choose what to display on the x-axis and y-axis respectively, and a correlation line is going to display in the graph to show the correlation between your y-axis variable and your x-axis variable. ",
+                        ]),
+                        html.P(["For example, if you choose “temperature” on the x-axis and “PM2.5” on the axis, the coefficient m of the displayed equation “PM2.5 = m * temperature + c” indicates how much PM2.5 concentration is correlated to the temperature. ",
+                            "The R squared value shows how scattered the data points are, and the range goes from 0 to1. A higher R squared value (generally equals or exceeds 0.4) means a more convincing x-axis variable coefficient (m)."
+                        ])
+                    ]
                 },
             ),
             (
@@ -95,8 +124,19 @@ class Presets():
                     "pollutant": "PM1 (μg/m^3)",
                     "start_date": datetime.date(2019, 12, 1),
                     "end_date": datetime.date(2019, 12, 31),
-                    "show_details": True,
-                    "explanation": Polar.get_explanation("self-placeholder"),
+                    "show_explanation": True,
+                    "explanation_title": "Polar Plot",
+                    "explanation": [
+                        html.P([
+                            "Shows the pollution levels at a certain location based on wind speed and direction. ",
+                            "Select a sensor location, select a date range between September 2019 and April 2020, and select one pollutant at a time. ",
+                        ]),
+                        html.P([
+                            "The directions shown on the polar plot represent the direction the wind was blowing ", html.B("from"), ". ",
+                            "This type of graph can help with locating pollution sources, particularly if a large number of pollutants are ",
+                            "blowing in from a certain direction."
+                        ]),
+                    ],
                 },
             ),
             (
@@ -105,9 +145,17 @@ class Presets():
                     "sensor_location": 0,
                     "start_date": datetime.date(2019, 12, 1),
                     "end_date": datetime.date(2019, 12, 31),
-                    "show_details": True,
                     "ignore_units": False,
-                    "explanation": BarChartGraph.get_explanation("self-placeholder"),
+                    "show_explanation": True,
+                    "explanation_title": "Bar Chart",
+                    "explanation": [
+                        html.P(["Shows a summary of the pollution levels of multiple fine particle categories. ",
+                            "Select a date range between September 2019 and April 2020. The bar chart shows the average toxic gas concentrations in parts per billion (ppb) and particle concentrations in micrograms per cubic meter (μg/m^3) over the date range that is selected. ",
+                        ]),
+                        html.P(["To compare the values to the average pollutant concentration for the entire deployment period of that sensor, use the ", html.B('"Ignore units"'), " button. ",
+                            "When ", html.B('"Ignore units"'), " is selected, the bar chart shows the standardized data that is calculated by dividing the mean particle concentration during the selected time slot by the 2-year mean concentration of the same particles measured from the same sensor. "
+                        ]),
+                    ],
                 },
             ),
 
@@ -125,10 +173,10 @@ class Presets():
                     "sensor_location": 0,
                     "start_date": preset_date_ranges["data_start"],
                     "end_date": preset_date_ranges["pandemic_start"],
-                    "show_details": True,
+                    "show_explanation": True,
                     "ignore_units": True,
+                    "explanation_title": "Pre-Pandemic",
                     "explanation": [
-                        html.H4("Pre-Pandemic"),
                         "This bar chart shows the averages of all the variables over the pre-Pandemic date range of September 2019 to March 2020. During this period, ",
                         "activity at Logan Airport was at typical levels, and pollution from particulate matter (PM1-10) as well as gas phase pollutants (CO, NOx) ",
                         "was at or above average."
@@ -141,13 +189,15 @@ class Presets():
                     "sensor_location": 0,
                     "start_date": preset_date_ranges["pandemic_start"],
                     "end_date": preset_date_ranges["pandemic_end"],
-                    "show_details": True,
                     "ignore_units": True,
+                    "show_explanation": True,
+                    "explanation_title": "Peak Pandemic",
                     "explanation": [
-                        html.H4("Peak Pandemic"),
-                        "This chart shows the same variables for the date range of March through June 2020. See how the number of flights arriving or departing from Logan ",
-                        "are about half of the average value. Accordingly, gas phase and particulate matter pollution levels were substantially lower (healthier) during ",
-                        "this period."
+                        html.P([
+                            "This chart shows the same variables for the date range of March through June 2020. See how the number of flights arriving or departing from Logan ",
+                            "are about half of the average value. Accordingly, gas phase and particulate matter pollution levels were substantially lower (healthier) during ",
+                            "this period."
+                        ]),
                     ],
                 },
             ),
@@ -157,15 +207,17 @@ class Presets():
                     "sensor_location": 0,
                     "start_date": preset_date_ranges["pandemic_end"],
                     "end_date": preset_date_ranges["data_end"],
-                    "show_details": True,
                     "ignore_units": True,
+                    "show_explanation": True,
+                    "explanation_title": "Post Pandemic",
                     "explanation": [
-                        html.H4("Post Pandemic"),
-                        html.P(
+                        html.P([
                             "Same thing but for the date range of July 2020 through April 2021. During this period, the number of flights increased slightly to about 30% below ",
                             "pre-pandemic levels. Even so, the pollutant levels have increased almost back to their pre-pandemic average. ",
-                        ),
-                        html.P("These graphs were made for the sensor at Orient Heights. Try exploring the effects at different sensors.")
+                        ]),
+                        html.P([
+                            "These graphs were made for the sensor at Orient Heights. Try exploring the effects at different sensors."
+                        ])
                     ],
                 },
             ),
@@ -174,7 +226,8 @@ class Presets():
                 {
                     "sensor_location": 0,
                     "pollutant": "NO2 (ppb)",
-                    "show_details": True,
+                    "show_explanation": True,
+                    "explanation_title": "Calendar Plot",
                     "explanation": "You can use a calendar plot to look at higher time resolution for a particular pollutant, in this case NO2.",
                 },
             ),
@@ -183,7 +236,8 @@ class Presets():
                 {
                     "sensor_location": 0,
                     "pollutant": "NO2 (ppb)",
-                    "show_details": True,
+                    "show_explanation": True,
+                    "explanation_title": "Calendar Plot",
                     "explanation": "This last graph shows the same thing but for a particulate matter pollutant, in this case PM2.5. How do they compare?",
                 },
             ),
@@ -192,15 +246,30 @@ class Presets():
         # ///////////////////////////////////////////////////////////// #
         # //                    Preset Number 3                      // #
         # ///////////////////////////////////////////////////////////// #
-        ("Sources by Wind Direction", "At each sensor, see where the pollution was coming from based on wind direction and speed. Hint: pollution was highest when the wind was blowing in from the airport."): [
+        (
+            "Sources by Wind Direction",
+            "At each sensor, see where the pollution was coming from based on wind direction and speed. Hint: pollution was highest when the wind was blowing in from the airport."
+        ): [
             (
                 chart_type_ids["polar_plot"],
                 {
                     "sensor_location": 0,
                     "start_date": preset_date_ranges["data_start"],
                     "end_date": preset_date_ranges["data_end"],
-                    "show_details": True,
-                    "explanation": "Hellow Worlds!!! #1",
+                    "show_explanation": True,
+                    "explanation_title": "Polar Plot for Orient Heights",
+                    "explanation": [
+                        html.P(["Shows the pollution levels at a the Orient Heights sensor based on wind speed and direction. "]),
+                        html.P([
+                            "Locate the Orient Heights sensor on the map at right. You can also select another location to show using the dropdown menus below. ",
+                            "You can also select a date range and pollutant type to show data for."]),
+                        html.P([
+                        "The directions shown on the polar plot represent the direction the wind was blowing ", html.B("from"), ". ",
+                        "This type of graph can help with locating pollution sources, particularly if a large number of pollutants are ",
+                        "blowing in from a certain direction."
+                        ]),
+                        html.P(["See if you can identify plumes of high pollutant concentrations for wind blowing from the direction of the airport."]),
+                    ],
                 },
             ),
             (
@@ -209,8 +278,12 @@ class Presets():
                     "sensor_location": 1,
                     "start_date": preset_date_ranges["data_start"],
                     "end_date": preset_date_ranges["data_end"],
-                    "show_details": True,
-                    "explanation": "Hellow Worlds!!! #2",
+                    "show_explanation": True,
+                    "explanation_title": "Jeffries Point (Maverick end)",
+                    "explanation": [
+                        html.P(["Shows the pollution levels at a the Jeffries Point sensor (Maverick end) based on wind speed and direction."]),
+                        html.P(["See if you can identify plumes of high pollutant concentrations for wind blowing from the direction of the airport."]),
+                    ],
                 },
             ),
             (
@@ -219,8 +292,12 @@ class Presets():
                     "sensor_location": 2,
                     "start_date": preset_date_ranges["data_start"],
                     "end_date": preset_date_ranges["data_end"],
-                    "show_details": True,
-                    "explanation": "Hellow Worlds!!! #3",
+                    "show_explanation": False,
+                    "explanation_title": "Winthrop",
+                    "explanation": [
+                        html.P(["Shows the pollution levels at a the Winthrop sensor based on wind speed and direction."]),
+                        html.P(["See if you can identify plumes of high pollutant concentrations for wind blowing from the direction of the airport."]),
+                    ],
                 },
             ),
             (
@@ -229,8 +306,12 @@ class Presets():
                     "sensor_location": 3,
                     "start_date": preset_date_ranges["data_start"],
                     "end_date": preset_date_ranges["data_end"],
-                    "show_details": True,
-                    "explanation": "Hellow Worlds!!! #4",
+                    "show_explanation": False,
+                    "explanation_title": "Jeffries Point (Airport end)",
+                    "explanation": [
+                        html.P(["Shows the pollution levels at a the Jeffries Point sensor (Airport end) based on wind speed and direction."]),
+                        html.P(["See if you can identify plumes of high pollutant concentrations for wind blowing from the direction of the airport."]),
+                    ],
                 },
             ),
             (
@@ -239,8 +320,12 @@ class Presets():
                     "sensor_location": 4,
                     "start_date": preset_date_ranges["data_start"],
                     "end_date": preset_date_ranges["data_end"],
-                    "show_details": True,
-                    "explanation": "Hellow Worlds!!! #5",
+                    "show_explanation": False,
+                    "explanation_title": "Point Shirley",
+                    "explanation": [
+                        html.P(["Shows the pollution levels at a the Point Shirley sensor based on wind speed and direction."]),
+                        html.P(["See if you can identify plumes of high pollutant concentrations for wind blowing from the direction of the airport."]),
+                    ],
                 },
             ),
             # (
@@ -249,14 +334,14 @@ class Presets():
             #         "sensor_location": 5,
             #         "start_date": preset_date_ranges["data_start"],
             #         "end_date": preset_date_ranges["data_end"],
-            #         "show_details": True,
+            #         "show_explanation": True,
             #     }
             # ),
         ],
         # ///////////////////////////////////////////////////////////// #
         # //                    Preset Number 4                      // #
         # ///////////////////////////////////////////////////////////// #
-        ("Pollutant/Flights Correlation", "Under certain meteorological conditions, CO and NO2 are highly correlated with airport activity on runways near the sensor."): [
+        ("Pollutant/Flights Correlation", "Under certain meteorological conditions, CO and NO2 are highly correlated with airport activity on runways near the Orient Heights sensor."): [
             (
                 chart_type_ids["correlation_plot"],
                 {
@@ -265,7 +350,7 @@ class Presets():
                     'pollutant': "CO (ppb)",
                     "start_date": preset_date_ranges["data_start"],
                     "end_date": preset_date_ranges["data_end"],
-                    "show_details": True,
+                    "show_explanation": True,
                     "wind_selector": ["NW", "SE"],
                     "filter_selector": ["Wind Speed (m/s)", "Temperature (°C)"],
                     "wind_speed_filter": [6, 100],

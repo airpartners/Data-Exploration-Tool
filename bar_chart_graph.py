@@ -11,15 +11,6 @@ from graph_frame import GraphFrame
 from css import CSS
 
 class BarChartGraph(GraphFrame):
-    def get_explanation(self):
-        return [
-            html.P([html.B("Bar Chart:"), " Shows a summary of the pollution levels of multiple fine particle categories. ",
-            "Select a date range between September 2019 and April 2020. The bar chart shows the average toxic gas concentrations in parts per billion (ppb) and particle concentrations in micrograms per cubic meter (μg/m^3) over the date range that is selected. ",
-            ]),
-            html.P(["To compare the values to the average pollutant concentration for the entire deployment period of that sensor, use the ", html.B('"Ignore units"'), " button. ",
-            "When ", html.B('"Ignore units"'), " is selected, the bar chart shows the standardized data that is calculated by dividing the mean particle concentration during the selected time slot by the 2-year mean concentration of the same particles measured from the same sensor. "
-            ]),
-        ]
 
     def get_html(self):
         """

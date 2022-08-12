@@ -68,7 +68,7 @@ class Page():
                 # children = f"Cannot add more than {self.n_charts - 1} charts.",
                 children = [
                     html.P("Developed by ", style = style),
-                    html.A("AirPartners.org", href = "https://www.airpartners.org/", style = style)
+                    html.A("AirPartners.org", href = "https://www.airpartners.org/", target="_blank", style = style)
                 ],
                 id = self.get_id('new-chart-dropdown', chart_num),
                 style = {'display': initial_display_status, 'font-size': '12px', 'font-family': 'Times New Roman, Serif'},
