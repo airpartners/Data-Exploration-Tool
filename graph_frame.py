@@ -348,16 +348,29 @@ class GraphFrame():
         children.append(
             html.Details(
                 children = [
-                    html.Summary(
-                        children = "Details",
-                        id = self.get_id("explanation-title"),
-                        style = {"font-weight": "bold", "font-size": "135%"},
-                    ), # will be populated by the first Presets call
-                    html.Div(children = "Contents", id = self.get_id("explanation")) # will be populated by the first Presets call
+                    html.Summary([
+                        html.P(
+                            children = "Details", # will be populated by the first Presets call
+                            id = self.get_id("explanation-title"),
+                            style = {"font-weight": "bold", "font-size": "135%", "display": "inline"},
+                        ),
+                        html.Button(
+                            children = "✐",
+                            id = self.get_id("edit-explanation-button"),
+                            n_clicks = 0,
+                            contentEditable = "false",
+                            style = CSS.text_style_explanation | {"display": "inline", "border-width": "0px"},
+                        ),
+                    ]),
+                    html.Div(
+                        children = "Contents", # will be populated by the first Presets call
+                        id = self.get_id("explanation")
+                    ),
                 ],
                 open = True,
                 id = self.get_id("explanation-container"),
                 style = CSS.text_style_explanation,
+                contentEditable = "false",
             )
         )
 
@@ -385,6 +398,18 @@ class GraphFrame():
             style = CSS.text_style | {'display': initial_display_status},
             id = self.get_id('frame')
         )
+
+        @self.app.callback(
+            # the id of the graph lines up with the id argument in dcc.Graph defined in get_html() function
+            Output(self.get_id('explanation-container'), 'contentEditable'),
+            Output(self.get_id('edit-explanation-button'), 'children'),
+            Input(self.get_id('edit-explanation-button'), 'n_clicks'),
+        )
+        def update_figure(n_clicks):
+            if n_clicks % 2 == 1:
+                return ("true", "Stop editing")
+            # else:
+            return ("false", "✐")
 
         return return_div
 
