@@ -359,7 +359,45 @@ class Presets():
                     "wind_speed_filter": [6, 100],
                     "temp_filter": [10, 100],
                     "explanation_title": "Carbon Monoxide (CO) - Flight correlation",
-                    "explanation": "Hellow Worlds!!! #6",
+                    "explanation": [
+                        html.P([ html.I([
+                            "This graph shows the correlation between carbon monoxide (CO) concentrations and adverse takeoffs and landings ",
+                            "for the Orient Heights sensor under certain meteorological condictions. This graph shows a pattern that East Boston ",
+                            "residents know well, but it comes with several caveats."
+                        ]) ]),
+                        html.P([
+                            html.B("Results:"), " Adverse flight takeoffs and landings are operations that happened on a runway where the plumes from the airplanes ",
+                            "are expected to blow directly towards the sensor. For Orient Heights, this means takeoffs and landings on the north-south runways, ",
+                            "especially southward departures, because planes taxi up to the northern end of the runway, turn around, and thrust full force with the ",
+                            "engines pointing at the Orient Heights sensor. The x-axis on this graph shows the number of takeoffs and landings on 'adverse' runways ",
+                            "per hour for every hour where we have data."
+                        ]),
+                        html.P([
+                            "Carbon monoxide is a gas phase pollutant that is emitted during combustion, including from large vehicles like aircraft. The y-axis shows ",
+                            "carbon monoxide concentrations in units of parts per billion (ppb). "
+                        ]),
+                        html.P([
+                            "The trendline on the scatterplot shows that at times when there were larger numbers of adverse flights, the carbon monoxide concentrations ",
+                            "tended to be higher. The trendline has an R² value of 0.37, which is high for atmospheric chemistry data. (Different fields ",
+                            "have different thresholds for R² values that indicate a significant trend—in carefully controlled physics experiments, for example, ",
+                            "values upwards of 0.9 are expected. For atmospheric data science, even values below 0.5 can be considered significant and worthy of ",
+                            "investigation). So, this graph seems to show plainly that airport activity on certain runways is correlated with higher CO pollution."
+                        ]),
+                        html.P([
+                            html.B("Caveats:"), " The correlation is only strong for a specific set of meteorolocical conditions, namely wind speeds greater than ",
+                            "6 meters per second and temperatures above 10°C. These conditions are somewhat sensible—the correlation can be expected to be stronger ",
+                            "when the wind is not stagnant, for exmple. But they were mostly chosen for this example", html.B("because"), " they yielded a high ",
+                            "R² value. You are welcome to play around with the filters to see what effect different variables have on the scatterplot, ",
+                            "but it will be difficult to find a better correlation coefficient between airport activity and pollution using this data set."
+                        ]),
+                        html.P([
+                            "Perhaps needless to say, it's not good data science practice to mess around with variables and filters until you reach the desired ",
+                            "conclusion, in this case a high R² value. Please use caution when interpreting the results of these graphs. The data set is a lot ",
+                            "more messy than you might expect, and it is difficult to pin down cause and effect using this tool. There are other avenues for "
+                            "making concrete cases against the airport using more robust science. That being said, this is an exploration tool, so test out your "
+                            "hypotheses and see what other interesting patterns you can find. Exploration is the first step towards evidence—just not the final step."
+                        ]),
+                    ],
                 },
             ),
             (
