@@ -410,7 +410,17 @@ class Presets():
                     "ignore_units": True,
                     "show_explanation": True,
                     "explanation_title": "Runway Activity Over Time",
-                    "explanation": "Hellow Worlds!!! #7",
+                    "explanation": [
+                        html.P([
+                            "This timeseries is zoomed in on three days in October 2020. During this time, you can see daily spikes in runway activity ",
+                            "on 'adverse' runways. During this time, you can also see spikes in two pollutants, PM10 and NO2. These pollutatns are clearly higher ",
+                            "during the period when adverse runways were heavily used, as opposed to before and after where non-adverse runways were used instead."
+                        ])
+                        html.P([
+                            "This is another way of showing anecdotally that runway activity on certain runways is correlated with increased air pollutant ",
+                            "concentrations at the sensor locations."
+                        ])
+                    ]
                 },
             ),
             (
